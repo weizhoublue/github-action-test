@@ -18,6 +18,10 @@ on:
       - reopened
     paths:
       - ${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/**
+  push:
+    branches:
+      - main
+
 
 permissions: read-all
 
