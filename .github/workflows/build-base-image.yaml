@@ -17,7 +17,11 @@ on:
       - synchronize
       - reopened
     paths:
-      - ${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/**
+      - images/baseimage/**
+  push:
+    branches:
+      - main
+
 
 permissions: read-all
 
