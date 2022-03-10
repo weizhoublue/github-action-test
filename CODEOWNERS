@@ -17,12 +17,9 @@
 # also use email addresses if you prefer
 *.go   weizhouBlue@example.com
 
-
-# github 的 Teams ，can be specified as code owners as well， in the format @org/team-name
-*.txt @octo-org/octocats
-
 # 如下写法，匹配目录下的所有子目录层级的任意文件
-/cmd/  @doctocat
+# github 的 Teams ，can be specified as code owners as well， in the format @org/team-name
+/cmd/  @@octo-org/octocats
 
 # 如下写法，匹配目录下的第一个目录层级的任意文件
 /cmd/*  @doctocat

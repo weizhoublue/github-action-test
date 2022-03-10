@@ -11,6 +11,7 @@ permissions: read-all
 env:
   REPOSITY_NAME: github.com/weizhouBlue/github-action-test
 
+# for each pr, queue all workflows
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
