@@ -1,6 +1,6 @@
 # docker buildx build -t testbase:latest --platform=linux/arm64,linux/amd64 --output type=docker .
 
-#with debian 11 os
+
 ARG GOLANG_IMAGE=docker.io/library/golang:1.17.8
 ARG UBUNTU_IMAGE=docker.io/library/ubuntu:20.04
 
@@ -12,6 +12,7 @@ COPY /build-gops.sh /build-gops.sh
 #COPY /sources.list /etc/apt/sources.list
 #RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
 
+#with debian 11 os
 RUN apt-get update && apt-get install -y binutils-aarch64-linux-gnu binutils-x86-64-linux-gnu
 
 # build-gops.sh will build both archs at the same time
