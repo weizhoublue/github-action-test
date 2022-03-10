@@ -5,8 +5,10 @@ name: Base Image Release Build
 env:
   IMAGE_NAME: baseimage
   IMAGE_REPO: weizhoulan
+  #IMAGE_REPO: ${{ github.repository_owner }}
   IMAGE_ROOT_PATH: images
-#  IMAGE_REPO: ${{ github.repository_owner }}
+  BUILD_PLATFORM: linux/amd64,linux/arm64
+  ONLINE_REGISTER: docker.io
 
 
 # when PR commit the change for baseimage dockerfile, trigger the workflow
@@ -82,8 +84,7 @@ jobs:
         with:
           username: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
           password: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
-          #default to dockerhub
-          #registry: quay.io
+          registry: ${{ secrets.ONLINE_REGISTER }}
 
       - name: Release build ${{ env.IMAGE_NAME }}
         if: ${{ steps.tag-in-repositories.outputs.exists == 'false' }}
@@ -93,7 +94,7 @@ jobs:
           context: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}
           file: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.BUILD_PLATFORM }}
           tags: |
             ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }}
 
