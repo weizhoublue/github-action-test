@@ -1,7 +1,7 @@
 name: Base Image Release Build
 
-# image : ${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
-# image yaml path on the repo: ${IMAGE_ROOT_PATH}/${IMAGE_NAME}
+# final packed image : ${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
+# image dockerfile path on the repo: ${IMAGE_ROOT_PATH}/${IMAGE_NAME}/Dockerfile
 env:
   IMAGE_NAME: baseimage
   IMAGE_REPO: weizhoulan
@@ -36,13 +36,6 @@ jobs:
     timeout-minutes: 30
     environment: release-base-images
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - dockerfile: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/Dockerfile
-            context: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}
-      fail-fast: false
-
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1.6.0
@@ -69,7 +62,7 @@ jobs:
       - name: Generating image tag
         id: tag
         run: |
-          echo ::set-output name=tag::"$(git ls-tree --full-tree HEAD -- ${{ matrix.context }} | awk '{ print $3 }')"
+          echo ::set-output name=tag::"$(git ls-tree --full-tree HEAD -- ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }} | awk '{ print $3 }')"
 
       #check whether we have upload the same tag image to online register
       - name: Checking if tag already exists
@@ -95,8 +88,8 @@ jobs:
         uses: docker/build-push-action@v2.9.0
         id: docker_build_release
         with:
-          context: ${{ matrix.context }}
-          file: ${{ matrix.dockerfile }}
+          context: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}
+          file: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
