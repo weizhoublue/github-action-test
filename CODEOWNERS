@@ -8,6 +8,10 @@
 
 # will require approval from @doctocat or @octocat.  这个应该是 github 账号名
 /cmd/ @weizhouBlue1 @weizhouBlue2
+/.gitignore @weizhouBlue
+/CODEOWNERS @weizhouBlue
+/README.md @weizhouBlue
+/go.mod @weizhouBlue
 
 # 匹配任意层级目录下的 go 文件
 # also use email addresses if you prefer
