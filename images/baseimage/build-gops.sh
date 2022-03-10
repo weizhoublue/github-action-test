@@ -13,7 +13,6 @@ gops_version="v0.3.22"
 mkdir -p /go/src/github.com/google
 cd /go/src/github.com/google
 
-git config --global http.proxy 'http://172.31.1.145:7890'
 export GOPROXY="https://goproxy.io|https://goproxy.cn|direct"
 
 

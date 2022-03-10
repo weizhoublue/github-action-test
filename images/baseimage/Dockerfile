@@ -9,8 +9,8 @@ FROM --platform=${BUILDPLATFORM} ${GOLANG_IMAGE} as gops-cni-builder
 COPY /build-gops.sh /build-gops.sh
 
 #use alibaba debian source
-COPY /sources.list /etc/apt/sources.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
+#COPY /sources.list /etc/apt/sources.list
+#RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
 
 RUN apt-get update && apt-get install -y binutils-aarch64-linux-gnu binutils-x86-64-linux-gnu
 
