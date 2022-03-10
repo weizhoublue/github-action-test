@@ -17,6 +17,7 @@ on:
       - synchronize
       - reopened
     paths:
+      #can not use env here
       - images/baseimage/**
   push:
     branches:
