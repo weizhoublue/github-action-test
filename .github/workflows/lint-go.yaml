@@ -9,6 +9,11 @@ on:
 
 permissions: read-all
 
+# for each pr, queue all workflows
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
+  cancel-in-progress: true
+
 jobs:
   go-mod:
     runs-on: ubuntu-latest
