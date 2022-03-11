@@ -1,14 +1,16 @@
+[![Build Image Release](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml)
 
-[![Go-related checks](https://github.com/weizhoublue/github-action-test/actions/workflows/golangci-lint.yaml/badge.svg)](https://github.com/weizhouBlue/github-action-test/actions/workflows/golangci-lint.yaml)
+[![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
 
 
-What the project does
+feature
 
-Why the project is useful
+(1) go-lint for source code
 
-How users can get started with the project
+(2) codeql check
 
-Where users can get help with your project
+(3) codeowners , who reivew PR
 
-Who maintains and contributes to the project
+(4) auto package base image
 
+(5) auto package release image by tag
