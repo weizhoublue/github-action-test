@@ -9,14 +9,14 @@ all: build-bin install-bin
 SUBDIRS := cmd/controller
 
 
-build-bin: ## Builds components required for cilium-agent container.
+build-bin:
 	for i in $(SUBDIRS); do $(MAKE) $(SUBMAKEOPTS) -C $$i all; done
 
 install-bin:
 	$(QUIET)$(INSTALL) -m 0755 -d $(DESTDIR_BIN)
 	for i in $(SUBDIRS); do $(MAKE) $(SUBMAKEOPTS) -C $$i install; done
 
-install-bash-completion: ## Install bash completion for all components required for cilium-agent container.
+install-bash-completion:
 	$(QUIET)$(INSTALL) -m 0755 -d $(DESTDIR_BIN)
 	for i in $(SUBDIRS); do $(MAKE) $(SUBMAKEOPTS) -C $$i install-bash-completion; done
 

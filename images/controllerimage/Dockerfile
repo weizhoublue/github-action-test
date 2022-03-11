@@ -34,7 +34,7 @@ ARG TARGETOS
 # TARGETARCH is an automatic platform ARG enabled by Docker BuildKit.
 ARG TARGETARCH
 
-RUN groupadd -f cilium \
+RUN groupadd -f test \
     && echo ". /etc/profile.d/bash_completion.sh" >> /etc/bash.bashrc
 
 COPY --from=builder /tmp/install/${TARGETOS}/${TARGETARCH}/bin/*   /usr/bin/
