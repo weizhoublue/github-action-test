@@ -5,12 +5,17 @@ name: Base Image Release Build
 env:
   IMAGE_NAME: baseimage
   IMAGE_REPO: weizhoulan
-  #IMAGE_REPO: ${{ github.repository_owner }}
+  #IMAGE_REPO: ${{ github.repository_owner }}   # spidernet-io
+  #IMAGE_REPO: ${{ github.repository }}   # spidernet-io/spiderpool
   ONLINE_REGISTER: docker.io
   IMAGE_ROOT_PATH: images
   BUILD_PLATFORM: linux/amd64,linux/arm64
   ONLINE_REGISTER_USER: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
+  #ONLINE_REGISTER_USER: ${{ github.repository_owner }}  # spidernet-io
+  #ONLINE_REGISTER_USER: ${{ github.actor }}   # weizhouBlue
   ONLINE_REGISTER_PASSWORD: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
+  #ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 # when PR commit the change for baseimage dockerfile, trigger the workflow
@@ -28,9 +33,7 @@ on:
       - main
 
 
-permissions: read-all
-
-
+permissions: write-all
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
