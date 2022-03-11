@@ -12,7 +12,7 @@ env:
   BUILD_PLATFORM: linux/amd64,linux/arm64
   ONLINE_REGISTER_USER: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
   #ONLINE_REGISTER_USER: ${{ github.repository_owner }}  # spidernet-io
-  #ONLINE_REGISTER_USER: ${{ github.actor }}   # weizhouBlue
+  #ONLINE_REGISTER_USER: ${{ github.actor }}   # weizhoublue
   ONLINE_REGISTER_PASSWORD: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
   #ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
