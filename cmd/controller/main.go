@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/weizhouBlue/github-action-test/pkg/print"
+	"github.com/weizhoublue/github-action-test/pkg/print"
 )
 
 func main() {
