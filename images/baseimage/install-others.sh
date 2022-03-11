@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Copyright 2017-2020 Authors of Cilium
-# SPDX-License-Identifier: Apache-2.0
-
 set -o xtrace
 set -o errexit
 set -o pipefail
@@ -12,7 +9,6 @@ packages=(
   # Additional iproute2 runtime dependencies
   libelf1
   libmnl0
-  # Bash completion for Cilium
   bash-completion
   iptables
 )
