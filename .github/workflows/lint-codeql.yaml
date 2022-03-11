@@ -1,4 +1,4 @@
-name: codeql
+name: Lint codeql
 
 on:
   pull_request:
