@@ -1,14 +1,14 @@
 name: Base Image Release Build
 
-# final packed image : ${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
+# final packed image : ${ONLINE_REGISTER}/${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
 # image dockerfile path on the repo: ${IMAGE_ROOT_PATH}/${IMAGE_NAME}/Dockerfile
 env:
   IMAGE_NAME: baseimage
   IMAGE_REPO: weizhoulan
   #IMAGE_REPO: ${{ github.repository_owner }}
+  ONLINE_REGISTER: docker.io
   IMAGE_ROOT_PATH: images
   BUILD_PLATFORM: linux/amd64,linux/arm64
-  ONLINE_REGISTER: docker.io
   ONLINE_REGISTER_USER: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
   ONLINE_REGISTER_PASSWORD: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
 
@@ -74,7 +74,7 @@ jobs:
         id: tag-in-repositories
         shell: bash
         run: |
-          if docker buildx imagetools inspect ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }} &>/dev/null; then
+          if docker buildx imagetools inspect ${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }} &>/dev/null; then
             echo ::set-output name=exists::"true"
           else
             echo ::set-output name=exists::"false"
@@ -98,7 +98,7 @@ jobs:
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
           tags: |
-            ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }}
+            ${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }}
 
       - name: Image Release Digest
         if: ${{ steps.tag-in-repositories.outputs.exists == 'false' }}
@@ -107,7 +107,7 @@ jobs:
           mkdir -p image-digest/
           echo "## ${{ env.IMAGE_NAME }}" > image-digest/${{ env.IMAGE_NAME }}.txt
           echo "" >> image-digest/${{ env.IMAGE_NAME }}.txt
-          echo "\`${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ env.IMAGE_NAME }}.txt
+          echo "\`${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ env.IMAGE_NAME }}.txt
           echo "" >> image-digest/${{ env.IMAGE_NAME }}.txt
 
       - name: Upload artifact digests
