@@ -16,11 +16,12 @@ ARG TARGETOS
 ARG TARGETARCH
 
 COPY . /src
-WORKDIR /src
+#go to the controler directory and make
+WORKDIR /src/cmd/controller
 RUN  make GOARCH=${TARGETARCH}   \
         DESTDIR_BIN=/tmp/install/${TARGETOS}/${TARGETARCH}/bin \
         DESTDIR_BASH_COMPLETION=/tmp/install/${TARGETOS}/${TARGETARCH}/bash-completion \
-        build-bin install-bin install-bash-completion
+        all install install-bash-completion
 
 
 #====== release image =======
