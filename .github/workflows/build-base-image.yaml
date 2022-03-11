@@ -28,9 +28,6 @@ on:
     paths:
       #can not use env here
       - images/baseimage/**
-  push:
-    branches:
-      - main
 
 
 permissions: write-all
