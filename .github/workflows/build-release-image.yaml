@@ -1,3 +1,4 @@
+# build the release image under an clean env , and it is trigger by tag event
 name: Build Image Release
 
 env:
@@ -37,7 +38,7 @@ jobs:
           password: ${{ env.ONLINE_REGISTER_PASSWORD }}
           registry: ${{ env.ONLINE_REGISTER }}
 
-      #get the pushed tag
+      # pushed tag is used for image tag
       - name: Getting image tag
         id: tag
         run: |

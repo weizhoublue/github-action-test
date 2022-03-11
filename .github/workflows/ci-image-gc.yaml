@@ -1,0 +1,39 @@
+# cleaner for ghcr image , when PR is closed
+name: Image CI GC
+
+env:
+  ONLINE_REGISTER: ghcr.io
+
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  purge-image:
+    name: Delete image from ghcr.io
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: controllerimage
+    steps:
+      # commit sha is used for image tag
+      - name: Getting image tag
+        id: tag
+        run: |
+          if [ ${{ github.event.pull_request.head.sha }} != "" ]; then
+            echo ::set-output name=tag::${{ github.event.pull_request.head.sha }}
+          else
+            echo ::set-output name=tag::${{ github.sha }}
+          fi
+
+      - name: Delete CI image
+        uses: bots-house/ghcr-delete-image-action@v1.0.0
+        with:
+          # NOTE: at now only orgs is supported
+          owner: ${{ github.repository_owner }}
+          name: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
+          # NOTE: using Personal Access Token
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.tag.outputs.tag }}
