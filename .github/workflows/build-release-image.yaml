@@ -2,6 +2,8 @@ name: Image Release Build
 
 env:
   ONLINE_REGISTER: ghcr.io
+  IMAGE_PRE: weizhoublue
+  #IMAGE_PRE: ${{ github.repository }}
   BUILD_PLATFORM: linux/amd64,linux/arm64
   ONLINE_REGISTER_USER: ${{ github.actor }}
   ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -57,9 +59,9 @@ jobs:
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
           tags: |
-            ${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ github.sha }}
+            ${{ env.IMAGE_PRE }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+            ${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_PRE }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+            ${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_PRE }}/${{ matrix.name }}-ci:${{ github.sha }}
           build-args: |
             OPERATOR_VARIANT=${{ matrix.name }}
 
@@ -74,7 +76,7 @@ jobs:
 
           echo "### ${{ matrix.name }}" > image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
-          echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
+          echo "\`${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_PRE }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
 
       # Upload artifact digests
