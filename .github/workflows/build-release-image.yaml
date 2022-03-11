@@ -1,4 +1,4 @@
-name: Image Release Build
+name: Build Image Release
 
 env:
   ONLINE_REGISTER: ghcr.io
