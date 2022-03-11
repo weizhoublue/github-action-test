@@ -57,9 +57,7 @@ jobs:
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
           tags: |
-            ${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ github.sha }}
           build-args: |
             OPERATOR_VARIANT=${{ matrix.name }}
 
