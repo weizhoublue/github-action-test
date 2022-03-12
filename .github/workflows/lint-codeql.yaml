@@ -1,9 +1,11 @@
 name: Lint codeql
 
 on:
+  # PR to the main
   pull_request:
     branches:
       - main
+  # push to the main
   push:
     branches:
       - main

@@ -76,6 +76,8 @@ jobs:
 
       # Load Golang cache build from GitHub
       # Cache dependencies and build outputs in GitHub Actions
+      # the github will keep the cache for 7 days at most
+      # we could see cache-hit result for this step
       - name: Load ${{ matrix.name }} Golang cache build from GitHub
         uses: actions/cache@v2.1.7
         id: cache
