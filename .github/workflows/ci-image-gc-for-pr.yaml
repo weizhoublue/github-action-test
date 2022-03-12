@@ -28,12 +28,29 @@ jobs:
             echo ::set-output name=tag::${{ github.sha }}
           fi
 
+#      - name: Delete CI image
+#        uses: bots-house/ghcr-delete-image-action@v1.0.0
+#        with:
+#          # NOTE: at now only orgs is supported
+#          owner: ${{ github.repository_owner }}
+#          name: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
+#          # NOTE: using Personal Access Token
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          tag: ${{ steps.tag.outputs.tag }}
+
       - name: Delete CI image
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
+        uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
-          # NOTE: at now only orgs is supported
-          owner: ${{ github.repository_owner }}
-          name: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
-          # NOTE: using Personal Access Token
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.tag.outputs.tag }}
+          organization: ${{ github.repository_owner }}
+          container: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
+          dry-run: false # Dry-run first, then change to `false`
+          # Minimum age in days of a version before it is pruned. Defaults to 0 which matches all versions of a container
+          # longer than 1 days, will gc it
+          older-than: 0 # days
+          # Count of most recent, matching containers to exclude from pruning
+          keep-last: 0
+          #untagged versions should be pruned
+          untagged: true
+          # if no tag-regex , all tag will be pruned
+          tag-regex: ${{ steps.tag.outputs.tag }}*
