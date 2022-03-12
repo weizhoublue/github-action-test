@@ -18,3 +18,10 @@ feature
 (6) build CI image for each PR or PUSH to main , to check your code is right , 
 
 and then auto gc the image at intarval ( at now only image of orgs is supported , personal image failed)
+
+the go pkg cache could accelerate the build , 
+
+the cache is cleaned auto at interval , or by manual
+
+(7) build beta image by manual
+
