@@ -1,5 +1,5 @@
 # cleaner for ghcr image , each day
-name: Image CI GC Each day
+name: GC Image CI Each day
 
 env:
   ONLINE_REGISTER: ghcr.io
