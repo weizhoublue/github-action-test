@@ -25,3 +25,13 @@ the cache is cleaned auto at interval , or by manual
 
 (7) build beta image by manual
 
+(8) issue manage
+
+issue template , auto assign label
+
+auto close stale issue
+
+(8) PR manage
+
+auto close stale PR
+
