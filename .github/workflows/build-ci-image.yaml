@@ -20,9 +20,8 @@ on:
     branches:
       - main
       - release-*
-
   # run when another workflow run is requested or completed
-  #after completed cach workflow of specified branch
+  # after completed cache workflow of specified branch
   workflow_run:
     workflows:
       - "Image CI Cache Cleaner"
@@ -42,6 +41,7 @@ jobs:
     strategy:
       matrix:
         include:
+          # for each image
           - name: controllerimage
             dockerfile: ./images/controllerimage/Dockerfile
             # root path of this project
@@ -80,6 +80,8 @@ jobs:
         uses: actions/cache@v2.1.7
         id: cache
         with:
+          #if find the cache mapping to "key" , will restore to "path"
+          #when the key doesn't match an existing cache. A list of restore-keys is useful when you are restoring a cache from another branch
           path: /tmp/.cache/${{ matrix.name }}
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
@@ -87,23 +89,8 @@ jobs:
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
             ${{ runner.os }}-go-
 
-      - name: Create ${{ matrix.name }} cache directory
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        shell: bash
-        run: |
-          mkdir -p /tmp/.cache/${{ matrix.name }}
-
-      # Import GitHub's cache build to docker cache
-      - name: Copy ${{ matrix.name }} Golang cache to docker cache
-        uses: docker/build-push-action@v2
-        with:
-          context: /tmp/.cache/${{ matrix.name }}
-          file: ./images/cache/Dockerfile
-          push: false
-          platforms: linux/amd64
-          target: import-cache
-
       # main branch pushes
+      # build normal image
       - name: CI Build ${{ matrix.name }}
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: docker/build-push-action@v2
@@ -118,13 +105,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
-          build-args: |
-            OPERATOR_VARIANT=${{ matrix.name }}
 
-      # trigger by non-PR updates
+      #build debug image who turn on race and deadlock detection
       - name: CI race detection Build ${{ matrix.name }}
         if: ${{ github.event_name != 'pull_request_target' }}
-        uses: docker/build-push-action@7f9d37fa544684fb73bfe4835ed7214c255ce02b
+        uses: docker/build-push-action@v2
         id: docker_build_ci_master_detect_race_condition
         with:
           context: .
@@ -137,16 +122,15 @@ jobs:
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |
-            LOCKDEBUG=1
             RACE=1
-            OPERATOR_VARIANT=${{ matrix.name }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name != 'pull_request_target' }}
         shell: bash
         run: |
           mkdir -p image-digest/
-          echo "${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race" > image-digest/${{ matrix.name }}.txt
+          echo "${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_ci_master.outputs.digest }}" >> image-digest/${{ matrix.name }}.txt
+          echo "${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race@${{ steps.docker_build_ci_master_detect_race_condition.outputs.digest }}" > image-digest/${{ matrix.name }}.txt
 
       # trigger by PR updates
       - name: CI Build ${{ matrix.name }}
@@ -160,8 +144,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
-          build-args: |
-            OPERATOR_VARIANT=${{ matrix.name }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -182,9 +164,7 @@ jobs:
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |
-            LOCKDEBUG=1
             RACE=1
-            OPERATOR_VARIANT=${{ matrix.name }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -202,151 +182,10 @@ jobs:
           path: image-digest
           retention-days: 1
 
-      # Store docker's golang's cache build locally only on the main branch
-      - name: Store ${{ matrix.name }} Golang cache build locally
-        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./images/cache/Dockerfile
-          push: false
-          outputs: type=local,dest=/tmp/docker-cache-${{ matrix.name }}
-          platforms: linux/amd64
-          target: export-cache
-
-      # Store docker's golang's cache build locally only on the main branch
-      - name: Store ${{ matrix.name }} Golang cache in GitHub cache path
-        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
-        shell: bash
-        run: |
-          mkdir -p /tmp/.cache/${{ matrix.name }}/
-          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz ]; then
-            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
-          fi
-          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz ]; then
-            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
-          fi
-
-  # we need to build cilium-test separately
-  # this is caused by running apt while building the image
-  # which requires qemu setup in order to avoid x86/arm64 binaries mixups
-  # note: we only build on pushes to master branch
-  build-and-push-with-qemu:
-    if: ${{ github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - name: cilium-test
-            dockerfile: ./images/cilium-test/Dockerfile
-
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.2.0
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.6.0
-
-      - name: Login to online registry
-        uses: docker/login-action@v1.14.0
-        with:
-          username: ${{ env.ONLINE_REGISTER_USER }}
-          password: ${{ env.ONLINE_REGISTER_PASSWORD }}
-          registry: ${{ env.ONLINE_REGISTER }}
-
-      - name: Checkout Source Code
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          ref: ${{ github.sha }}
-
-      # Load Golang cache build from GitHub
-      - name: Load ${{ matrix.name }} Golang cache build from GitHub
-        uses: actions/cache@v2.1.7
-        id: cache
-        with:
-          path: /tmp/.cache/${{ matrix.name }}
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.name }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.name }}-
-            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
-            ${{ runner.os }}-go-
-
-      - name: Create ${{ matrix.name }} cache directory
-        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
-        shell: bash
-        run: |
-          mkdir -p /tmp/.cache/${{ matrix.name }}
-
-      # Import GitHub's cache build to docker cache
-      - name: Copy ${{ matrix.name }} Golang cache to docker cache
-        uses: docker/build-push-action@v2.9.0
-        with:
-          context: /tmp/.cache/${{ matrix.name }}
-          file: ./images/cache/Dockerfile
-          push: false
-          platforms: linux/amd64
-          target: import-cache
-
-      - name: CI Build ${{ matrix.name }}
-        uses: docker/build-push-action@v2.9.0
-        id: docker_build_ci_master
-        with:
-          context: .
-          file: ${{ matrix.dockerfile }}
-          # Only push when the event name was a GitHub push, this is to avoid
-          # re-pushing the image tags when we only want to re-create the Golang
-          # docker cache after the workflow "Image CI Cache Cleaner" was terminated.
-          push: ${{ github.event_name == 'push' }}
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ github.sha }}
-
-      - name: CI Image Releases digests
-        shell: bash
-        run: |
-          mkdir -p image-digest/
-          echo "${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ github.sha }}@${{ steps.docker_build_ci_master.outputs.digest }}" >> image-digest/${{ matrix.name }}.txt
-
-      # Upload artifact digests
-      - name: Upload artifact digests
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: image-digest ${{ matrix.name }}
-          path: image-digest
-          retention-days: 1
-
-      # Store docker's golang's cache build locally only on the main branch
-      - name: Store ${{ matrix.name }} Golang cache build locally
-        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
-        uses: docker/build-push-action@v2.9.0
-        with:
-          context: .
-          file: ./images/cache/Dockerfile
-          push: false
-          outputs: type=local,dest=/tmp/docker-cache-${{ matrix.name }}
-          platforms: linux/amd64
-          target: export-cache
-
-      # Store docker's golang's cache build locally only on the main branch
-      - name: Store ${{ matrix.name }} Golang cache in GitHub cache path
-        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
-        shell: bash
-        run: |
-          mkdir -p /tmp/.cache/${{ matrix.name }}/
-          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz ]; then
-            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
-          fi
-          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz ]; then
-            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
-          fi
-
   image-digests:
-    if: ${{ always() &&
-      (needs.build-and-push-with-qemu.result == 'success' || needs.build-and-push-with-qemu.result == 'skipped') }}
     name: Display Digests
     runs-on: ubuntu-latest
-    needs: [build-and-push-prs, build-and-push-with-qemu]
+    needs: [build-and-push-prs]
     steps:
       - name: Downloading Image Digests
         shell: bash

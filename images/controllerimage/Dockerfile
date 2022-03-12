@@ -10,15 +10,26 @@ ARG TARGETARCH
 #======= build bin ==========
 FROM --platform=${BUILDPLATFORM} ${GOLANG_IMAGE} as builder
 
+#below args could be from workflow docker/build-push-action of build-args
 # TARGETOS is an automatic platform ARG enabled by Docker BuildKit.
 ARG TARGETOS
 # TARGETARCH is an automatic platform ARG enabled by Docker BuildKit.
 ARG TARGETARCH
+#cunstome args
+#data race and lock debug
+ARG RACE
+#strip binary
+ARG NOSTRIP
+#no optimize  for binary
+ARG NOOPT
+#quiet make
+ARG QUIET_MAKE
 
 COPY . /src
 #go to the controler directory and make
 WORKDIR /src/cmd/controller
 RUN  make GOARCH=${TARGETARCH}   \
+        RACE=${RACE} NOSTRIP=${NOSTRIP} NOOPT=${NOOPT} QUIET_MAKE=${QUIET_MAKE} \
         DESTDIR_BIN=/tmp/install/${TARGETOS}/${TARGETARCH}/bin \
         DESTDIR_BASH_COMPLETION=/tmp/install/${TARGETOS}/${TARGETARCH}/bash-completion \
         all install install-bash-completion

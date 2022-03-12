@@ -4,7 +4,7 @@ name: Image CI Cache Cleaner
 on:
   workflow_dispatch:
   schedule:
-    # Run the GC every Monday at 3am
+    # Run the GC once for a week
     - cron: "0 3 * * 1"
 
 permissions: read-all
@@ -19,23 +19,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: cilium
-
-          - name: operator-aws
-
-          - name: operator-azure
-
-          - name: operator-alibabacloud
-
-          - name: operator-generic
-
-          - name: hubble-relay
-
-          - name: clustermesh-apiserver
-
-          - name: docker-plugin
-
-          - name: cilium-test
+          # for each image
+          - name: controllerimage
 
     steps:
       # Load Golang cache build from GitHub

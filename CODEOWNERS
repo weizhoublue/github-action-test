@@ -12,6 +12,9 @@
 /CODEOWNERS @weizhoublue
 /README.md @weizhoublue
 /go.mod @weizhoublue
+/VERSION @weizhoublue
+/vendor @weizhoublue
+/Makefile*  @weizhoublue
 
 # 匹配任意层级目录下的 go 文件
 # also use email addresses if you prefer
