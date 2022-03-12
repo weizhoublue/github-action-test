@@ -1,4 +1,5 @@
 # cleaner for ghcr image , when PR is closed
+# NOTE: at now only orgs is supported , for personal it fail
 name: GC Image CI for PR
 
 env:
@@ -38,6 +39,7 @@ jobs:
 #          token: ${{ secrets.GITHUB_TOKEN }}
 #          tag: ${{ steps.tag.outputs.tag }}
 
+      #NOTE: at now only orgs is supported , for personal it fail
       - name: Delete CI image
         uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
@@ -46,7 +48,6 @@ jobs:
           container: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
           dry-run: false # Dry-run first, then change to `false`
           # Minimum age in days of a version before it is pruned. Defaults to 0 which matches all versions of a container
-          # longer than 1 days, will gc it
           older-than: 0 # days
           # Count of most recent, matching containers to exclude from pruning
           keep-last: 0
