@@ -28,7 +28,7 @@ func Testlock() {
 	a.Lock()
 	time.Sleep(10 * time.Second)
 	a.Unlock()
-	return
+
 }
 
 func main() {

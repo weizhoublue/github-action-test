@@ -14,3 +14,5 @@ feature
 (4) auto package base image
 
 (5) auto package release image by tag
+
+(6) build CI image for each PR or PUSH to main , to check your code is right , and then auto gc the image at intarval
