@@ -120,3 +120,4 @@ GO_TEST = $(GO) test $(GO_TEST_FLAGS)
 GO_CLEAN = $(GO) clean $(GO_CLEAN_FLAGS)
 GO_VET = $(GO) vet
 GO_LIST = $(GO) list
+
