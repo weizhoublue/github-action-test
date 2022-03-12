@@ -60,7 +60,6 @@ jobs:
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
 
-
       - name: Image Release Digest
         shell: bash
         run: |
