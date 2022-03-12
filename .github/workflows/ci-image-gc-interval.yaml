@@ -33,4 +33,4 @@ jobs:
           #untagged versions should be pruned
           untagged: true
           # if no tag-regex , all tag will be pruned
-          #tag-regex:
+          # tag-regex:
