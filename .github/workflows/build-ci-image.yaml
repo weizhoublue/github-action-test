@@ -68,6 +68,7 @@ jobs:
             echo ::set-output name=tag::${{ github.sha }}
           fi
 
+      #checkout the changed code
       - name: Checkout Source Code
         uses: actions/checkout@v2
         with:
