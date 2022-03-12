@@ -1,4 +1,5 @@
 # cleaner for ghcr image , each day
+# NOTE: at now only orgs is supported , for personal it fail
 name: GC Image CI Each day
 
 env:
@@ -33,4 +34,4 @@ jobs:
           #untagged versions should be pruned
           untagged: true
           # if no tag-regex , all tag will be pruned
-          # tag-regex:
+          tag-regex: ${{ steps.tag.outputs.tag }}*

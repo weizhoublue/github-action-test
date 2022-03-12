@@ -15,4 +15,6 @@ feature
 
 (5) auto package release image by tag
 
-(6) build CI image for each PR or PUSH to main , to check your code is right , and then auto gc the image at intarval
+(6) build CI image for each PR or PUSH to main , to check your code is right , 
+
+and then auto gc the image at intarval ( at now only image of orgs is supported , personal image failed)

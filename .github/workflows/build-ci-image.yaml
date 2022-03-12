@@ -1,5 +1,6 @@
 # build the ci image with cache , which can  improve workflow execution time
 # it is trigger by pr and cache-cleaner workflow
+# buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage-ci:{commitId}
 name: Build Image CI
 
 env:
