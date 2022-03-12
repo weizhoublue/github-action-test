@@ -31,5 +31,5 @@
 # 如下写法，会匹配工程下任意目录下的 cmd 目录中的 所有层级的文件
 cmd/  @octocat
 
-/.github/  @weizhoublue
+/.github/  @test
 /images/ @weizhoublue
