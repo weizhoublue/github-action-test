@@ -1,7 +1,7 @@
 # auto generating changelog to /changelogs/***
 # when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 # then commit the pr to main branch , then auto approve it
-name: Generate Changelog
+name: Robot update Changelog For release
 
 on:
   push:
@@ -22,10 +22,14 @@ env:
   MERGE_TO_BRANCH: main
   PR_LABEL: release/robot_changelog
   PR_REVIWER: weizhoublue
+  CHANGELOG_CONF: .github/changelog_builder_conf.json
+  CHANGELOG_RESULT_DIR: changelogs
 
 jobs:
   changelog:
     name: auto generate release changelog
+    env:
+      CHANGELOG_TEMP_FILE: ${{ env.CHANGELOG_RESULT_DIR }}/_temp_changelog
     runs-on: ubuntu-latest
     steps:
 
@@ -87,13 +91,17 @@ jobs:
           fi
           echo ::set-output name=auto_tag::false
 
-      # ???? config file
+      # https://github.com/mikepenz/release-changelog-builder-action
+      # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
+      #
       # auto parse the latest tag and previous one
       - name: Build Changelog By Auto Tag
         id: create_changelog_by_auto_tag
         if: ${{ steps.check_tag.outputs.auto_tag == 'true' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
+          configuration: ${{ env.CHANGELOG_CONF }}
+          outputFile: ${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,6 +112,8 @@ jobs:
         if: ${{ steps.check_tag.outputs.auto_tag == 'false' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
+          configuration: ${{ env.CHANGELOG_CONF }}
+          outputFile: ${{ env.CHANGELOG_TEMP_FILE }}
           fromTag: ${{ github.event.inputs.from_tag }}
           toTag: ${{ github.event.inputs.end_tag }}
           failOnError: true
@@ -128,21 +138,23 @@ jobs:
           DEST_FILE=${{ env.CHANGELOG_DIR }}/${CHANGELOG_FILE_NAME}
           echo > ${DEST_FILE}
           if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
-              echo "::commit list::" >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo '${{ steps.create_changelog_by_auto_tag.outputs.pull_requests }}' >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo "::changelog::" >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo '${{ steps.create_changelog_by_auto_tag.outputs.changelog }}' >> ${DEST_FILE}
+#              echo "::commit list::" >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo '${{ steps.create_changelog_by_auto_tag.outputs.pull_requests }}' >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo "::changelog::" >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo '${{ steps.create_changelog_by_auto_tag.outputs.changelog }}' >> ${DEST_FILE}
+               mv ${{ env.CHANGELOG_TEMP_FILE }} ${DEST_FILE}
           else
-              echo "::commit list::" >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo '${{ steps.create_changelog_by_manul_tag.outputs.pull_requests }}' >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo "::changelog::" >> ${DEST_FILE}
-              echo "" >> ${DEST_FILE}
-              echo '${{ steps.create_changelog_by_manul_tag.outputs.changelog }}' >> ${DEST_FILE}
+#              echo "::commit list::" >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo '${{ steps.create_changelog_by_manul_tag.outputs.pull_requests }}' >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo "::changelog::" >> ${DEST_FILE}
+#              echo "" >> ${DEST_FILE}
+#              echo '${{ steps.create_changelog_by_manul_tag.outputs.changelog }}' >> ${DEST_FILE}
+              mv ${{ env.CHANGELOG_TEMP_FILE }} ${DEST_FILE} 
           fi
 
       # https://github.com/peter-evans/create-pull-request
