@@ -28,11 +28,11 @@ func Testlock() {
 	a.Lock()
 	time.Sleep(10 * time.Second)
 	a.Unlock()
-
 }
 
 func main() {
 	fmt.Println("hello world")
+
 	TestRace()
 	Testlock()
 	print.MyPrint()
