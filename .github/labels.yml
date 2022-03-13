@@ -43,3 +43,6 @@
 - name: ingore
   description: This issue or pull request will ingore
   color: cfd3d7
+- name: approved
+  description: This pull request could be merged
+  color: cfd3d7
