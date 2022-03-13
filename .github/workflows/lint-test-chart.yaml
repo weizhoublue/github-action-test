@@ -4,6 +4,7 @@ env:
   HELM_VERSION: v3.8.0
   KIND_VERSION: v0.12.0
   K8S_VERSION: v1.23.4
+  DEFAULT_BRANCH: main
 
 on:
   pull_request:
@@ -20,6 +21,8 @@ jobs:
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
+          # https://github.com/helm/chart-testing-action/issues/25 for chart-testing-action
+          # ct needs history to compare
           fetch-depth: 0
 
       # The cached helm binary path is prepended to the PATH environment variable as well as stored in the helm-path output variable
@@ -44,7 +47,9 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          changed=$(ct list-changed)
+          # https://github.com/helm/chart-testing-action/issues/25
+          # if the default branch is not master , the CLI exits with error
+          changed=$( ct list-changed --target-branch ${{ env.DEFAULT_BRANCH }}  )
           if [[ -n "$changed" ]]; then
             echo "::set-output name=changed::true"
           fi
@@ -52,7 +57,7 @@ jobs:
       # version checking, YAML schema validation on 'Chart.yaml', YAML linting on 'Chart.yaml'
       # and 'values.yaml', and maintainer validation
       - name: Run chart-testing (lint)
-        run: ct lint
+        run: ct lint --debug --target-branch ${{ env.DEFAULT_BRANCH }}
 
       # https://github.com/helm/kind-action
       - name: Create Kind cluster
@@ -64,4 +69,4 @@ jobs:
 
       #  It automatically detects charts changed
       - name: Run chart-testing (install)
-        run: ct install
+        run: ct install --debug --target-branch ${{ env.DEFAULT_BRANCH }}
