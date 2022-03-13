@@ -1,7 +1,8 @@
+# validate any chart changes under charts directory
 name: Lint Test Chart
 
 env:
-  HELM_VERSION: v3.8.0
+  HELM_VERSION: v3.8.1
   KIND_VERSION: v0.12.0
   K8S_VERSION: v1.23.4
   DEFAULT_BRANCH: main
