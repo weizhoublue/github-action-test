@@ -1,6 +1,7 @@
 # auto generating changelog to /changelogs/***
 # when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 # then commit the pr to main branch , then auto approve it
+# commit changelog: changelogs/CHANGELOG-{begin_tag}-to-{end_tag}.md
 name: Robot update Changelog For release
 
 on:
@@ -24,15 +25,14 @@ env:
   PR_REVIWER: weizhoublue
   CHANGELOG_CONF: .github/changelog_builder_conf.json
   CHANGELOG_RESULT_DIR: changelogs
+  CHANGELOG_TEMP_FILE: _temp_changelog
+
 
 jobs:
   changelog:
     name: auto generate release changelog
-    env:
-      CHANGELOG_TEMP_FILE: ${{ env.CHANGELOG_RESULT_DIR }}/_temp_changelog
     runs-on: ubuntu-latest
     steps:
-
       # checkout code for tag and pr
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -101,7 +101,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
           configuration: ${{ env.CHANGELOG_CONF }}
-          outputFile: ${{ env.CHANGELOG_TEMP_FILE }}
+          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -113,7 +113,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
           configuration: ${{ env.CHANGELOG_CONF }}
-          outputFile: ${{ env.CHANGELOG_TEMP_FILE }}
+          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           fromTag: ${{ github.event.inputs.from_tag }}
           toTag: ${{ github.event.inputs.end_tag }}
           failOnError: true
@@ -125,6 +125,11 @@ jobs:
         continue-on-error: false
         if: steps.create_changelog_by_auto_tag.outputs.failed == 'false' ||  steps.create_changelog_by_manul_tag.outputs.failed == 'false'
         run: |
+          TEMP_FILE=${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
+          if [ ! -f "$TEMP_FILE" ] ; then
+               echo "failed to find auto-generated changelog result file $TEMP_FILE"
+               exit 1
+          fi
           if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
               CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_auto_tag.outputs.toTag }}.md
               echo ::set-output name=from_tag::${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}
@@ -145,7 +150,7 @@ jobs:
 #              echo "::changelog::" >> ${DEST_FILE}
 #              echo "" >> ${DEST_FILE}
 #              echo '${{ steps.create_changelog_by_auto_tag.outputs.changelog }}' >> ${DEST_FILE}
-               mv ${{ env.CHANGELOG_TEMP_FILE }} ${DEST_FILE}
+               mv ${TEMP_FILE} ${DEST_FILE}
           else
 #              echo "::commit list::" >> ${DEST_FILE}
 #              echo "" >> ${DEST_FILE}
@@ -154,7 +159,7 @@ jobs:
 #              echo "::changelog::" >> ${DEST_FILE}
 #              echo "" >> ${DEST_FILE}
 #              echo '${{ steps.create_changelog_by_manul_tag.outputs.changelog }}' >> ${DEST_FILE}
-              mv ${{ env.CHANGELOG_TEMP_FILE }} ${DEST_FILE} 
+              mv ${TEMP_FILE} ${DEST_FILE} 
           fi
 
       # https://github.com/peter-evans/create-pull-request
