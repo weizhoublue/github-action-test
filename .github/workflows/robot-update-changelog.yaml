@@ -91,21 +91,6 @@ jobs:
           fi
           echo ::set-output name=auto_tag::false
 
-      # https://github.com/mikepenz/release-changelog-builder-action
-      # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
-      #
-      # auto parse the latest tag and previous one
-      - name: Build Changelog By Auto Tag
-        id: create_changelog_by_auto_tag
-        if: ${{ steps.check_tag.outputs.auto_tag == 'true' }}
-        uses: mikepenz/release-changelog-builder-action@v2.9.0
-        with:
-          configuration: ${{ env.CHANGELOG_CONF }}
-          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
-          failOnError: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # specify the tag
       - name: Build Changelog By Manual Tag
         id: create_changelog_by_manul_tag
@@ -116,6 +101,20 @@ jobs:
           outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           fromTag: ${{ github.event.inputs.from_tag }}
           toTag: ${{ github.event.inputs.end_tag }}
+          failOnError: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # https://github.com/mikepenz/release-changelog-builder-action
+      # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
+      # auto parse the latest tag and previous one
+      - name: Build Changelog By Auto Tag
+        id: create_changelog_by_auto_tag
+        if: ${{ steps.check_tag.outputs.auto_tag == 'true' }}
+        uses: mikepenz/release-changelog-builder-action@v2.9.0
+        with:
+          configuration: ${{ env.CHANGELOG_CONF }}
+          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
