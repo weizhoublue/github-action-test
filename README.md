@@ -3,19 +3,21 @@
 [![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
 
 
-feature
+#feature
 
-(1) go-lint for source code
+##(1) go-lint for source code
 
-(2) codeql check
+##(2) codeql check
 
-(3) codeowners , who reivew PR
+##(3) codeowners , who reivew PR
 
-(4) auto package base image
+##(4) auto package base image
 
-(5) auto package release image by tag
+##(5) auto package release image by tag
 
-(6) build CI image for each PR or PUSH to main , to check your code is right , 
+##(6) CI build
+
+build CI image for each PR or PUSH to main , to check your code is right , 
 
 and then auto gc the image at intarval ( at now only image of orgs is supported , personal image failed)
 
@@ -23,15 +25,15 @@ the go pkg cache could accelerate the build ,
 
 the cache is cleaned auto at interval , or by manual
 
-(7) build beta image by manual
+##(7) build beta image by manual
 
-(8) issue manage
+##(8) issue manage
 
 issue template , auto assign label and assignees
 
 auto close stale issue
 
-(8) PR manage
+##(8) PR manage
 
 CODEOWNERS auto assign reviewer ( the one who should be the repo member and not me , then you can see it )
 
@@ -40,11 +42,27 @@ auto close stale PR
 label check. only when the pr labled with changelog-related label, the pr could be approved. 
 changelog-related label could be used to auto generating changelog when releasing
 
-(9) check chart under charts dierctory 
+##(9) check chart under charts dierctory 
 
-(10) auto generating changelog to /changelogs/***
+##(10) auto generating changelog to /changelogs/***
 
 when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 then commit the pr to main branch , then auto approve it
 
+##(11) pr label and auto changelog
+
+###all pr should label one of bellowing , so could be merged to changelog
+
+release/bug, release/feature-new, release/feature-changed, release/docs, release/robot_changelog, release/changelog, release/none-required"
+
+###other label for pr 
+
+
+###below label of pr will be the changelog
+
+release/bug for Fixes
+
+release/feature-new for New Features
+
+release/feature-changed for Changed Features
 
