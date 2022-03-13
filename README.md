@@ -67,3 +67,5 @@ release/feature-new for New Features
 release/feature-changed for Changed Features
 
 ## (12) label syncer
+
+## auto add lable 'approved' to reviewed PR
