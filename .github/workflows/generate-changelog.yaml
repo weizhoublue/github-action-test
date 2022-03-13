@@ -20,7 +20,7 @@ on:
 env:
   CHANGELOG_DIR: changelogs
   MERGE_TO_BRANCH: main
-  PR_LABEL: release/changelog
+  PR_LABEL: release/robot_changelog
   PR_REVIWER: weizhoublue
 
 jobs:
