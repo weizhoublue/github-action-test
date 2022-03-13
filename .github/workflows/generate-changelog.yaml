@@ -20,7 +20,7 @@ on:
 env:
   CHANGELOG_DIR: changelogs
   MERGE_TO_BRANCH: main
-  PR_LABEL: release/changelog
+  PR_LABEL: release/robot_changelog
   PR_REVIWER: weizhoublue
 
 jobs:
@@ -40,7 +40,6 @@ jobs:
       #      - name: Get Current Tag Auto
       #        if: ${{ github.event_name != 'workflow_dispatch' }}
       #        id: get_current_tag
-      #        shell: bash
       #        run: |
       #          tag=$(git describe --tags --abbrev=0)
       #          echo "Version to revert: ${tag}"
@@ -49,7 +48,6 @@ jobs:
       #      - name: Get Previous Tag Auto
       #        if: ${{ github.event_name != 'workflow_dispatch' }}
       #        id: get_previous_tag
-      #        shell: bash
       #        run: |
       #          tag=$(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^)
       #          echo "Previous tag: ${tag}"
@@ -58,7 +56,6 @@ jobs:
       - name: Check Tag
         id: check_tag
         continue-on-error: false
-        shell: bash
         run: |
           if ${{ github.event_name != 'workflow_dispatch' }} ; then
               echo "auto tag for tag event"
@@ -102,7 +99,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # specify the tag
-      - name: Build Changelog By Dispatch Event
+      - name: Build Changelog By Manual Tag
         id: create_changelog_by_manul_tag
         if: ${{ steps.check_tag.outputs.auto_tag == 'false' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
@@ -117,7 +114,6 @@ jobs:
         id: generate_changelog_file
         continue-on-error: false
         if: steps.create_changelog_by_auto_tag.outputs.failed == 'false' ||  steps.create_changelog_by_manul_tag.outputs.failed == 'false'
-        shell: bash
         run: |
           if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
               CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_auto_tag.outputs.toTag }}.md
@@ -155,9 +151,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v3.14.0
         with:
-          title: "Update Changelog"
+          title: "robot Update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
           # from branch
-          commit-message: "update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
+          commit-message: "robot update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
@@ -173,7 +169,6 @@ jobs:
 
       - name: Check PR Outputs
         if: ${{ steps.create_pr.outputs.pull-request-number }}
-        shell: bash
         run: |
           echo "Pull Request Number - ${{ steps.create_pr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.create_pr.outputs.pull-request-url }}"
