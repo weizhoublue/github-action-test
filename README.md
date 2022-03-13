@@ -44,7 +44,7 @@ changelog-related label could be used to auto generating changelog when releasin
 
 (10) auto generating changelog to /changelogs/***
 
-when tag or dispatch by manual , auto generate changelog by the label history PR between tags,
-then commit the pr , then auto approve it
+when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
+then commit the pr to main branch , then auto approve it
 
 
