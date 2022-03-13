@@ -1,23 +1,23 @@
 {
   "categories": [
     {
-      "title": "##New Features",
+      "title": "## New Features",
       "labels": ["release/feature-new"]
     },
     {
-      "title": "##Fixes",
-      "labels": ["release/bug"]
+      "title": "## Changed Features",
+      "labels": ["release/feature-changed"]
     },
     {
-      "title": "##Changed Features",
-      "labels": ["release/feature-changed"]
+      "title": "## Fixes",
+      "labels": ["release/bug"]
     }
   ],
   "ignore_labels": [
     "ignore"
   ],
   "sort": "ASC",
-  "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+  "template": "from tag ${{FROM_TAG}} to ${{TO_TAG}}\n\n${{CHANGELOG}}\n\ncategorized pr: ${{CATEGORIZED_COUNT}}\nuncategorized pr: ${{UNCATEGORIZED_COUNT}}\nignored pr: ${{IGNORED_COUNT}}\n<details>\n<summary>Total PR</summary>\n\n${{RELEASE_DIFF}}\n</details>",
   "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
   "empty_template": "- no changes",
   "duplicate_filter": {

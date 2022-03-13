@@ -5,10 +5,14 @@
 name: Robot update Changelog For release
 
 on:
-  push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
-      - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  # called by build release image
+  workflow_call:
+  #push:
+  #  tags:
+  #    - v[0-9]+.[0-9]+.[0-9]+
+  #    - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  # call by manual
+  # if from_tag and to_tag is empty, pase latest tag auto
   workflow_dispatch:
     inputs:
       from_tag:
@@ -17,6 +21,8 @@ on:
       to_tag:
         description: 'to which tag'
         required: false
+
+
 
 env:
   CHANGELOG_DIR: changelogs

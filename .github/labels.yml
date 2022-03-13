@@ -1,0 +1,44 @@
+// pr lables for auto-changelog
+- name: release/bug
+  description: bug pr in a new release
+  color: d73a4a
+- name: release/feature-new
+  description: new feature pr in a new release
+  color: 0075ca
+- name: release/feature-changed
+  description: changed feature pr in a new release
+  color: cfd3d7
+- name: release/docs
+  description: doc pr in a new release
+  color: cfd3d7
+- name: release/robot_changelog
+  description: auto robot changelog pr in a new release
+  color: cfd3d7
+- name: release/changelog
+  description: manual changelog pr in a new release
+  color: cfd3d7
+- name: release/none-required
+  description: not show up in a new release
+  color: cfd3d7
+// issue lables for other
+- name: bug
+  description: bug
+  color: cfd3d7
+- name: help wanted
+  description: a new issue not assigned
+  color: cfd3d7
+- name: ci failed
+  description: ci failed
+  color: cfd3d7
+- name: documentation
+  description: documentation is wrong or missing
+  color: cfd3d7
+- name: feature
+  description: want new feature
+  color: cfd3d7
+- name: usage
+  description: no idea about usage
+  color: cfd3d7
+- name: duplicate
+  description: This issue or pull request already exists
+  color: cfd3d7
