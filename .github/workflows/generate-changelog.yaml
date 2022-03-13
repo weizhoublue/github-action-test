@@ -56,7 +56,6 @@ jobs:
       #          echo "::set-output name=tag::${tag}"
 
       - name: Check Tag
-        if: ${{ github.event_name == 'workflow_dispatch' }}
         id: check_tag
         continue-on-error: false
         shell: bash
