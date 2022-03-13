@@ -40,3 +40,6 @@
 - name: duplicate
   description: This issue or pull request already exists
   color: cfd3d7
+- name: ingore
+  description: This issue or pull request will ingore
+  color: cfd3d7
