@@ -151,9 +151,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v3.14.0
         with:
-          title: "Update Changelog"
+          title: "robot Update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
           # from branch
-          commit-message: "update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
+          commit-message: "robot update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
