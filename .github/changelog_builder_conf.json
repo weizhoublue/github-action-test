@@ -20,18 +20,6 @@
   "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
   "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
   "empty_template": "- no changes",
-  "label_extractor": [
-    {
-      "pattern": "(.) (.+)",
-      "target": "$1",
-      "flags": "gu"
-    },
-    {
-      "pattern": "\\[Issue\\]",
-      "on_property": "title",
-      "method": "match"
-    }
-  ],
   "duplicate_filter": {
     "pattern": "\\[ABC-....\\]",
     "on_property": "title",
