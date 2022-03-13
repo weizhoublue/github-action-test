@@ -1,16 +1,16 @@
 {
   "categories": [
     {
-      "title": "## 🚀 New Features",
+      "title": "##New Features",
       "labels": ["release/feature-new"]
     },
     {
-      "title": "## 🐛 Fixes",
+      "title": "##Fixes",
       "labels": ["release/bug"]
     },
     {
-      "title": "## 🧪 Changed Features",
-      "labels": ["release/feature-changed"],
+      "title": "##Changed Features",
+      "labels": ["release/feature-changed"]
     }
   ],
   "ignore_labels": [
@@ -20,7 +20,6 @@
   "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
   "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
   "empty_template": "- no changes",
-  // An array of Extractor specifications, offering a flexible API to extract additinal labels from a PR
   "label_extractor": [
     {
       "pattern": "(.) (.+)",
