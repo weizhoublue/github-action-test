@@ -97,8 +97,8 @@ jobs:
         if: ${{ steps.check_tag.outputs.auto_tag == 'false' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
-          configuration: ${{ env.CHANGELOG_CONF }}
-          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
+          #configuration: ${{ env.CHANGELOG_CONF }}
+          #outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           fromTag: ${{ github.event.inputs.from_tag }}
           toTag: ${{ github.event.inputs.end_tag }}
           failOnError: true
@@ -113,8 +113,8 @@ jobs:
         if: ${{ steps.check_tag.outputs.auto_tag == 'true' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
-          configuration: ${{ env.CHANGELOG_CONF }}
-          outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
+          #configuration: ${{ env.CHANGELOG_CONF }}
+          #outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
