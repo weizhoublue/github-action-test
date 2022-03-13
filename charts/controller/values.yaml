@@ -11,6 +11,7 @@ global:
   imagePullSecrets: []
   storageClass: ""
 
+
 ## @section Common parameters
 
 ## @param kubeVersion Override Kubernetes version
