@@ -1,4 +1,3 @@
-// pr lables for auto-changelog
 - name: release/bug
   description: bug pr in a new release
   color: d73a4a
@@ -20,7 +19,6 @@
 - name: release/none-required
   description: not show up in a new release
   color: cfd3d7
-// issue lables for other
 - name: bug
   description: bug
   color: cfd3d7
