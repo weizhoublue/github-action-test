@@ -37,3 +37,7 @@ CODEOWNERS auto assign reviewer ( the one who should be the repo member and not 
 
 auto close stale PR
 
+(9) check chart under charts dierctory 
+
+
+
