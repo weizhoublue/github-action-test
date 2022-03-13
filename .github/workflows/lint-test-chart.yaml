@@ -71,3 +71,5 @@ jobs:
       #  It automatically detects charts changed
       - name: Run chart-testing (install)
         run: ct install --debug --target-branch ${{ env.DEFAULT_BRANCH }}
+        # https://github.com/helm/helm/issues/8036 do below before   ct install
+        # if [ -f "./Chart.lock" ]; then cat ./Chart.lock | grep repository | awk '{print $2}' | while read -r line ; do helm repo add $line $line; done; fi
