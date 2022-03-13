@@ -37,3 +37,14 @@ CODEOWNERS auto assign reviewer ( the one who should be the repo member and not 
 
 auto close stale PR
 
+label check. only when the pr labled with changelog-related label, the pr could be approved. 
+changelog-related label could be used to auto generating changelog when releasing
+
+(9) check chart under charts dierctory 
+
+(10) auto generating changelog to /changelogs/***
+
+when tag or dispatch by manual , auto generate changelog by the label history PR between tags,
+then commit the pr , then auto approve it
+
+

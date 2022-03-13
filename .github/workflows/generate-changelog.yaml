@@ -1,0 +1,145 @@
+name: Generate Changelog
+
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+      - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  workflow_dispatch:
+    inputs:
+      from_tag:
+        description: 'from which tag'
+        required: true
+      to_tag:
+        description: 'to which tag'
+        required: true
+
+env:
+  CHANGELOG_DIR: changelogs
+  MERGE_TO_BRANCH: main
+  PR_LABEL: release/changelog
+  PR_REVIWER: weizhoublue
+
+jobs:
+  changelog:
+    name: auto generate release changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Dispatch Tag
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        id: check_dispatch_tag
+        run: |
+          if ! git describe --tags --abbrev=0  ${{ github.event.inputs.from_tag }} &>/dev/null ; then
+              echo "error, does not exist from_tag ${{ github.event.inputs.from_tag }} "
+              echo ::set-output name=succeed::false
+              exit 1
+          else
+              echo "exist from_tag ${{ github.event.inputs.from_tag }} "
+          fi
+          if ! git describe --tags --abbrev=0  ${{ github.event.inputs.to_tag }} &>/dev/null ; then
+              echo "error, does not exist to_tag ${{ github.event.inputs.to_tag }} "
+              echo ::set-output name=succeed::false
+              exit 2
+          else
+              echo "exist to_tag ${{ github.event.inputs.to_tag }} "
+          fi
+          echo ::set-output name=succeed::true
+
+#      - name: Get Current Tag Auto
+#        if: ${{ github.event_name != 'workflow_dispatch' }}
+#        id: get_current_tag
+#        run: |
+#          tag=$(git describe --tags --abbrev=0)
+#          echo "Version to revert: ${tag}"
+#          echo "::set-output name=tag::${tag}"
+
+#      - name: Get Previous Tag Auto
+#        if: ${{ github.event_name != 'workflow_dispatch' }}
+#        id: get_previous_tag
+#        run: |
+#          tag=$(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^)
+#          echo "Previous tag: ${tag}"
+#          echo "::set-output name=tag::${tag}"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
+          # if Set fetch-depth: 0 to fetch all history for all branches and tags
+          fetch-depth: 0
+
+      # ???? config file
+      - name: Build Changelog By Tag Event
+        id: create_changelog_by_tag
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: mikepenz/release-changelog-builder-action@v2.9.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Changelog By Dispatch Event
+        id: create_changelog_by_dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }} && ${{ steps.check_dispatch_tag.output.succeed == true }}
+        uses: mikepenz/release-changelog-builder-action@v2.9.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fromTag: ${{ github.event.inputs.from_tag }}
+          toTag: ${{ github.event.inputs.end_tag }}
+
+      - name: Generate Changelog File
+        id: generate_changelog_file
+        if: steps.create_changelog_by_tag.outputs.failed == 'true' ||  steps.create_changelog_by_dispatch.outputs.failed == 'true'
+        run: |
+          if ${{ steps.create_changelog_by_tag.outputs.failed == 'false' }} ; then
+              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_tag.outputs.toTag }}.md
+              echo ::set-output name=from_tag::${{ steps.create_changelog_by_tag.outputs.fromTag }}
+              echo ::set-output name=to_tag::${{ steps.create_changelog_by_tag.outputs.toTag }}
+          else
+              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_dispatch.outputs.fromTag }}-to-${{ steps.create_changelog_by_dispatch.outputs.toTag }}.md          
+              echo ::set-output name=from_tag::${{ steps.create_changelog_by_dispatch.outputs.fromTag }}
+              echo ::set-output name=to_tag::${{ steps.create_changelog_by_dispatch.outputs.toTag }}
+          fi
+          [ ! -d "${{ env.CHANGELOG_DIR }}" ] && mkdir -p ${{ env.CHANGELOG_DIR }}
+          DEST_FILE=${{ env.CHANGELOG_DIR }}/${CHANGELOG_FILE_NAME}
+          echo > ${DEST_FILE}
+          if ${{ steps.create_changelog_by_tag.outputs.failed == 'false' }} ; then
+              echo "${{ steps.create_changelog_by_tag.outputs.changelog }}" >> ${DEST_FILE}
+          else
+              echo "${{ steps.create_changelog_by_dispatch.outputs.changelog }}" >> ${DEST_FILE}          
+          fi
+
+      # https://github.com/peter-evans/create-pull-request
+      #  all new and modified files will be committed
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3.14.0
+        with:
+          title: "Update Changelog"
+          # from branch
+          commit-message: "update Changelog from tag ${{ steps.generate_changelog_file.outputs.from_tag }} to tag ${{ steps.generate_changelog_file.outputs.to_tag }}"
+          # branch name: ${branch}-${branch-suffix}
+          # an branch suffix could make sure the branch is unique
+          branch-suffix: timestamp
+          branch: update_changelog
+          # Delete the branch when closing pull requests, and when undeleted after merging
+          delete-branch: true
+          # merge to
+          base: ${{ env.MERGE_TO_BRANCH }}
+          signoff: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.PR_LABEL }}
+          reviewers: ${{ env.PR_REVIWER }}
+
+      - name: Check PR Outputs
+        if: ${{ steps.create_pr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.create_pr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.create_pr.outputs.pull-request-url }}"
+
+      # auto apporve the pr if requirements have been satisfied
+      # https://github.com/peter-evans/enable-pull-request-automerge
+      - name: PR Auto Approve
+        uses: peter-evans/enable-pull-request-automerge@v1.2.0
+        with:
+          token: ${{ secrets.PAT }}
+          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+          merge-method: merge
