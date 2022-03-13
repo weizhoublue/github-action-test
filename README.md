@@ -27,11 +27,13 @@ the cache is cleaned auto at interval , or by manual
 
 (8) issue manage
 
-issue template , auto assign label
+issue template , auto assign label and assignees
 
 auto close stale issue
 
 (8) PR manage
+
+CODEOWNERS auto assign reviewer ( the one who should be the repo member and not me , then you can see it )
 
 auto close stale PR
 
