@@ -12,10 +12,10 @@ on:
     inputs:
       from_tag:
         description: 'from which tag'
-        required: true
+        required: false
       to_tag:
         description: 'to which tag'
-        required: true
+        required: false
 
 env:
   CHANGELOG_DIR: changelogs
@@ -30,7 +30,7 @@ jobs:
     steps:
 
       # checkout code for tag and pr
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v2
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
@@ -40,6 +40,7 @@ jobs:
       #      - name: Get Current Tag Auto
       #        if: ${{ github.event_name != 'workflow_dispatch' }}
       #        id: get_current_tag
+      #        shell: bash
       #        run: |
       #          tag=$(git describe --tags --abbrev=0)
       #          echo "Version to revert: ${tag}"
@@ -48,68 +49,104 @@ jobs:
       #      - name: Get Previous Tag Auto
       #        if: ${{ github.event_name != 'workflow_dispatch' }}
       #        id: get_previous_tag
+      #        shell: bash
       #        run: |
       #          tag=$(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^)
       #          echo "Previous tag: ${tag}"
       #          echo "::set-output name=tag::${tag}"
 
-      - name: Check Dispatch Tag
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        id: check_dispatch_tag
+      - name: Check Tag
+        id: check_tag
+        continue-on-error: false
+        shell: bash
         run: |
+          if ${{ github.event_name != 'workflow_dispatch' }} ; then
+              echo "auto tag for tag event"
+              echo ::set-output name=auto_tag::true
+              exit 0
+          fi
+          if [ -z "${{ github.event.inputs.to_tag }}" ] && [ -z "${{ github.event.inputs.from_tag }}" ] ; then
+              echo "auto tag for dispatch event"
+              echo ::set-output name=auto_tag::true
+              exit 0
+          fi
+          if [ -n "${{ github.event.inputs.to_tag }}" ] && [ -n "${{ github.event.inputs.from_tag }}" ] ; then
+              echo "begin to validate tags"
+          else
+              echo "from_tag and to_tag should be fill , or empty at same time"
+              exit 1
+          fi
           if ! git describe --tags --abbrev=0  ${{ github.event.inputs.from_tag }} &>/dev/null ; then
               echo "error, does not exist from_tag ${{ github.event.inputs.from_tag }} "
-              echo ::set-output name=succeed::false
               exit 1
           else
               echo "exist from_tag ${{ github.event.inputs.from_tag }} "
           fi
           if ! git describe --tags --abbrev=0  ${{ github.event.inputs.to_tag }} &>/dev/null ; then
               echo "error, does not exist to_tag ${{ github.event.inputs.to_tag }} "
-              echo ::set-output name=succeed::false
               exit 2
           else
               echo "exist to_tag ${{ github.event.inputs.to_tag }} "
           fi
-          echo ::set-output name=succeed::true
+          echo ::set-output name=auto_tag::false
 
       # ???? config file
-      - name: Build Changelog By Tag Event
-        id: create_changelog_by_tag
-        if: ${{ github.event_name != 'workflow_dispatch' }}
+      # auto parse the latest tag and previous one
+      - name: Build Changelog By Auto Tag
+        id: create_changelog_by_auto_tag
+        if: ${{ steps.check_tag.outputs.auto_tag == 'true' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
+        with:
+          failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # specify the tag
       - name: Build Changelog By Dispatch Event
-        id: create_changelog_by_dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }} && ${{ steps.check_dispatch_tag.output.succeed == true }}
+        id: create_changelog_by_manul_tag
+        if: ${{ steps.check_tag.outputs.auto_tag == 'false' }}
         uses: mikepenz/release-changelog-builder-action@v2.9.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
           fromTag: ${{ github.event.inputs.from_tag }}
           toTag: ${{ github.event.inputs.end_tag }}
+          failOnError: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Changelog File
         id: generate_changelog_file
-        if: steps.create_changelog_by_tag.outputs.failed == 'true' ||  steps.create_changelog_by_dispatch.outputs.failed == 'true'
+        continue-on-error: false
+        if: steps.create_changelog_by_auto_tag.outputs.failed == 'false' ||  steps.create_changelog_by_manul_tag.outputs.failed == 'false'
+        shell: bash
         run: |
-          if ${{ steps.create_changelog_by_tag.outputs.failed == 'false' }} ; then
-              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_tag.outputs.toTag }}.md
-              echo ::set-output name=from_tag::${{ steps.create_changelog_by_tag.outputs.fromTag }}
-              echo ::set-output name=to_tag::${{ steps.create_changelog_by_tag.outputs.toTag }}
+          if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
+              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_auto_tag.outputs.toTag }}.md
+              echo ::set-output name=from_tag::${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}
+              echo ::set-output name=to_tag::${{ steps.create_changelog_by_auto_tag.outputs.toTag }}
           else
-              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_dispatch.outputs.fromTag }}-to-${{ steps.create_changelog_by_dispatch.outputs.toTag }}.md          
-              echo ::set-output name=from_tag::${{ steps.create_changelog_by_dispatch.outputs.fromTag }}
-              echo ::set-output name=to_tag::${{ steps.create_changelog_by_dispatch.outputs.toTag }}
+              CHANGELOG_FILE_NAME=CHANGELOG-${{ steps.create_changelog_by_manul_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_manul_tag.outputs.toTag }}.md          
+              echo ::set-output name=from_tag::${{ steps.create_changelog_by_manul_tag.outputs.fromTag }}
+              echo ::set-output name=to_tag::${{ steps.create_changelog_by_manul_tag.outputs.toTag }}
           fi
           [ ! -d "${{ env.CHANGELOG_DIR }}" ] && mkdir -p ${{ env.CHANGELOG_DIR }}
           DEST_FILE=${{ env.CHANGELOG_DIR }}/${CHANGELOG_FILE_NAME}
           echo > ${DEST_FILE}
-          if ${{ steps.create_changelog_by_tag.outputs.failed == 'false' }} ; then
-              echo "${{ steps.create_changelog_by_tag.outputs.changelog }}" >> ${DEST_FILE}
+          if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
+              echo "::commit list::" >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo '${{ steps.create_changelog_by_auto_tag.outputs.pull_requests }}' >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo "::changelog::" >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo '${{ steps.create_changelog_by_auto_tag.outputs.changelog }}' >> ${DEST_FILE}
           else
-              echo "${{ steps.create_changelog_by_dispatch.outputs.changelog }}" >> ${DEST_FILE}          
+              echo "::commit list::" >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo '${{ steps.create_changelog_by_manul_tag.outputs.pull_requests }}' >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo "::changelog::" >> ${DEST_FILE}
+              echo "" >> ${DEST_FILE}
+              echo '${{ steps.create_changelog_by_manul_tag.outputs.changelog }}' >> ${DEST_FILE}
           fi
 
       # https://github.com/peter-evans/create-pull-request
@@ -136,6 +173,7 @@ jobs:
 
       - name: Check PR Outputs
         if: ${{ steps.create_pr.outputs.pull-request-number }}
+        shell: bash
         run: |
           echo "Pull Request Number - ${{ steps.create_pr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.create_pr.outputs.pull-request-url }}"
