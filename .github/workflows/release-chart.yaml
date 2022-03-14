@@ -21,6 +21,7 @@ jobs:
       matrix:
         include:
           - chart_dir: charts/cilium
+
     steps:
       - name: Get Version
         id: get_version
@@ -56,7 +57,7 @@ jobs:
       - name: Prepare Chart
         continue-on-error: false
         run: |
-          chart_dir=${{ matrix.name }}
+          chart_dir=${{ matrix.chart_dir }}
           [ ! -d "${chart_dir}" ] && echo "error, fail to find directory ${chart_dir}" && exit 1
           mkdir _tmp
           cd mkdir
