@@ -2,7 +2,7 @@
 # when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 # then commit the pr to main branch , then auto approve it
 # commit changelog: changelogs/CHANGELOG-{begin_tag}-to-{end_tag}.md
-name: Robot update Changelog For release
+name: Robot Update Changelog For Release
 
 on:
   # called by build release image

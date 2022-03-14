@@ -1,5 +1,5 @@
 # make sure the pr is labled as wanted, case: we could generate changelog by the pr label
-name: Lint Label Check for release
+name: PR Label Check For Realse
 
 # Trigger the workflow on pull requests only
 on:

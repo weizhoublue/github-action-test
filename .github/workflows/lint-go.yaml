@@ -48,6 +48,3 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-
-
-
