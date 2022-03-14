@@ -364,31 +364,39 @@ jobs:
           path: changelog-result/
 
       - name: Display downloaded files
+        id: download_file
         continue-on-error: false
         run: |
           if ! ls chart-package/*.tgz &>/dev/null ; then
               echo "error, failed to find any chart "
               exit 1
           fi
-          ls chart-package/*.tgz
+          chart_path=$( ls chart-package/*.tgz )
+          echo ::set-output name=chart_path::${chart_path}
           if ! ls changelog-result/*.md &>/dev/null ; then
               echo "error, failed to find changelog "
               exit 1
           fi
           cat changelog-result/*.md       
+          changelog_path=$( ls changelog-result/*.md )
+          echo ::set-output name=changelog_path::${changelog_path}
 
       # https://github.com/softprops/action-gh-release
       - name: Create Release
         id: create_release
+        continue-on-error: false
         uses: softprops/action-gh-release@v1
         with:
-          files: chart-package/*.tgz
-          body_path: changelog-result/*.md
-          tag: ${{ steps.tag.outputs.tag }}
+          # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
+          #  'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
+          #  'generate_release_notes']
+          # uploaded asset
+          files: ${{ steps.download_file.output.chart_path }}
+          body_path: ${{ steps.download_file.output.changelog_path }}
+          name: Release-${{ steps.tag.outputs.tag }}
           # Indicator of whether to fail if any of the files globs match nothing
           fail_on_unmatched_files: true
           token: ${{ github.token }}
-          append_body: true
 
       - name: Show Result
         run: |
