@@ -373,7 +373,6 @@ jobs:
           fi
           chart_path=$( ls chart-package/*.tgz )
           echo ::set-output name=chart_path::${chart_path}
-          cd 
           if ! ls changelog-result/*.md &>/dev/null ; then
               echo "error, failed to find changelog "
               exit 1
