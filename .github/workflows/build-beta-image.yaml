@@ -44,10 +44,11 @@ jobs:
           password: ${{ env.ONLINE_REGISTER_PASSWORD }}
           registry: ${{ env.ONLINE_REGISTER }}
 
-      - name: Getting image tag
-        id: tag
+      - name: Getting Code Version
+        id: version
         run: |
-          echo ::set-output name=tag::${GITHUB_REF##*/}
+          # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
+          echo ::set-output name=version::${GITHUB_REF##*/}
 
       - name: Checking if tag already exists
         id: tag-in-repositories
@@ -66,7 +67,7 @@ jobs:
           # The branch, tag or SHA to checkout. When checking out the repository that
           # triggered a workflow, this defaults to the reference or SHA for that event.
           # Otherwise, uses the default branch.
-          # ref: ''
+          ref: ${{ steps.version.output.version }}
 
       - name: Release Build ${{ matrix.name }}
         uses: docker/build-push-action@v2
