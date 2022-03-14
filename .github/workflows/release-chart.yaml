@@ -13,11 +13,11 @@ on:
     inputs:
       base:
         description: 'Base: tag, branch or sha . main branch as default'
-        required: false
+        required: true
         default: main
       dest_branch:
         description: 'Dest_branch: the destination branch. chart branch as default'
-        required: false
+        required: true
         default: chart
 
 jobs:
@@ -35,17 +35,10 @@ jobs:
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
-              if [ -n "$ver" ] ; then
-                echo ::set-output name=version::${ver}
-              else
-                echo ::set-output name=version::main
-              fi
+              echo ::set-output name=version::${ver}
+
               dest=${{ github.event.inputs.dest_branch }}
-              if [ -n "$dest" ] ; then
-                echo ::set-output name=dest::${dest}
-              else
-                echo ::set-output name=dest::main
-              fi
+              echo ::set-output name=dest::${dest}
           else
               echo ::set-output name=version::main
               echo ::set-output name=dest::main
