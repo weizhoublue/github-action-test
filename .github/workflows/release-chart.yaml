@@ -2,6 +2,7 @@
 # all charts under "charts/*", this workflow will create the tgz chart and merge to "/docs" of "chart" branch
 # please make the "chart" branch as the github page
 # please create the "chart" branch beforhand, or else the workflow will fail
+# put all charts under /docs/charts/*.tgz, and /docs/index.yaml
 
 name: Release Charts
 
