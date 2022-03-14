@@ -107,7 +107,7 @@ jobs:
 
       # before, run actions/checkout
       - name: Trigger Update Changelog
-        uses: ./.github/workflows/robot-update-changelog.yml@${{ steps.tag.outputs.tag }}
+        uses: ./.github/workflows/robot-update-changelog.yml@main
 
   image-digests:
     name: Display Digests
