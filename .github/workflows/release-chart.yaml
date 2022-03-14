@@ -1,48 +1,90 @@
+# must enable github page in your project
 name: Release Charts
 
 env:
   HELM_VERSION: v3.8.1
-  CHART_DIR: charts/cilium
+  MERGE_TO_BRANCH: main
+  PR_LABEL: pr/release/robot_chart
+  PR_REVIWER: weizhoublue
 
 on:
   workflow_dispatch:
-
+    inputs:
+      tag:
+        description: 'tag, if empty , use main branch'
+        required: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - chart_dir: charts/cilium
     steps:
-      - name: Checkout
+      - name: Get Version
+        id: get_version
+        continue-on-error: false
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+              echo ::set-output name=version::${{ github.event.inputs.tag }}          
+          else
+              echo ::set-output name=version::main
+          fi
+
+      - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          ref: ${{ steps.get_version.outputs.version }}
 
-      - name: Get Project Name
-        id: get_project
+      - name: Get Base URL
+        id: get_base_url
         run: |
           name=${{ github.repository }}
           proj=${name#*/}
-          echo "::set-output name=project::${proj}"
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          url=https://${{ github.repository_owner }}.github.io/${{ steps.get_project.outputs.project }}
+          echo "::set-output name=url::${url}"
 
       - name: Install Helm
         uses: azure/setup-helm@v2.0
         with:
           version: ${{ env.HELM_VERSION }}
 
-      # https://github.com/helm/chart-releaser-action
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.3.0
+      - name: Prepare Chart
+        continue-on-error: false
+        run: |
+          chart_dir=${{ matrix.name }}
+          [ ! -d "${chart_dir}" ] && echo "error, fail to find directory ${chart_dir}" && exit 1
+          mkdir _tmp
+          cd mkdir
+          helm package ../${chart_dir}
+          cd ..
+          mkdir -p docs/charts
+          mv _tmp/*.tgz docs/charts
+          rm -f _tmp
+
+      - name: Prepare Index
+        continue-on-error: false
+        run: |
+          cd docs
+          helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v3.14.0
         with:
-          #  chart-releaser version
-          # https://github.com/helm/chart-releaser
-          version: v1.3.0
-          charts_dir: ${{ env.CHART_DIR }}
-          # where to publish the chart . use github page
-          charts_repo_url: https://${{ github.repository_owner }}.github.io/${{ steps.get_project.outputs.project }}
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          title: "robot Update chart from ${{ steps.get_version.outputs.version }} "
+          # from branch
+          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }}"
+          # branch name: ${branch}-${branch-suffix}
+          # an branch suffix could make sure the branch is unique
+          branch-suffix: timestamp
+          branch: update_chart
+          # Delete the branch when closing pull requests, and when undeleted after merging
+          delete-branch: true
+          # merge to
+          base: ${{ env.MERGE_TO_BRANCH }}
+          signoff: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.PR_LABEL }}
+          reviewers: ${{ env.PR_REVIWER }}
