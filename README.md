@@ -78,9 +78,9 @@ pr/release/feature-changed for Changed Features
 
 ## auto add lable 'approved' to reviewed PR
 
-
 ## check licnse missing in go file
 
+## auto publish chart
 
 ## ============================
 
@@ -107,7 +107,7 @@ if push tag with v*.*.* ,
 
 (1) auto trigger building release image
 (2) auto commit changelog PR with label "pr/release/robot_changelog"
-(3) auto commit chart PR to "chart" branch who is used for github page
+(3) auto commit chart PR to /docs/charts/* of "chart" branch , and generate /docs/index.yaml , please set /docs of "chart" branch as github page
 
 
 the following lable is special:
