@@ -43,7 +43,7 @@ jobs:
           stale-pr-label: ${{ env.STALE_PR_LABEL }}
           exempt-pr-labels: pinned,security,good-first-issue
 
-          days-before-pr-stale: 30
+          days-before-pr-stale: 60
           stale-pr-message: |
             This pull request has been automatically marked as stale because it
             has not had recent activity. It will be closed if no further activity
