@@ -16,6 +16,7 @@ env:
   CHANGELOG_RESULT_DIR: changelogs
   CHANGELOG_TEMP_FILE: _temp_changelog
   PAT: ${{ secrets.PAT }}
+  HELM_VERSION: v3.8.1
 
 on:
   push:
