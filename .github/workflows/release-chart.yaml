@@ -46,7 +46,7 @@ jobs:
         run: |
           name=${{ github.repository }}
           proj=${name#*/}
-          url=https://${{ github.repository_owner }}.github.io/${{ steps.get_project.outputs.project }}
+          url=https://${{ github.repository_owner }}.github.io/${proj}
           echo "::set-output name=url::${url}"
 
       - name: Install Helm
