@@ -103,7 +103,12 @@ auto close stale PR after 60 and auto close stale issue after 14
 
 ### for Release
 
-if push tag with v*.*.* , auto trigger building release image and commit changelog PR with label "pr/release/robot_changelog" 
+if push tag with v*.*.* , 
+
+(1) auto trigger building release image
+(2) auto commit changelog PR with label "pr/release/robot_changelog"
+(3) auto commit chart PR to "chart" branch who is used for github page
+
 
 the following lable is special:
 

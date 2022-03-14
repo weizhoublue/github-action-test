@@ -1,6 +1,8 @@
 # must enable github page in your project
 # all charts under "charts/*", this workflow will create the tgz chart and merge to "/docs" of "chart" branch
 # please make the "chart" branch as the github page
+# please create the "chart" branch beforhand, or else the workflow will fail
+
 name: Release Charts
 
 env:
@@ -13,11 +15,11 @@ on:
     inputs:
       base:
         description: 'Base: tag, branch or sha . main branch as default'
-        required: false
+        required: true
         default: main
       dest_branch:
         description: 'Dest_branch: the destination branch. chart branch as default'
-        required: false
+        required: true
         default: chart
 
 jobs:
@@ -35,17 +37,10 @@ jobs:
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
-              if [ -n "$ver" ] ; then
-                echo ::set-output name=version::${ver}
-              else
-                echo ::set-output name=version::main
-              fi
+              echo ::set-output name=version::${ver}
+
               dest=${{ github.event.inputs.dest_branch }}
-              if [ -n "$dest" ] ; then
-                echo ::set-output name=dest::${dest}
-              else
-                echo ::set-output name=dest::main
-              fi
+              echo ::set-output name=dest::${dest}
           else
               echo ::set-output name=version::main
               echo ::set-output name=dest::main
@@ -93,9 +88,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v3.14.0
         with:
-          title: "robot Update chart from ${{ steps.get_version.outputs.version }} "
+          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to ${{ steps.get_version.outputs.dest }} "
           # from branch
-          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }}"
+          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to ${{ steps.get_version.outputs.dest }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
