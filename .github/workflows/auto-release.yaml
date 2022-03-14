@@ -320,6 +320,13 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
+      - name: Create commits
+        run: |
+          git config user.name 'robot'
+          git config user.email 'robot@users.noreply.github.com'
+          git add -A
+          git commit -m "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
+
       # https://github.com/peter-evans/create-pull-request
       #  all new and modified files will be committed
       # If you want pull requests created by this action to trigger an on: push or on: pull_request workflow then you cannot use the default GITHUB_TOKEN
