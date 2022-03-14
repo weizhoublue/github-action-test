@@ -41,7 +41,7 @@ auto stale inactive issue after 60 and auto close stale issue after 14
 
 CODEOWNERS auto assign reviewer ( the one who should be the repo member and not me , then you can see it )
 
-auto close stale PR after 30
+auto close stale PR after 60 and auto close stale issue after 14
 
 label check. only when the pr labled with changelog-related label, the pr could be approved. 
 changelog-related label could be used to auto generating changelog when releasing
@@ -75,3 +75,29 @@ pr/release/feature-changed for Changed Features
 ## (12) label syncer
 
 ## auto add lable 'approved' to reviewed PR
+
+
+
+
+
+# manage flow
+
+### for issue
+
+check these labeled with "issue/not-assign" , and assign them
+
+auto close stale one after 60 and auto close stale one after 14
+
+
+### for PR
+
+2 reviewer approve , and auto label with "pr/approved" , 
+
+PR must be labeled with "pr/release/**" for merge , which used to generate changelog auto
+
+auto close stale PR after 60 and auto close stale issue after 14
+
+### for Release
+
+if push tag with v*.*.* , auto trigger building release image and commit changelog
+
