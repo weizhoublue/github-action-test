@@ -89,9 +89,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v3.14.0
         with:
-          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to ${{ steps.get_version.outputs.dest }} "
+          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ steps.get_version.outputs.dest }} "
           # from branch
-          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to ${{ steps.get_version.outputs.dest }} "
+          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ steps.get_version.outputs.dest }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
