@@ -6,6 +6,7 @@
 
 secret.PAT 
 
+## ============================
 
 # feature
 
@@ -64,6 +65,7 @@ pr/release/none-required
 ### other label for pr 
 
 
+
 ### below label of pr will be the changelog
 
 pr/release/bug for Fixes
@@ -77,8 +79,10 @@ pr/release/feature-changed for Changed Features
 ## auto add lable 'approved' to reviewed PR
 
 
+## check licnse missing in go file
 
 
+## ============================
 
 # manage flow
 
@@ -99,7 +103,7 @@ auto close stale PR after 60 and auto close stale issue after 14
 
 ### for Release
 
-if push tag with v*.*.* , auto trigger building release image and commit changelog
+if push tag with v*.*.* , auto trigger building release image and commit changelog PR with label "pr/release/robot_changelog" 
 
 the following lable is special:
 
