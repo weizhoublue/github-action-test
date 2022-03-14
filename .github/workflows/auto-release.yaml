@@ -386,14 +386,15 @@ jobs:
         id: create_release
         continue-on-error: false
         uses: softprops/action-gh-release@v1
+        # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
+        # 'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
+        # 'generate_release_notes']
         with:
-          # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
-          #  'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
-          #  'generate_release_notes']
           # uploaded asset
           files: ${{ steps.download_file.output.chart_path }}
           body_path: ${{ steps.download_file.output.changelog_path }}
           name: Release-${{ steps.tag.outputs.tag }}
+          tag_name: ${{ steps.tag.outputs.tag }}
           # Indicator of whether to fail if any of the files globs match nothing
           fail_on_unmatched_files: true
           token: ${{ github.token }}
