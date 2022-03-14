@@ -2,15 +2,15 @@
   "categories": [
     {
       "title": "## New Features",
-      "labels": ["release/feature-new"]
+      "labels": ["pr/release/feature-new"]
     },
     {
       "title": "## Changed Features",
-      "labels": ["release/feature-changed"]
+      "labels": ["pr/release/feature-changed"]
     },
     {
       "title": "## Fixes",
-      "labels": ["release/bug"]
+      "labels": ["pr/release/bug"]
     }
   ],
   "ignore_labels": [

@@ -1,5 +1,8 @@
 name: Label Approved PR
 
+env:
+  LABEL: pr/approved
+
 on: pull_request_review
 
 jobs:
@@ -13,5 +16,5 @@ jobs:
         env:
           APPROVALS: "2"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ADD_LABEL: "approved"
+          ADD_LABEL: ${{ env.LABEL }}
           #REMOVE_LABEL: "awaiting%20review"

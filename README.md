@@ -53,18 +53,20 @@ then commit the pr to main branch , then auto approve it
 
 ### all pr should label one of bellowing , so could be merged to changelog
 
-release/bug, release/feature-new, release/feature-changed, release/docs, release/robot_changelog, release/changelog, release/none-required"
+pr/release/bug, pr/release/feature-new, pr/release/feature-changed,
+pr/release/doc, pr/release/robot_changelog, pr/release/changelog,
+pr/release/none-required
 
 ### other label for pr 
 
 
 ### below label of pr will be the changelog
 
-release/bug for Fixes
+pr/release/bug for Fixes
 
-release/feature-new for New Features
+pr/release/feature-new for New Features
 
-release/feature-changed for Changed Features
+pr/release/feature-changed for Changed Features
 
 ## (12) label syncer
 

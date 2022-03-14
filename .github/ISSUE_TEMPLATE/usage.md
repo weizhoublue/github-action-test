@@ -2,7 +2,7 @@
 name: usage issue
 about: no idea how to use
 title: 'usage issue'
-labels: usage, help wanted
+labels: issue/usage, issue/not-assign
 assignees: 'weizhoublue'
 
 ---

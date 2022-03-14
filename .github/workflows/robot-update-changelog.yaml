@@ -27,7 +27,7 @@ on:
 env:
   CHANGELOG_DIR: changelogs
   MERGE_TO_BRANCH: main
-  PR_LABEL: release/robot_changelog
+  PR_LABEL: pr/release/robot_changelog
   PR_REVIWER: weizhoublue
   CHANGELOG_CONF: .github/changelog_builder_conf.json
   CHANGELOG_RESULT_DIR: changelogs
