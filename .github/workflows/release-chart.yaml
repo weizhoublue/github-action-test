@@ -60,12 +60,12 @@ jobs:
           chart_dir=${{ matrix.chart_dir }}
           [ ! -d "${chart_dir}" ] && echo "error, fail to find directory ${chart_dir}" && exit 1
           mkdir _tmp
-          cd mkdir
+          cd _tmp
           helm package ../${chart_dir}
           cd ..
           mkdir -p docs/charts
           mv _tmp/*.tgz docs/charts
-          rm -f _tmp
+          rm -rf _tmp
 
       - name: Prepare Index
         continue-on-error: false
