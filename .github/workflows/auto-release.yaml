@@ -371,7 +371,7 @@ jobs:
               exit 1
           fi
           ls chart-package/*.tgz
-          if ! changelog-result/*.md &>/dev/null ; then
+          if ! ls changelog-result/*.md &>/dev/null ; then
               echo "error, failed to find changelog "
               exit 1
           fi
