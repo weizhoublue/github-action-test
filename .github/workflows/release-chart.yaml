@@ -5,7 +5,7 @@ env:
   CHART_DIR: charts/cilium
 
 on:
-  workflow_call:
+  workflow_dispatch:
 
 
 jobs:
