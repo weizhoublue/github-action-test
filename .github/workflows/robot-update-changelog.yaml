@@ -32,6 +32,7 @@ env:
   CHANGELOG_CONF: .github/changelog_builder_conf.json
   CHANGELOG_RESULT_DIR: changelogs
   CHANGELOG_TEMP_FILE: _temp_changelog
+  PAT: ${{ secrets.PAT }}
 
 
 jobs:
@@ -182,6 +183,6 @@ jobs:
       - name: PR Auto Approve
         uses: peter-evans/enable-pull-request-automerge@v1.2.0
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ env.PAT }}
           pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
           merge-method: merge
