@@ -20,7 +20,9 @@ jobs:
       - name: Get Project Name
         id: get_project
         run: |
-          echo "::set-output name=project::${github.repository#*/}"
+          name=${{ github.repository }}
+          proj=${name#*/}
+          echo "::set-output name=project::${proj}"
 
       - name: Configure Git
         run: |
