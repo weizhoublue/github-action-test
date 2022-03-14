@@ -27,10 +27,13 @@ jobs:
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
-              echo ::set-output name=version::${{ github.event.inputs.tag }}          
-          else
-              echo ::set-output name=version::main
+              ver=${{ github.event.inputs.tag }}
+              if [ -n "$ver" ] ; then
+                echo ::set-output name=version::${ver}
+                exit 0
+              fi
           fi
+          echo ::set-output name=version::main
 
       - name: Checkout Code
         uses: actions/checkout@v2
