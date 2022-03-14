@@ -185,6 +185,7 @@ jobs:
 
       # auto apporve the pr if requirements have been satisfied
       # https://github.com/peter-evans/enable-pull-request-automerge
+      # Can't enable auto-merge for this pull request
       - name: PR Auto Approve
         uses: peter-evans/enable-pull-request-automerge@v1.2.0
         with:
