@@ -82,6 +82,10 @@ pr/release/feature-changed for Changed Features
 
 ## auto publish chart
 
+## use "chart" branch as github page and provide chart repo
+
+
+
 ## ============================
 
 # manage flow
@@ -108,7 +112,7 @@ if push tag with v*.*.* ,
 (1) auto trigger building release image
 (2) auto commit changelog PR with label "pr/release/robot_changelog"
 (3) auto commit chart PR to /docs/charts/* of "chart" branch , and generate /docs/index.yaml , please set /docs of "chart" branch as github page
-
+(4) auto create the release
 
 the following lable is special:
 
