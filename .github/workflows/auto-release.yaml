@@ -59,8 +59,11 @@ jobs:
         id: tag
         continue-on-error: false
         run: |
-          echo ::set-output name=tag::${GITHUB_REF##*/}
-          
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo ::set-output name=tag::${{ github.event.inputs.tag }}
+          else
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
 
       # https://github.com/actions/checkout
       - name: Checkout Source Code
@@ -112,9 +115,14 @@ jobs:
     steps:
       - name: Getting image tag
         id: tag
+        continue-on-error: false
         run: |
-          # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
-          echo ::set-output name=tag::${GITHUB_REF##*/}
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo ::set-output name=tag::${{ github.event.inputs.tag }}
+          else
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
+
       - name: Downloading Image Digests
         shell: bash
         run: |
@@ -174,7 +182,11 @@ jobs:
         id: tag
         continue-on-error: false
         run: |
-          echo ::set-output name=tag::${GITHUB_REF##*/}
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo ::set-output name=tag::${{ github.event.inputs.tag }}
+          else
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
           dest=${{ env.CHART_DEST_BRANCH }}
           echo ::set-output name=dest::${dest}
 
@@ -253,6 +265,16 @@ jobs:
     name: auto generate release changelog
     runs-on: ubuntu-latest
     steps:
+      - name: Getting image tag
+        id: tag
+        continue-on-error: false
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo ::set-output name=tag::${{ github.event.inputs.tag }}
+          else
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
+
       # checkout code for tag and pr
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -271,6 +293,7 @@ jobs:
           configuration: ${{ env.CHANGELOG_CONF }}
           outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
+          toTag: ${{ steps.tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -339,11 +362,15 @@ jobs:
     name: auto generate release
     runs-on: ubuntu-latest
     steps:
-      - name: Getting tag
+      - name: Getting image tag
         id: tag
         continue-on-error: false
         run: |
-          echo ::set-output name=tag::${GITHUB_REF##*/}
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo ::set-output name=tag::${{ github.event.inputs.tag }}
+          else
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
 
       - name: Prepare Directory
         shell: bash
