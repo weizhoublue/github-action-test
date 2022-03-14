@@ -45,17 +45,17 @@ jobs:
           password: ${{ env.ONLINE_REGISTER_PASSWORD }}
           registry: ${{ env.ONLINE_REGISTER }}
 
-      # pushed tag is used for image tag
       - name: Getting image tag
         id: tag
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
             tag_name=${{ github.event.inputs.from_tag }}
-            if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
-                echo "error, failed to find tag $tag_name "
-                exit 1
-            fi
+            # still not checkout code, so failed to check
+            #if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
+            #    echo "error, failed to find tag $tag_name "
+            #    exit 1
+            #fi
             echo ::set-output name=tag::${tag_name}
           else
             # trigger by tag event
@@ -66,6 +66,7 @@ jobs:
       # https://github.com/actions/checkout
       - name: Checkout Source Code
         uses: actions/checkout@v2
+        continue-on-error: false
         with:
           # Whether to configure the token or SSH key with the local git config
           persist-credentials: false
