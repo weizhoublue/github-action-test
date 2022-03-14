@@ -1,6 +1,6 @@
 # cleaner for ghcr image , when PR is closed
 # NOTE: at now only orgs is supported , for personal it fail
-name: Clean Image CI for PR
+name: Clean Image CI By PR
 
 env:
   ONLINE_REGISTER: ghcr.io
