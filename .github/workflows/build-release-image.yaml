@@ -83,8 +83,9 @@ jobs:
           path: image-digest
           retention-days: 1
 
+      # before, run actions/checkout
       - name: Trigger Update Changelog
-        uses: ./.github/workflows/robot-update-changelog.yaml@main
+        uses: ./.github/workflows/robot-update-changelog.yaml
 
   image-digests:
     name: Display Digests
