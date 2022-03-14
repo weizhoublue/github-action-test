@@ -48,3 +48,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
+      - name: gokart
+        run: |
+          go install github.com/praetorian-inc/gokart@latest
+          gokart scan --globalsTainted
