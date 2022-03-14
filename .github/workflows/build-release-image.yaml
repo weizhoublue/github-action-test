@@ -106,8 +106,9 @@ jobs:
           retention-days: 1
 
       # before, run actions/checkout
-      - name: Trigger Update Changelog
-        uses: ./.github/workflows/robot-update-changelog.yml@main
+      # Can't find 'action.yml', 'action.yaml' or 'Dockerfile' under '/home/runner/work/github-action-test/github-action-test/.github/workflows/robot-update-changelog.yml@main'
+      #- name: Trigger Update Changelog
+      #  uses: ./.github/workflows/robot-update-changelog.yaml@main
 
   image-digests:
     name: Display Digests

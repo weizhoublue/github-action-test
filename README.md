@@ -101,3 +101,11 @@ auto close stale PR after 60 and auto close stale issue after 14
 
 if push tag with v*.*.* , auto trigger building release image and commit changelog
 
+the following lable is special:
+
+label "pr/release/feature-new" will generate "New Features" category
+
+label "pr/release/bug" will generate "Fixes" category
+
+label "pr/release/feature-changed" will generate "Changed Features" category
+
