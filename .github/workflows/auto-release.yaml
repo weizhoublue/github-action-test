@@ -391,8 +391,8 @@ jobs:
         # 'generate_release_notes']
         with:
           # uploaded asset
-          files: ${{ steps.download_file.output.chart_path }}
-          body_path: ${{ steps.download_file.output.changelog_path }}
+          files: ${{ steps.download_file.outputs.chart_path }}
+          body_path: ${{ steps.download_file.outputs.changelog_path }}
           name: Release-${{ steps.tag.outputs.tag }}
           tag_name: ${{ steps.tag.outputs.tag }}
           # Indicator of whether to fail if any of the files globs match nothing
