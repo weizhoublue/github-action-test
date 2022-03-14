@@ -1,6 +1,6 @@
 # build the release image under an clean env , and it is trigger by tag event
 # buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage:v1.0.0
-name: Build Image Release
+name: Auto Release Version
 
 env:
   ONLINE_REGISTER: ghcr.io
