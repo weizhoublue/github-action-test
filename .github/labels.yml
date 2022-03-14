@@ -1,48 +1,48 @@
-- name: release/bug
+- name: pr/release/bug
   description: bug pr in a new release
   color: d73a4a
-- name: release/feature-new
+- name: pr/release/feature-new
   description: new feature pr in a new release
   color: 0075ca
-- name: release/feature-changed
+- name: pr/release/feature-changed
   description: changed feature pr in a new release
   color: cfd3d7
-- name: release/docs
+- name: pr/release/doc
   description: doc pr in a new release
-  color: cfd3d7
-- name: release/robot_changelog
+  color: 0fd3d7
+- name: pr/release/robot_changelog
   description: auto robot changelog pr in a new release
-  color: cfd3d7
-- name: release/changelog
+  color: afd3d7
+- name: pr/release/changelog
   description: manual changelog pr in a new release
-  color: cfd3d7
-- name: release/none-required
+  color: bfd3d7
+- name: pr/release/none-required
   description: not show up in a new release
-  color: cfd3d7
-- name: bug
-  description: bug
-  color: cfd3d7
-- name: help wanted
-  description: a new issue not assigned
-  color: cfd3d7
-- name: ci failed
-  description: ci failed
-  color: cfd3d7
-- name: documentation
-  description: documentation is wrong or missing
-  color: cfd3d7
-- name: feature
-  description: want new feature
-  color: cfd3d7
-- name: usage
-  description: no idea about usage
-  color: cfd3d7
-- name: duplicate
-  description: This issue or pull request already exists
-  color: cfd3d7
-- name: ingore
-  description: This issue or pull request will ingore
-  color: cfd3d7
-- name: approved
+  color: cfc3d7
+- name: pr/approved
   description: This pull request could be merged
-  color: cfd3d7
+  color: dfd3d7
+- name: issue/bug
+  description: bug
+  color: efd3d7
+- name: issue/not-assign
+  description: a new issue not assigned
+  color: ffd3d7
+- name: issue/ci-fail
+  description: ci failed
+  color: 0ad3d7
+- name: issue/doc
+  description: documentation is wrong or missing
+  color: 0bd3d7
+- name: issue/feature
+  description: want new feature
+  color: 0cd3d7
+- name: issue/usage
+  description: no idea about usage
+  color: 0dd3d7
+- name: issue/duplicate
+  description: This issue request already exists
+  color: 0fd3d7
+- name: issue/ignore
+  description: This issue or pull request will ingore
+  color: 15d3d7
