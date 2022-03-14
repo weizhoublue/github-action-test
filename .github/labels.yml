@@ -22,6 +22,9 @@
 - name: pr/approved
   description: This pull request could be merged
   color: dfd3d7
+- name: pr/stale
+  description: This pull is inactive
+  color: dfd6d7
 - name: issue/bug
   description: bug
   color: efd3d7
@@ -46,3 +49,6 @@
 - name: issue/ignore
   description: This issue or pull request will ingore
   color: 15d3d7
+- name: issue/stale
+  description: This issue is inactive
+  color: d0d6d7

@@ -13,6 +13,12 @@ on:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
       - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag'
+        required: true
+
 
 permissions: write-all
 
@@ -42,13 +48,28 @@ jobs:
       # pushed tag is used for image tag
       - name: Getting image tag
         id: tag
+        continue-on-error: false
         run: |
-          echo ::set-output name=tag::${GITHUB_REF##*/}
-
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            tag_name=${{ github.event.inputs.from_tag }}
+            if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
+                echo "error, failed to find tag $tag_name "
+                exit 1
+            fi
+            echo ::set-output name=tag::${tag_name}
+          else
+            # trigger by tag event
+            # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
+            echo ::set-output name=tag::${GITHUB_REF##*/}
+          fi
+          
+      # https://github.com/actions/checkout
       - name: Checkout Source Code
         uses: actions/checkout@v2
         with:
+          # Whether to configure the token or SSH key with the local git config
           persist-credentials: false
+          ref: ${{ steps.tag.outputs.tag }}
 
       - name: Release Build ${{ matrix.name }}
         uses: docker/build-push-action@v2
@@ -95,6 +116,7 @@ jobs:
       - name: Getting image tag
         id: tag
         run: |
+          # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
           echo ::set-output name=tag::${GITHUB_REF##*/}
       - name: Downloading Image Digests
         shell: bash

@@ -9,6 +9,10 @@ permissions:
   issues: write
   pull-requests: write
 
+env:
+  STALE_ISSUE_LABEL: issue/stale
+  STALE_PR_LABEL: pr/stale
+
 jobs:
   stale:
     runs-on: ubuntu-latest
@@ -18,7 +22,7 @@ jobs:
         uses: actions/stale@v5.0.0
         with:
           #===== for issue
-          stale-issue-label: stale
+          stale-issue-label: ${{ env.STALE_ISSUE_LABEL }}
           # exclude all issues/PRs with milestones
           exempt-all-issue-assignees: true
           # exclude issues/PRs with the specified labels
@@ -36,7 +40,7 @@ jobs:
             Closing.
 
           #====== for pr
-          stale-pr-label: stale
+          stale-pr-label: ${{ env.STALE_PR_LABEL }}
           exempt-pr-labels: pinned,security,good-first-issue
 
           days-before-pr-stale: 30

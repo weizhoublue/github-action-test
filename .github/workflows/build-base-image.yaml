@@ -29,7 +29,10 @@ on:
       #can not use env here
       - images/baseimage/**
   workflow_dispatch:
-
+    inputs:
+      tag:
+        description: 'Tag'
+        required: true
 
 permissions: write-all
 
@@ -58,25 +61,57 @@ jobs:
         id: qemu
         uses: docker/setup-qemu-action@v1.2.0
 
+      - name: Get Code Version
+        id: get_code_version
+        continue-on-error: false
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            tag_name=${{ github.event.inputs.from_tag }}
+            if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
+                echo "error, failed to find tag $tag_name "
+                exit 1
+            fi
+            echo "use tag $tag_name , by workflow_dispatch"
+            echo ::set-output name=version::${tag_name}
+          else
+            #trigger by pr
+            echo "use sha ${{ github.event.pull_request.head.sha }} , by pr"
+            echo ::set-output name=version::${{ github.event.pull_request.head.sha }}
+          fi
+
       - name: Checkout Source Code
+        if ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ steps.get_code_version.outputs.version }}
 
       # get the commit id of path ./images/baseimage , used for image tag
       - name: Generating image tag
         id: tag
         run: |
-          echo ::set-output name=tag::"$(git ls-tree --full-tree HEAD -- ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }} | awk '{ print $3 }')"
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            tag_name=${{ github.event.inputs.from_tag }}
+            if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
+                echo "error, failed to find tag $tag_name "
+                exit 1
+            fi
+            echo "use tag $tag_name , by workflow_dispatch"
+            echo ::set-output name=tag::${tag_name}
+          else
+            echo ::set-output name=tag::"$(git ls-tree --full-tree HEAD -- ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }} | awk '{ print $3 }')"
+          fi
+          
 
       #check whether we have upload the same tag image to online register
       - name: Checking if tag already exists
         id: tag-in-repositories
+        continue-on-error: false
         shell: bash
         run: |
           if docker buildx imagetools inspect ${{ env.ONLINE_REGISTER }}/${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{  steps.tag.outputs.tag }} &>/dev/null; then
             echo ::set-output name=exists::"true"
+            exit 1
           else
             echo ::set-output name=exists::"false"
           fi

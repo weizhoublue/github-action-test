@@ -35,13 +35,13 @@ the cache is cleaned auto at interval , or by manual
 
 issue template , auto assign label and assignees
 
-auto close stale issue
+auto stale inactive issue after 60 and auto close stale issue after 14
 
 ## (8) PR manage
 
 CODEOWNERS auto assign reviewer ( the one who should be the repo member and not me , then you can see it )
 
-auto close stale PR
+auto close stale PR after 30
 
 label check. only when the pr labled with changelog-related label, the pr could be approved. 
 changelog-related label could be used to auto generating changelog when releasing
