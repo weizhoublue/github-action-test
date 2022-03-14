@@ -282,6 +282,7 @@ jobs:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
           fetch-depth: 0
+          ref: ${{ env.MERGE_TO_BRANCH }}
 
       # https://github.com/mikepenz/release-changelog-builder-action
       # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
