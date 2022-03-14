@@ -28,6 +28,7 @@ on:
     paths:
       #can not use env here
       - images/baseimage/**
+  workflow_dispatch:
 
 
 permissions: write-all
