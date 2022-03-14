@@ -17,7 +17,7 @@
     "ignore"
   ],
   "sort": "ASC",
-  "template": "from tag ${{FROM_TAG}} to ${{TO_TAG}}\n\n${{CHANGELOG}}\n\ncategorized pr: ${{CATEGORIZED_COUNT}}\nuncategorized pr: ${{UNCATEGORIZED_COUNT}}\nignored pr: ${{IGNORED_COUNT}}\n<details>\n<summary>Total PR</summary>\n\n${{RELEASE_DIFF}}\n</details>",
+  "template": "from tag ${{FROM_TAG}} to ${{TO_TAG}}\n\n${{CHANGELOG}}\n\ncategorized pr: ${{CATEGORIZED_COUNT}}\n\nuncategorized pr: ${{UNCATEGORIZED_COUNT}}\n\nignored pr: ${{IGNORED_COUNT}}\n\n<details>\n<summary>Total PR</summary>\n\n${{RELEASE_DIFF}}\n</details>",
   "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
   "empty_template": "- no changes",
   "duplicate_filter": {
