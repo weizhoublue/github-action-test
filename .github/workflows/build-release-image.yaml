@@ -50,7 +50,7 @@ jobs:
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
-            tag_name=${{ github.event.inputs.from_tag }}
+            tag_name=${{ github.event.inputs.tag }}
             # still not checkout code, so failed to check
             #if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
             #    echo "error, failed to find tag $tag_name "
