@@ -3,15 +3,17 @@ name: Release Charts
 
 env:
   HELM_VERSION: v3.8.1
-  MERGE_TO_BRANCH: main
   PR_LABEL: pr/release/robot_chart
   PR_REVIWER: weizhoublue
 
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'tag, if empty , use main branch'
+      base:
+        description: 'could be tag, branch, sha . if empty , use main branch'
+        required: false
+      dest_branch:
+        description: 'the destination branch. if empty , to main branch'
         required: false
 
 jobs:
@@ -28,13 +30,22 @@ jobs:
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
-              ver=${{ github.event.inputs.tag }}
+              ver=${{ github.event.inputs.base }}
               if [ -n "$ver" ] ; then
                 echo ::set-output name=version::${ver}
-                exit 0
+              else
+                echo ::set-output name=version::main
               fi
+              dest=${{ github.event.inputs.dest_branch }}
+              if [ -n "$dest" ] ; then
+                echo ::set-output name=dest::${dest}
+              else
+                echo ::set-output name=dest::main
+              fi
+          else
+              echo ::set-output name=version::main
+              echo ::set-output name=dest::main
           fi
-          echo ::set-output name=version::main
 
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -72,6 +83,7 @@ jobs:
         run: |
           cd docs
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
+          mv ./charts/index.yaml ./
 
       - name: Create Pull Request
         id: create_pr
@@ -87,7 +99,7 @@ jobs:
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
-          base: ${{ env.MERGE_TO_BRANCH }}
+          base: ${{ steps.get_version.outputs.dest }}
           signoff: true
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.PR_LABEL }}
