@@ -20,14 +20,11 @@ on:
   workflow_dispatch:
     inputs:
       from_tag:
-        description: 'from which tag'
+        description: 'from which tag. if emtpy, auto select latest'
         required: false
       to_tag:
-        description: 'to which tag'
+        description: 'to which tag. if emtpy, auto select latest'
         required: false
-
-
-
 
 env:
   CHANGELOG_DIR: changelogs

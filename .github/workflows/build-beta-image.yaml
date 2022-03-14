@@ -12,10 +12,10 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Docker Image Tag'
+        description: 'Tag: Docker Image Tag'
         required: true
       suffix:
-        description: 'Docker Image Suffix (e.g. "beta" )'
+        description: 'Suffix: Docker Image Suffix (e.g. "beta" )'
         required: true
         default: "beta"
 

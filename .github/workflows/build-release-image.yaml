@@ -51,11 +51,6 @@ jobs:
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }}; then
             tag_name=${{ github.event.inputs.tag }}
-            # still not checkout code, so failed to check
-            #if ! git describe --tags --abbrev=0  ${tag_name} &>/dev/null ; then
-            #    echo "error, failed to find tag $tag_name "
-            #    exit 1
-            #fi
             echo ::set-output name=tag::${tag_name}
           else
             # trigger by tag event

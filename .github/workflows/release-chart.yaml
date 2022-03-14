@@ -1,4 +1,6 @@
 # must enable github page in your project
+# all charts under "charts/*", this workflow will create the tgz chart and merge to "/docs" of "chart" branch
+# please make the "chart" branch as the github page
 name: Release Charts
 
 env:
@@ -10,11 +12,13 @@ on:
   workflow_dispatch:
     inputs:
       base:
-        description: 'could be tag, branch, sha . if empty , use main branch'
+        description: 'Base: tag, branch or sha . main branch as default'
         required: false
+        default: main
       dest_branch:
-        description: 'the destination branch. if empty , to main branch'
+        description: 'Dest_branch: the destination branch. chart branch as default'
         required: false
+        default: chart
 
 jobs:
   release:
