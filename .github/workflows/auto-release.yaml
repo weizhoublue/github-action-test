@@ -288,6 +288,10 @@ jobs:
       # auto parse the latest tag and previous one
       # !!! this action will switch git to ${toTag} version , who may not be HEAD.
       # !!! If tag ${toTag} is not HEAD , will make action create-pull-request in 'detached HEAD' state and fail
+      # ---------
+      # The first release tag is a special case since there is no previous release the action can reference to. For this case, there are 2 options:
+      # (1)When checking out the source via git (E.g.: actions/checkout), the action will use the first commit.
+      # (2)Create a initial tag on the commit you want to begin a changelog from (for example v0.0.1).
       - name: Build Changelog By Auto Tag
         id: create_changelog_by_auto_tag
         uses: mikepenz/release-changelog-builder-action@v2.9.0
@@ -425,13 +429,12 @@ jobs:
           # if existing release artifacts should be replaced
           replacesArtifacts: true
           artifactErrorsFailBuild: true
-          # bodyFile: "./changelog-result/changelog.md"
-          bodyFile: "${{ steps.download_file.outputs.changelog_path }}"
+          bodyFile: "./changelog-result/changelog.md"
+          # issue: below format could not be recognized
+          #bodyFile: "${{ steps.download_file.outputs.changelog_path }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag:  ${{ steps.tag.outputs.tag }}
           name: "Release ${{ steps.tag.outputs.tag }}"
-
-
 
 
       # https://github.com/softprops/action-gh-release
