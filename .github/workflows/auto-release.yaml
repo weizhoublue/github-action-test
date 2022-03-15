@@ -404,39 +404,60 @@ jobs:
               echo "error, failed to find changelog "
               exit 1
           fi
-          ls changelog-result
+          ls changelog-result/
           cat changelog-result/*.md
           changelog_file=$( ls changelog-result/ )
-          mv changelog-result/* ./
-          echo ::set-output name=changelog_path::${changelog_file}
+          changelog_path=changelog-result/${changelog_file}
+          echo ::set-output name=changelog_path::${changelog_path}
           #changelog_path=changelog-result/${changelog_file}
           #echo ::set-output name=changelog_path::${changelog_path}
           #TAG_DIFF=${changelog_file%.md}
           #TAG_DIFF=${TAG_DIFF#CHANGELOG-*}
           #echo ::set-output name=tag_diff::${TAG_DIFF}
 
-
-      # https://github.com/softprops/action-gh-release
       - name: Create Release
         id: create_release
         continue-on-error: false
-        uses: softprops/action-gh-release@v0.1.14
-        # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
-        # 'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
-        # 'generate_release_notes']
+        uses: ncipollo/release-action@v1.9.0
         with:
-          # uploaded asset
-          files: ${{ steps.download_file.outputs.chart_path }}
-          body_path: ${{ steps.download_file.outputs.changelog_path }}
+          # "release.tar.gz,foo/*.txt,..."
+          artifacts: "chart-package/*"
+          # update the release event it exists
+          allowUpdates: true
+          # if existing release artifacts should be removed
+          removeArtifacts: true
+          # if existing release artifacts should be replaced
+          replacesArtifacts: true
+          artifactErrorsFailBuild: true
+          bodyFile: ${{ steps.download_file.outputs.changelog_path }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag:  ${{ steps.tag.outputs.tag }}
           name: Release ${{ steps.tag.outputs.tag }}
-          tag_name: ${{ steps.tag.outputs.tag }}
-          # Indicator of whether to fail if any of the files globs match nothing
-          fail_on_unmatched_files: true
-          token: ${{ github.token }}
 
-      - name: Show Result
-        run: |
-          echo " release url: ${{ steps.create_release.outputs.url }}"
-          echo " release id: ${{ steps.create_release.outputs.id }}"
-          echo " release upload_url: ${{ steps.create_release.outputs.upload_url }}"
-          echo " release assets: ${{ steps.create_release.outputs.assets }}"
+
+
+
+      # https://github.com/softprops/action-gh-release
+#      - name: Create Release
+#        id: create_release
+#        continue-on-error: false
+#        uses: softprops/action-gh-release@v0.1.14
+#        # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
+#        # 'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
+#        # 'generate_release_notes']
+#        with:
+#          # uploaded asset
+#          files: ${{ steps.download_file.outputs.chart_path }}
+#          body_path: ${{ steps.download_file.outputs.changelog_path }}
+#          name: Release ${{ steps.tag.outputs.tag }}
+#          tag_name: ${{ steps.tag.outputs.tag }}
+#          # Indicator of whether to fail if any of the files globs match nothing
+#          fail_on_unmatched_files: true
+#          token: ${{ github.token }}
+#
+#      - name: Show Result
+#        run: |
+#          echo " release url: ${{ steps.create_release.outputs.url }}"
+#          echo " release id: ${{ steps.create_release.outputs.id }}"
+#          echo " release upload_url: ${{ steps.create_release.outputs.upload_url }}"
+#          echo " release assets: ${{ steps.create_release.outputs.assets }}"
