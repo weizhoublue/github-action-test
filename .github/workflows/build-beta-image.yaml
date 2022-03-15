@@ -14,6 +14,7 @@ on:
       tag:
         description: 'Tag: Docker Image Tag'
         required: true
+        default: v1.0.0
       suffix:
         description: 'Suffix: Docker Image Suffix (e.g. "beta" )'
         required: true
