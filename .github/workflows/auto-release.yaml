@@ -389,7 +389,7 @@ jobs:
           name: changelog-result
           path: changelog-result/
 
-      - name: Display downloaded files
+      - name: Get Downloaded Files
         id: download_file
         continue-on-error: false
         run: |
@@ -403,8 +403,9 @@ jobs:
               echo "error, failed to find changelog "
               exit 1
           fi
+          ls changelog-result
           cat changelog-result/*.md
-          changelog_file=$( ls changelog-result/*.md )
+          changelog_file=$( ls changelog-result/ )
           changelog_path=changelog-result/${changelog_file}
           echo ::set-output name=changelog_path::${changelog_path}
           TAG_DIFF=${changelog_file%%.md}
