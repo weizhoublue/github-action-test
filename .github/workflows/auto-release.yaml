@@ -430,8 +430,6 @@ jobs:
           replacesArtifacts: true
           artifactErrorsFailBuild: true
           bodyFile: "./changelog-result/changelog.md"
-          # issue: below format could not be recognized
-          #bodyFile: "${{ steps.download_file.outputs.changelog_path }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag:  ${{ steps.tag.outputs.tag }}
           name: "Release ${{ steps.tag.outputs.tag }}"
