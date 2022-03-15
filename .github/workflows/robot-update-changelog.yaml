@@ -209,7 +209,6 @@ jobs:
           branch: update_changelog
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
-          clean: false
           # merge to
           #base: ${{ env.MERGE_TO_BRANCH }}
           signoff: true
