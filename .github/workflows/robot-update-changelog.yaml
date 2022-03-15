@@ -186,6 +186,9 @@ jobs:
           mv .tmp/  ${{ env.CHANGELOG_RESULT_DIR }}/CHANGELOG-${FILE_NAME}
           echo ::set-output name=title::${TITLE}
           rm -rf .tmp/
+          git branch -a
+          git status
+          
 
       # https://github.com/peter-evans/create-pull-request
       #  all new and modified files will be committed
