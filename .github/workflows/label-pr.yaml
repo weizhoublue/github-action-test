@@ -1,8 +1,8 @@
-#auto label pr who is approved by 2 guys.
+#auto label pr who is approved by 1 guys.
 name: Label Approved PR
 
 env:
-  LABEL: pr/approved
+  LABEL: pr/approved,pr/need-release-label
 
 on: pull_request_review
 
