@@ -167,6 +167,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           ref: ${{ env.MERGE_TO_BRANCH }}
 
       - name: Download Changelog
@@ -185,7 +186,6 @@ jobs:
           mv .tmp/  ${{ env.CHANGELOG_RESULT_DIR }}/CHANGELOG-${FILE_NAME}
           echo ::set-output name=title::${TITLE}
           rm -rf .tmp/
-          
 
       # https://github.com/peter-evans/create-pull-request
       #  all new and modified files will be committed
