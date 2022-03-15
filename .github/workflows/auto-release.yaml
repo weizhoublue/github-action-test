@@ -410,11 +410,6 @@ jobs:
           changelog_path=./changelog-result/${changelog_file}
           echo ::set-output name=changelog_path::${changelog_path}
           cp ./changelog-result/${changelog_file} ./changelog-result/changelog.md
-          #changelog_path=changelog-result/${changelog_file}
-          #echo ::set-output name=changelog_path::${changelog_path}
-          #TAG_DIFF=${changelog_file%.md}
-          #TAG_DIFF=${TAG_DIFF#CHANGELOG-*}
-          #echo ::set-output name=tag_diff::${TAG_DIFF}
 
       - name: Create Release
         id: create_release
@@ -426,14 +421,15 @@ jobs:
           # update the release event it exists
           allowUpdates: true
           # if existing release artifacts should be removed
-          #removeArtifacts: true
+          removeArtifacts: true
           # if existing release artifacts should be replaced
           replacesArtifacts: true
           artifactErrorsFailBuild: true
-          bodyFile: "./changelog-result/changelog.md"
+          # bodyFile: "./changelog-result/changelog.md"
+          bodyFile: "${{ steps.download_file.outputs.changelog_path }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag:  ${{ steps.tag.outputs.tag }}
-          name: Release ${{ steps.tag.outputs.tag }}
+          name: "Release ${{ steps.tag.outputs.tag }}"
 
 
 
