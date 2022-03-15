@@ -181,9 +181,12 @@ jobs:
         continue-on-error: false
         run: |
           FILE_NAME=$( ls .tmp/ )
+          ls .tmp/
+          echo $FILE_NAME
           #remove .md
           TITLE=${FILE_NAME##*.}
-          mv .tmp/  ${{ env.CHANGELOG_RESULT_DIR }}/CHANGELOG-${FILE_NAME}
+          echo $TITLE
+          mv .tmp/${FILE_NAME}  ${{ env.CHANGELOG_RESULT_DIR }}/CHANGELOG-${FILE_NAME}
           echo ::set-output name=title::${TITLE}
           rm -rf .tmp/
           git branch -a
