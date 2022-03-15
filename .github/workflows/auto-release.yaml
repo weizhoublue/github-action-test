@@ -430,7 +430,7 @@ jobs:
           # if existing release artifacts should be replaced
           replacesArtifacts: true
           artifactErrorsFailBuild: true
-          bodyFile: ./changelog-result/changelog.md
+          bodyFile: "./changelog-result/changelog.md"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag:  ${{ steps.tag.outputs.tag }}
           name: Release ${{ steps.tag.outputs.tag }}
