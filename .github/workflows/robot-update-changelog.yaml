@@ -165,10 +165,11 @@ jobs:
     steps:
       # checkout code for tag and pr
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          #ref: ${{ env.MERGE_TO_BRANCH }}
+          clean: true
+          ref: ${{ env.MERGE_TO_BRANCH }}
 
       #- run: git checkout HEAD^
 
