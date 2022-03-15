@@ -18,9 +18,11 @@ on:
       from_tag:
         description: 'from_tag: start commit based on which tag'
         required: true
+        default: v1.0.0
       to_tag:
         description: 'to_tag: last commit based on which tag'
         required: true
+        default: v1.0.0
 
 env:
   CHANGELOG_DIR: changelogs

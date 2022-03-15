@@ -18,6 +18,7 @@ on:
       tag:
         description: 'Tag'
         required: true
+        default: v1.0.0
 
 
 permissions: write-all
