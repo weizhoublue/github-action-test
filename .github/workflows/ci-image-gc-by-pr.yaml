@@ -55,3 +55,4 @@ jobs:
           untagged: true
           # if no tag-regex , all tag will be pruned
           tag-regex: ${{ steps.tag.outputs.tag }}*
+

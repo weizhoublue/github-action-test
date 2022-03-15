@@ -1,6 +1,6 @@
 # build the Beta image with customized tag ,under an clean env , from  specified Branch
 # buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage-{beta}:{yourTag}
-name: Build Image Beta By Hand
+name: Build Image Beta
 
 env:
   ONLINE_REGISTER: ghcr.io
@@ -16,7 +16,7 @@ on:
         required: true
         default: v1.0.0
       suffix:
-        description: 'Suffix: Docker Image Suffix (e.g. "beta" )'
+        description: 'image name Suffix (e.g. "beta" )'
         required: true
         default: "beta"
 
