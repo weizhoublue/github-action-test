@@ -230,7 +230,7 @@ jobs:
         uses: repo-sync/pull-request@v2.6
         with:
           # If blank, default: triggered branch
-          source_branch: ""
+          source_branch: ${{ env.MERGE_TO_BRANCH }}
           destination_branch: ${{ env.MERGE_TO_BRANCH }}
           pr_title: "robot Update Changelog ${{ steps.move_changelog_file.outputs.title }}"
           #pr_body: "robot Update Changelog ${{ steps.move_changelog_file.outputs.title }}"
