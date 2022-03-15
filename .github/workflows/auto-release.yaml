@@ -287,6 +287,8 @@ jobs:
       # https://github.com/mikepenz/release-changelog-builder-action
       # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
       # auto parse the latest tag and previous one
+      # !!! this action will switch git to ${toTag} version , who may not be HEAD.
+      # !!! If tag ${toTag} is not HEAD , will make action create-pull-request in 'detached HEAD' state and fail
       - name: Build Changelog By Auto Tag
         id: create_changelog_by_auto_tag
         uses: mikepenz/release-changelog-builder-action@v2.9.0
