@@ -20,13 +20,15 @@ env:
 
 # when PR commit the change for baseimage dockerfile, trigger the workflow
 on:
+  push:
+    paths:
+      - images/baseimage/**
   pull_request_target:
     types:
       - opened
       - synchronize
       - reopened
     paths:
-      #can not use env here
       - images/baseimage/**
   workflow_dispatch:
     inputs:
