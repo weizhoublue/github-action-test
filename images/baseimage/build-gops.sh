@@ -10,6 +10,7 @@ set -o nounset
 
 gops_version="v0.3.22"
 
+
 mkdir -p /go/src/github.com/google
 cd /go/src/github.com/google
 
