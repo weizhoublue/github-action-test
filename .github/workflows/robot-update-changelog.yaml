@@ -16,10 +16,10 @@ on:
   workflow_dispatch:
     inputs:
       from_tag:
-        description: 'from which tag'
+        description: 'from_tag: start commit based on which tag'
         required: true
       to_tag:
-        description: 'to which tag'
+        description: 'to_tag: last commit based on which tag'
         required: true
 
 env:
@@ -30,8 +30,6 @@ env:
   CHANGELOG_CONF: .github/changelog_builder_conf.json
   CHANGELOG_RESULT_DIR: changelogs
   CHANGELOG_TEMP_FILE: _temp_changelog
-  PAT: ${{ secrets.PAT }}
-
 
 jobs:
   generate_changelog:
@@ -182,8 +180,8 @@ jobs:
           name: changelog-result
           path: .tmp/
 
-      - name: Move Changelog File
-        id: move_changelog_file
+      - name: Move File
+        id: move_file
         continue-on-error: false
         run: |
           FILE_NAME=$( ls .tmp/ )
@@ -204,9 +202,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v3
         with:
-          title: "robot Update Changelog ${{ steps.move_changelog_file.outputs.title }}"
+          title: "robot Update Changelog ${{ steps.move_file.outputs.title }}"
           # from branch
-          commit-message: "robot update Changelog ${{ steps.move_changelog_file.outputs.title }} "
+          commit-message: "robot update Changelog ${{ steps.move_file.outputs.title }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
@@ -220,7 +218,6 @@ jobs:
           labels: ${{ env.PR_LABEL }}
           reviewers: ${{ env.PR_REVIWER }}
 
-
       - name: Check PR Outputs
         if: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
@@ -233,6 +230,6 @@ jobs:
       #- name: PR Auto Approve
       #  uses: peter-evans/enable-pull-request-automerge@v1.2.0
       #  with:
-      #    token: ${{ env.PAT }}
+      #    token: ${{ secrets.PAT }}
       #    pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
       #    merge-method: merge
