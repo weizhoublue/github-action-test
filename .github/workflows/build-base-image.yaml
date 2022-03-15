@@ -60,6 +60,7 @@ jobs:
           echo "Status:    ${{ steps.buildx.outputs.status }}"
           echo "Flags:     ${{ steps.buildx.outputs.flags }}"
           echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
       - name: Set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v1.2.0
@@ -101,7 +102,7 @@ jobs:
             echo "the target base image exist , no need to build it "
           else
             echo ::set-output name=exists::"false"
-            echo "the target base image exist , no need to build it "
+            echo "the target base image does not exist , build it "
           fi
 
       - name: Login to online register
