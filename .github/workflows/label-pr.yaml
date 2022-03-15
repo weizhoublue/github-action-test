@@ -2,7 +2,7 @@
 name: Label Approved PR
 
 env:
-  LABEL: pr/approved
+  LABEL: pr/approved,pr/need-release-label
 
 on: pull_request_review
 
