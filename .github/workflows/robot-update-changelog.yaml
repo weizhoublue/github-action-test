@@ -171,7 +171,8 @@ jobs:
           clean: true
           ref: ${{ env.MERGE_TO_BRANCH }}
 
-      #- run: git checkout HEAD^
+      - run: |
+          git checkout -b newchangelog
 
       - name: Download Changelog
         uses: actions/download-artifact@v3.0.0
@@ -211,7 +212,7 @@ jobs:
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
-          #base: ${{ env.MERGE_TO_BRANCH }}
+          base: ${{ env.MERGE_TO_BRANCH }}
           signoff: true
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.PR_LABEL }}
