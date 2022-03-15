@@ -33,6 +33,7 @@ permissions: write-all
 
 jobs:
   build-and-push:
+    name: build image
     environment: release
     runs-on: ubuntu-latest
     strategy:
@@ -166,8 +167,8 @@ jobs:
           path: Makefile.digests
           retention-days: 1
 
-
   release-chart:
+    name: package chart
     runs-on: ubuntu-latest
     needs: build-and-push
     strategy:
@@ -259,7 +260,7 @@ jobs:
 
   release-changelog:
     needs: release-chart
-    name: auto generate release changelog
+    name: create changelog
     runs-on: ubuntu-latest
     steps:
       - name: Getting image tag
@@ -357,7 +358,7 @@ jobs:
 
   create-release:
     needs: release-changelog
-    name: auto generate release
+    name: create release
     runs-on: ubuntu-latest
     steps:
       - name: Getting image tag
@@ -402,9 +403,14 @@ jobs:
               echo "error, failed to find changelog "
               exit 1
           fi
-          cat changelog-result/*.md       
-          changelog_path=$( ls changelog-result/*.md )
+          cat changelog-result/*.md
+          changelog_file=$( ls changelog-result/*.md )
+          changelog_path=changelog-result/${changelog_file}
           echo ::set-output name=changelog_path::${changelog_path}
+          TAG_DIFF=${changelog_file%%.md}
+          TAG_DIFF=${TAG_DIFF##CHANGELOG-*}
+          echo ::set-output name=tag_diff::${TAG_DIFF}
+
 
       # https://github.com/softprops/action-gh-release
       - name: Create Release
