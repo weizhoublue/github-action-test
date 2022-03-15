@@ -18,8 +18,8 @@ on:
         description: 'Base: tag, branch or sha . main branch as default'
         required: true
         default: main
-      dest_branch:
-        description: 'Dest_branch: the destination branch. chart branch as default'
+      merged_branch:
+        description: 'merged_branch: the destination branch. chart branch as default'
         required: true
         default: chart
 
@@ -40,7 +40,7 @@ jobs:
               ver=${{ github.event.inputs.base }}
               echo ::set-output name=version::${ver}
 
-              dest=${{ github.event.inputs.dest_branch }}
+              dest=${{ github.event.inputs.merged_branch }}
               echo ::set-output name=dest::${dest}
           else
               echo ::set-output name=version::main

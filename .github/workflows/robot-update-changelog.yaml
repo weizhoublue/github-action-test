@@ -1,4 +1,4 @@
-# auto generating changelog to /changelogs/***
+# auto generating changelog to directory /changelogs/*** of main branch
 # when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 # then commit the pr to main branch , then auto approve it
 # commit changelog: changelogs/CHANGELOG-{begin_tag}-to-{end_tag}.md
@@ -11,20 +11,16 @@ on:
       - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
   # called by build release image
   workflow_call:
-  #push:
-  #  tags:
-  #    - v[0-9]+.[0-9]+.[0-9]+
-  #    - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
   # call by manual
   # if from_tag and to_tag is empty, pase latest tag auto
   workflow_dispatch:
     inputs:
       from_tag:
-        description: 'from which tag. if emtpy, auto select latest'
-        required: false
+        description: 'from which tag'
+        required: true
       to_tag:
-        description: 'to which tag. if emtpy, auto select latest'
-        required: false
+        description: 'to which tag'
+        required: true
 
 env:
   CHANGELOG_DIR: changelogs
@@ -155,7 +151,6 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-
   # mikepenz/release-changelog-builder-action maybe checkout to the tag who is not latest HEAD of main branch ,
   # which make fail to peter-evans/create-pull-request. So we do it in another job
   create_pr:
@@ -172,7 +167,8 @@ jobs:
               echo ::set-output name=tag::${GITHUB_REF##*/}
           fi
 
-      # checkout code for tag and pr
+      # checkout out to an online branch/tag who is not the destination merged branch
+      #      of action peter-evans/create-pull-request, or else PR fail
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -201,8 +197,9 @@ jobs:
           git branch -a
           git status
 
-      # https://github.com/peter-evans/create-pull-request
-      #  all new and modified files will be committed
+      # !!! the current local source branch and destination branch must exist online , or else fail to pr
+      # based on local branch who must exist online , the action commit all modified file and commit to New branch
+      # finally merge to destination branch who must exist online
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v3
@@ -230,13 +227,12 @@ jobs:
           echo "Pull Request Number - ${{ steps.create_pr.outputs.pr_number }}"
           echo "Pull Request URL - ${{ steps.create_pr.outputs.pr_url }}"
 
-
       # auto apporve the pr if requirements have been satisfied
       # https://github.com/peter-evans/enable-pull-request-automerge
-      # Can't enable auto-merge for this pull request
-      - name: PR Auto Approve
-        uses: peter-evans/enable-pull-request-automerge@v1.2.0
-        with:
-          token: ${{ env.PAT }}
-          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
-          merge-method: merge
+      # error: Can't enable auto-merge for this pull request
+      #- name: PR Auto Approve
+      #  uses: peter-evans/enable-pull-request-automerge@v1.2.0
+      #  with:
+      #    token: ${{ env.PAT }}
+      #    pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+      #    merge-method: merge

@@ -282,7 +282,7 @@ jobs:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
           fetch-depth: 0
-          ref: ${{ env.MERGE_TO_BRANCH }}
+          ref: ${{ steps.tag.outputs.tag }}
 
       # https://github.com/mikepenz/release-changelog-builder-action
       # PRs will only show up in the changelog if assigned one of the default label categories "feature", "fix" or "test" . Or else, we should configure yaml
@@ -322,12 +322,12 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      - name: Create commits
-        run: |
-          git config user.name 'robot'
-          git config user.email 'robot@users.noreply.github.com'
-          git add -A
-          git commit -m "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
+      #- name: Create commits
+      #  run: |
+      #    git config user.name 'robot'
+      #    git config user.email 'robot@users.noreply.github.com'
+      #    git add -A
+      #    git commit -m "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
 
       # https://github.com/peter-evans/create-pull-request
       #  all new and modified files will be committed
@@ -346,7 +346,7 @@ jobs:
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
-          # base: ${{ env.MERGE_TO_BRANCH }}
+          base: ${{ env.MERGE_TO_BRANCH }}
           signoff: true
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.PR_LABEL }}
