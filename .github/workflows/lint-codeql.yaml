@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           persist-credentials: false
+
       - name: Check code changes
         uses: dorny/paths-filter@v2.10.2
         id: go-changes
