@@ -1,3 +1,4 @@
+//  https://github.com/mikepenz/release-changelog-builder-action#configuration-specification
 {
   "categories": [
     {
@@ -18,31 +19,14 @@
   ],
   "sort": "ASC",
   "template": "from tag ${{FROM_TAG}} to ${{TO_TAG}}\n\n${{CHANGELOG}}\n\ncategorized pr: ${{CATEGORIZED_COUNT}}\n\nuncategorized pr: ${{UNCATEGORIZED_COUNT}}\n\nignored pr: ${{IGNORED_COUNT}}\n\n<details>\n<summary>Total PR</summary>\n\n${{RELEASE_DIFF}}\n</details>",
-  "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
+  "pr_template": "- ${{TITLE}} - PR: #${{NUMBER}}",
   "empty_template": "- no changes",
-  "duplicate_filter": {
-    "pattern": "\\[ABC-....\\]",
-    "on_property": "title",
-    "method": "match"
-  },
-  "transformers": [
-    {
-      "pattern": "[\\-\\*] (\\[(...|TEST|CI|SKIP)\\])( )?(.+?)\n(.+?[\\-\\*] )(.+)",
-      "target": "- $4\n  - $6"
-    }
-  ],
+  "transformers": [],
   "max_tags_to_fetch": 200,
   "max_pull_requests": 1000,
   "max_back_track_time_days": 365,
-  "exclude_merge_branches": [
-    "Owner/qa"
-  ],
   "tag_resolver": {
-    "method": "semver",
-    "filter": {
-      "pattern": "api-(.+)",
-      "flags": "gu"
-    }
+    "method": "semver"
   },
   "base_branches": [
     "main"
