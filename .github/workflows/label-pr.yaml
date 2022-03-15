@@ -1,3 +1,4 @@
+#auto label pr who is approved by 2 guys.
 name: Label Approved PR
 
 env:
@@ -14,7 +15,7 @@ jobs:
       - name: Label when approved
         uses: pullreminders/label-when-approved-action@v1.0.7
         env:
-          APPROVALS: "2"
+          APPROVALS: "1"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ADD_LABEL: ${{ env.LABEL }}
-          #REMOVE_LABEL: "awaiting%20review"
+          #REMOVE_LABEL: "..."
