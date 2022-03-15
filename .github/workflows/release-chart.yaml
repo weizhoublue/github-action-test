@@ -10,21 +10,18 @@ env:
   HELM_VERSION: v3.8.1
   PR_LABEL: pr/release/robot_chart
   PR_REVIWER: weizhoublue
+  MERGE_BRANCH: chart
 
 on:
   workflow_dispatch:
     inputs:
       base:
-        description: 'Base: tag, branch or sha . main branch as default'
+        description: 'Base: tag or sha'
         required: true
-        default: main
-      merged_branch:
-        description: 'merged_branch: the destination branch. chart branch as default'
-        required: true
-        default: chart
+        default: v1.0.0
 
 jobs:
-  release:
+  generate_chart:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -39,12 +36,8 @@ jobs:
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
               echo ::set-output name=version::${ver}
-
-              dest=${{ github.event.inputs.merged_branch }}
-              echo ::set-output name=dest::${dest}
           else
               echo ::set-output name=version::main
-              echo ::set-output name=dest::main
           fi
 
       - name: Checkout Code
@@ -85,13 +78,29 @@ jobs:
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./
 
+      - name: Upload Chart Package
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: chart-package
+          path: ./docs/charts/*
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload Chart Yaml
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: chart-package
+          path: ./docs/index.yaml
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v3.14.0
         with:
-          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ steps.get_version.outputs.dest }} "
+          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
           # from branch
-          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ steps.get_version.outputs.dest }} "
+          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
@@ -99,7 +108,7 @@ jobs:
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
-          base: ${{ steps.get_version.outputs.dest }}
+          base: ${{ env.MERGE_BRANCH }}
           signoff: true
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.PR_LABEL }}
