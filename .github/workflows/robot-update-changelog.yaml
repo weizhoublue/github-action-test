@@ -110,7 +110,7 @@ jobs:
           configuration: ${{ env.CHANGELOG_CONF }}
           outputFile: ./_temp_changelog
           fromTag: ${{ github.event.inputs.from_tag }}
-          toTag: ${{ github.event.inputs.end_tag }}
+          toTag: ${{ github.event.inputs.to_tag }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -168,7 +168,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: ${{ env.MERGE_TO_BRANCH }}
+          #ref: ${{ env.MERGE_TO_BRANCH }}
 
       - name: Download Changelog
         uses: actions/download-artifact@v3.0.0
@@ -183,8 +183,7 @@ jobs:
           FILE_NAME=$( ls .tmp/ )
           ls .tmp/
           echo $FILE_NAME
-          #remove .md
-          TITLE=${FILE_NAME##*.}
+          TITLE=${FILE_NAME%%.md}
           echo $TITLE
           mv .tmp/${FILE_NAME}  ${{ env.CHANGELOG_RESULT_DIR }}/CHANGELOG-${FILE_NAME}
           echo ::set-output name=title::${TITLE}
