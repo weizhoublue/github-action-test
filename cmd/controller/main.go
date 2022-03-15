@@ -35,5 +35,6 @@ func main() {
 
 	TestRace()
 	Testlock()
+	Testlock()
 	print.MyPrint()
 }
