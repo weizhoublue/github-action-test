@@ -296,7 +296,7 @@ jobs:
           configuration: ${{ env.CHANGELOG_CONF }}
           outputFile: ${{ env.CHANGELOG_RESULT_DIR }}/${{ env.CHANGELOG_TEMP_FILE }}
           failOnError: true
-            toTag: ${{ steps.tag.outputs.tag }}
+          toTag: ${{ steps.tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
