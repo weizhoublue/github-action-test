@@ -203,7 +203,7 @@ jobs:
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
-          base: ${{ env.MERGE_TO_BRANCH }}
+          #base: ${{ env.MERGE_TO_BRANCH }}
           signoff: true
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: ${{ env.PR_LABEL }}
