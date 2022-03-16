@@ -40,13 +40,15 @@ update-go-version: ## Update Go version for all the components
 	@echo "GO_MAJOR_AND_MINOR_VERSION=${GO_MAJOR_AND_MINOR_VERSION}"
 	@echo "GO_IMAGE_VERSION=${GO_IMAGE_VERSION}"
 	# ===== Update Go version for GitHub workflow
-	$(QUIET) for fl in $(shell find .github/workflows -name "*.yaml" -print) ; do sed -i 's/go-version: .*/go-version: $(GO_IMAGE_VERSION)/g' $$fl ; done
+	$(QUIET) for fl in $(shell find .github/workflows -name "*.yaml" -print) ; do \
+  			sed -i 's/go-version: .*/go-version: ${GO_IMAGE_VERSION}/g' $$fl ; \
+  			done
 	@echo "Updated go version in GitHub Actions to $(GO_IMAGE_VERSION)"
 	# ======= Update Go version in main.go.
 	$(QUIET) for fl in $(shell find .  -name main.go -not -path "./vendor/*" -print); do \
 		sed -i \
-			-e 's|^//go:build go.*|//go:build go$(GO_MAJOR_AND_MINOR_VERSION)|g' \
-			-e 's|^// +build go.*|// +build go$(GO_MAJOR_AND_MINOR_VERSION)|g' \
+			-e 's|^//go:build go.*|//go:build go${GO_MAJOR_AND_MINOR_VERSION}|g' \
+			-e 's|^// +build go.*|// +build go${GO_MAJOR_AND_MINOR_VERSION}|g' \
 			$$fl ; \
 	done
 ifeq (${shell [ -f .travis.yml ] && echo done},done)

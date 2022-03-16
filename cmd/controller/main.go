@@ -1,3 +1,8 @@
+// Ensure build fails on versions of Go that are not supported
+// This build tag should be kept in sync with the version specified in go.mod.
+//go:build go1.17
+// +build go1.17
+
 package main
 
 import (
