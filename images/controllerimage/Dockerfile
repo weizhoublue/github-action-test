@@ -1,7 +1,7 @@
 # from the root of project , run : docker buildx build -t release:latest --platform=linux/amd64 --output type=docker -f ./images/controllerimage/Dockerfile .
 
 ARG BASE_IMAGE=weizhoulan/baseimage:bdecfc7c5e21b5341e12a35b7dcb846c5eaaeae2
-ARG GOLANG_IMAGE=docker.io/library/golang:1.17.8
+ARG GOLANG_IMAGE=docker.io/library/golang:1.17.8@sha256:c7c94588b6445f5254fbc34df941afa10de04706deb330e62831740c9f0f2030
 
 # TARGETARCH is an automatic platform ARG enabled by Docker BuildKit.
 # like amd64 arm64
