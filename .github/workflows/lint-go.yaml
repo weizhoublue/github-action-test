@@ -1,4 +1,4 @@
-name: Lint Go-lint checks
+name: Lint Go Vendor And golangci-lint
 
 # Any change in triggers needs to be reflected in the concurrency group.
 on:
