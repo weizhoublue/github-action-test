@@ -15,7 +15,8 @@ if [ "$#" -gt 1 ] ; then
   echo "$0 supports at most 1 argument"
   exit 1
 fi
-go_version=${1:-"1.17.7"}
+
+go_version=${GO_VERSION:-"1.17.7"}
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

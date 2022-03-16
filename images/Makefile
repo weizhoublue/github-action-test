@@ -1,6 +1,7 @@
 # Copyright 2020 Authors of Cilium
 # SPDX-License-Identifier: Apache-2.0
 
+include ../Makefile.defs
 
 PUSH ?= false
 
@@ -20,7 +21,7 @@ lint:
 	docker buildx create --platform linux/amd64,linux/arm64 --buildkitd-flags '--debug' > $@
 
 update-golang-image:
-	scripts/update-golang-image.sh
+	GO_VERSION=${GO_VERSION} scripts/update-golang-image.sh
 
 update-alpine-image:
 	scripts/update-alpine-image.sh
