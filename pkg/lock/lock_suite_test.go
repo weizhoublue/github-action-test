@@ -1,3 +1,6 @@
+// Copyright 2022 Authors of welan
+// SPDX-License-Identifier: Apache-2.0
+
 //  a package ending in *_test is allowed to live in the same directory as the package being tested
 package lock_test
 
