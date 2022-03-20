@@ -1,3 +1,6 @@
+// Copyright 2022 Authors of welan
+// SPDX-License-Identifier: Apache-2.0
+
 //  a package ending in *_test is allowed to live in the same directory as the package being tested
 package lock_test
 
@@ -97,10 +100,10 @@ var _ = Describe("Lock", func() {
 				// fail 的实现机制是 调用了 panics
 				Fail("Gomega generates a failure message and passes it to Ginkgo to signal that the spec has failed")
 			}
-			fmt.Println("you could not get  here ")
 
 			t := &lock.Mutex{}
 			t.Lock()
+			fmt.Println("you could not get  here ")
 			t.Unlock()
 		})
 	})

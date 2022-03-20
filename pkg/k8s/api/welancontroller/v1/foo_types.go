@@ -1,3 +1,6 @@
+// Copyright 2022 Authors of welan
+// SPDX-License-Identifier: Apache-2.0
+
 /*
 controller-gen  crd  paths=./pkg/k8s/api/welancontroller/v1/...  output:stdout
 
