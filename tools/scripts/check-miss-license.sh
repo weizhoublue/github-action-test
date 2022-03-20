@@ -12,6 +12,8 @@ if [ -n "$FILE_LIST" ]; then
     echo "error, found go file who missing licecse announce "
     echo "$FILE_LIST"
     exit 1
+else
+    echo "all code is good"
 fi
 
 
