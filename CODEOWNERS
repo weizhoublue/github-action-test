@@ -35,3 +35,9 @@ cmd/  @octocat
 /images/ @weizhoublue
 /charts/ @weizhoublue
 /changelogs/ @weizhoublue
+/docs/ @weizhoublue
+/contrib/ @weizhoublue
+/api/ @weizhoublue
+/pkg/ @weizhoublue
+/tools/ @weizhoublue
+/test/ @weizhoublue

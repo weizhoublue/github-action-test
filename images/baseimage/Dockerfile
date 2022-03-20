@@ -1,8 +1,8 @@
 # docker buildx build -t testbase:latest --platform=linux/arm64,linux/amd64 --output type=docker .
 
 
-ARG GOLANG_IMAGE=docker.io/library/golang:1.17.8
-ARG UBUNTU_IMAGE=docker.io/library/ubuntu:20.04
+ARG GOLANG_IMAGE=docker.io/library/golang:1.18.0@sha256:03baa0921adf5fb547f48df8b16137de82b5ccc34986c22a967055379369f614
+ARG UBUNTU_IMAGE=docker.io/library/ubuntu:20.04@sha256:8ae9bafbb64f63a50caab98fd3a5e37b3eb837a3e0780b78e5218e63193961f9
 
 #========= build gops ===============
 FROM --platform=${BUILDPLATFORM} ${GOLANG_IMAGE} as gops-cni-builder

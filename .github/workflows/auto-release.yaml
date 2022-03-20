@@ -1,5 +1,9 @@
 # build the release image under an clean env , and it is trigger by tag event
 # buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage:v1.0.0
+# 1 build the all images, push images to ghcr.io,
+# 2 package the chart , PR to docs/charts of branch chart for githupage , who used as chart registry and doc server( PR need approval by hand)
+# 3 create changelog filem PR to /changelogs of branch main ( PR need approval by hand)
+# 4 create a relase , attached with chart and changelog
 name: Auto Release Version
 
 env:

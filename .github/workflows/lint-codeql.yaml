@@ -5,10 +5,11 @@ on:
   pull_request:
     branches:
       - main
-  # push to the main
+      - release-*
   push:
     branches:
       - main
+      - release-*
   #schedule:
   #  - cron: "45 6 * * 3"
 
