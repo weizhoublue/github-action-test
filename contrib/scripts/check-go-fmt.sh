@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Copyright 2022 Authors of welan
+# SPDX-License-Identifier: Apache-2.0
+
+
 set -e
 set -o pipefail
 
