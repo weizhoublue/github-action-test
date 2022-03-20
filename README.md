@@ -6,7 +6,7 @@
 
 secret.PAT 
 
-## ============================
+## ========== workflow ==================
 
 # feature
 
@@ -87,6 +87,14 @@ and label them with release-related lables , and merge it
 
 ## use "chart" branch as github page and provide chart repo
 
+
+## ========== makefile ==================
+
+#### auto generate license of vendor
+
+#### auto globally modify go version in files
+
+#### 
 
 
 ## ============================

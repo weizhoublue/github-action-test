@@ -16,7 +16,7 @@ if [ "$#" -gt 1 ] ; then
   exit 1
 fi
 
-go_version=${GO_VERSION:-"1.17.7"}
+go_version=${GO_VERSION:-"1.17.8"}
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

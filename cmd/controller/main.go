@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/weizhoublue/github-action-test/pkg/lock"
 	"github.com/weizhoublue/github-action-test/pkg/print"
+	"google.golang.org/grpc"
 	"time"
 )
 
@@ -37,6 +38,8 @@ func Testlock() {
 
 func main() {
 	fmt.Println("hello world")
+
+	grpc.Dial("localhost:50051")
 
 	TestRace()
 	Testlock()
