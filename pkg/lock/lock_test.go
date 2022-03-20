@@ -323,7 +323,8 @@ var _ = Describe("test race", Label("race"), func() {
 			// shard based on our current process index.
 			// this starts at 1 and goes up to N, the number of parallel processes.
 			dir := fmt.Sprintf("./tmp-%d", GinkgoParallelProcess())
-			os.MkdirAll(dir, os.ModePerm)
+			err := os.MkdirAll(dir, os.ModePerm)
+			Expect(err).To(Succeed())
 
 			// 配合 ginkgo --fail-fast ，若测试用例失败时，能够保留 临时目录里的数据，供debug，否则删除
 			DeferCleanup(func() {

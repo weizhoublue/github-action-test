@@ -40,3 +40,4 @@ cmd/  @octocat
 /api/ @weizhoublue
 /pkg/ @weizhoublue
 /tools/ @weizhoublue
+/test/ @weizhoublue

@@ -39,7 +39,11 @@ func Testlock() {
 func main() {
 	fmt.Println("hello world")
 
-	grpc.Dial("localhost:50051")
+	_, e := grpc.Dial("localhost:50051")
+	if e != nil {
+		fmt.Println("failed to  Dial")
+
+	}
 
 	TestRace()
 	Testlock()
