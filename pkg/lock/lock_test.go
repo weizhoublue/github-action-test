@@ -100,10 +100,10 @@ var _ = Describe("Lock", func() {
 				// fail 的实现机制是 调用了 panics
 				Fail("Gomega generates a failure message and passes it to Ginkgo to signal that the spec has failed")
 			}
-			fmt.Println("you could not get  here ")
 
 			t := &lock.Mutex{}
 			t.Lock()
+			fmt.Println("you could not get  here ")
 			t.Unlock()
 		})
 	})
