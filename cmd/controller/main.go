@@ -3,6 +3,9 @@
 //go:build go1.18
 // +build go1.18
 
+// Copyright 2022 Authors of welan
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
