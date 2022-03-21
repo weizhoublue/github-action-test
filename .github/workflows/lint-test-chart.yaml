@@ -13,36 +13,7 @@ on:
       - "charts/**"
 
 jobs:
-  filter_changes:
-    name: Deduce required tests from code changes
-    runs-on: ubuntu-latest
-    outputs:
-      code-changes: ${{ steps.code-changes.outputs.src }}
-    steps:
-      - name: Checkout code
-        if: ${{ !github.event.pull_request }}
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
-      # https://github.com/dorny/paths-filter
-      # https://github.com/micromatch/picomatch#basic-globbing
-      # * Matches any character zero or more times, excluding path separators
-      # **  Matches any character zero or more times, including path separators
-      - name: Check code changes
-        uses: dorny/paths-filter@v2.10.2
-        if: ${{ !github.event.pull_request }}
-        id: code-changes
-        with:
-          base: ${{ github.event.pull_request.base.sha }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          filters: |
-            src:
-              - '/charts/**'
-
   chart-lint-test:
-    need: filter_changes
-    if: ${{ needs.filter_changes.outputs.code-changes == 'true' }}
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/checkout
