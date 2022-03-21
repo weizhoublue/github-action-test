@@ -30,6 +30,7 @@ jobs:
         with:
           persist-credentials: false
 
+      # https://github.com/dorny/paths-filter
       - name: Check code changes
         uses: dorny/paths-filter@v2.10.2
         id: go-changes
