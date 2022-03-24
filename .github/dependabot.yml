@@ -1,0 +1,37 @@
+# 自动帮助更新依赖， 提出PR
+# https://docs.github.com/cn/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#assignees
+
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    #default to default branch
+    #target-branch: "main"
+    open-pull-requests-limit: 10
+    rebase-strategy: "disabled"
+    ignore:
+        # k8s dependencies will be updated manually along with tests
+      - dependency-name: "k8s.io/*"
+      - dependency-name: "sigs.k8s.io/*"
+    reviewers:
+      - "weizhoublue"
+    labels:
+      - pr/release/none-required
+      - pr/dependabot/gomod
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    #default to default branch
+    #target-branch: "main"
+    open-pull-requests-limit: 5
+    rebase-strategy: "disabled"
+    reviewers:
+      - "weizhoublue"
+    labels:
+      - pr/dependabot/github-actions
+      - pr/release/none-required
+

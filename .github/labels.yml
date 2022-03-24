@@ -34,6 +34,12 @@
 - name: pr/need-release-label
   description: This pull neel release label for merge
   color: df56d7
+- name: pr/dependabot/gomod
+  description: This pull neel release label for merge
+  color: df56d7
+- name: pr/dependabot/github-actions
+  description: This pull neel release label for merge
+  color: df56d7
 - name: issue/bug
   description: bug
   color: efd3d7
