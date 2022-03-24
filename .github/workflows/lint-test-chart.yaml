@@ -18,7 +18,7 @@ jobs:
     steps:
       # https://github.com/actions/checkout
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags

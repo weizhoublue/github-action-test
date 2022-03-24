@@ -72,7 +72,7 @@ jobs:
 
       # https://github.com/actions/checkout
       - name: Checkout Source Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         continue-on-error: false
         with:
           # Whether to configure the token or SSH key with the local git config
@@ -195,7 +195,7 @@ jobs:
           echo ::set-output name=dest::${{ env.CHART_DEST_BRANCH }}
 
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ steps.tag.outputs.tag }}
 
@@ -280,7 +280,7 @@ jobs:
 
       # checkout code for tag and pr
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
