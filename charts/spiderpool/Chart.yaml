@@ -1,0 +1,20 @@
+apiVersion: v2
+name: spiderpool
+displayName: spiderpool
+home: "https://spidernet-io.github.io/spiderpool"
+# application or library
+type: application
+version: 0.1.0
+# This field is informational, and has no impact on chart version calculations .
+# Leaving it unquoted can lead to parsing issues in some cases
+appVersion: "0.1.0"
+kubeVersion: ">= 1.16.0-0"
+description: ipam for kubernetes cni
+sources:
+  - "https://github.com/spidernet-io/spiderpool"
+keywords:
+  - spiderpool
+  - ipam
+maintainers:
+  - name: spidernet.io
+    url: https://github.com/spidernet-io
