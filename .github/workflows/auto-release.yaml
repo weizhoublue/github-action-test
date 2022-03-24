@@ -244,7 +244,7 @@ jobs:
 
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v3.14.0
+        uses: peter-evans/create-pull-request@v4
         with:
           title: "robot Update chart from tag ${{ steps.tag.outputs.tag }} to branch ${{ steps.tag.outputs.dest }}"
           # from branch
@@ -341,7 +341,7 @@ jobs:
       # If you want pull requests created by this action to trigger an on: push or on: pull_request workflow then you cannot use the default GITHUB_TOKEN
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v3.14.0
+        uses: peter-evans/create-pull-request@v4
         with:
           title: "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
           # from branch
