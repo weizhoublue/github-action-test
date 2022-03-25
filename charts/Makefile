@@ -6,7 +6,7 @@ CHART_FILE := "./spiderpool/Chart.yaml"
 VALUES_FILE := "./spiderpool/values.yaml"
 
 .PHONY: all lint update-versions
-all: update-versions lint package
+all: update-versions lint package clean
 
 #update version in chart
 update-versions:
@@ -25,4 +25,5 @@ lint: update-versions
 package: lint
 	$(QUIET)helm package ./spiderpool
 
-
+clean:
+	$(QUIET)rm -f *.tgz

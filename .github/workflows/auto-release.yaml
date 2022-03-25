@@ -217,13 +217,10 @@ jobs:
         run: |
           chart_dir=${{ matrix.chart_dir }}
           [ ! -d "${chart_dir}" ] && echo "error, fail to find directory ${chart_dir}" && exit 1
-          mkdir _tmp
-          cd _tmp
-          helm package ../${chart_dir}
-          cd ..
-          mkdir -p docs/charts
-          mv _tmp/*.tgz docs/charts
-          rm -rf _tmp
+          cd $chart_dir
+          make clean
+          make
+          ls *.tgz &>/dev/null && echo "failed to generate chart" && exit 1
 
       - name: Prepare Index
         continue-on-error: false
