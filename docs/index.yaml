@@ -73,9 +73,9 @@ entries:
             leaves the cluster and which source addresses to use for that traffic.
     apiVersion: v2
     appVersion: 1.11.2
-    created: "2022-03-14T12:32:02.23531624Z"
+    created: "2022-03-25T17:51:12.476129276Z"
     description: eBPF-based Networking, Security, and Observability
-    digest: b47ad206a50c74878858ee87ad284f47ce90ea5ad1b097face30d2e6190c89be
+    digest: 0d2b87b9699b1f25f5b3ed5b19a9a2719a5e490d2844ff33591206cb15d8bdb3
     home: https://cilium.io/
     icon: https://cdn.jsdelivr.net/gh/cilium/cilium@v1.11.2/Documentation/images/logo-solo.svg
     keywords:
@@ -93,4 +93,4 @@ entries:
     urls:
     - https://weizhoublue.github.io/github-action-test/charts/cilium-1.11.2.tgz
     version: 1.11.2
-generated: "2022-03-14T12:32:02.22915526Z"
+generated: "2022-03-25T17:51:12.460495785Z"
