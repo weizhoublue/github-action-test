@@ -225,6 +225,7 @@ jobs:
           cd ..
           mkdir -p docs/charts
           mv charts/*.tgz docs/charts
+          git checkout -- charts
 
       - name: Prepare Index
         continue-on-error: false
