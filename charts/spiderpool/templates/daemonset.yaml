@@ -44,9 +44,9 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .Values.spiderpoolAgent.name | trunc 63 | trimSuffix "-" }}
-      priorityClassName: {{- default "system-node-critical" .Values.spiderpoolAgent.priorityClassName -}}
+      priorityClassName: {{ default "system-node-critical" .Values.spiderpoolAgent.priorityClassName }}
       hostNetwork: true
-      dnsPolicy: ClusterFirst
+      dnsPolicy: ClusterFirstWithHostNet
       restartPolicy: Always
       {{- with .Values.spiderpoolAgent.tolerations }}
       tolerations:
@@ -78,11 +78,16 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Values.spiderpoolAgent.name | trunc 63 | trimSuffix "-" }}
-        image: "{{ .Values.spiderpoolAgent.image.repository }}:{{ .Values.spiderpoolAgent.image.tag | default .Chart.AppVersion }}"
+        {{- if .Values.spiderpoolAgent.image.digest }}
+        image: "{{ .Values.spiderpoolAgent.image.repository }}@{{ .Values.spiderpoolAgent.image.digest }}"
+        {{- else }}
+        image: "{{ .Values.spiderpoolAgent.image.repository }}:{{ default .Chart.AppVersion .Values.spiderpoolAgent.image.tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.spiderpoolAgent.image.pullPolicy }}
         command:
-        - spiderpool-controller
+        - {{ .Values.spiderpoolAgent.binName }}
         args:
+        - daemon
         - --config-dir=/tmp/spiderpool/config-map
         - --ipam-config-dir=/tmp/spiderpool/ipam-plugin-config-map
         {{- with .Values.spiderpoolAgent.extraArgs }}
@@ -98,7 +103,7 @@ spec:
         startupProbe:
           httpGet:
             host: {{ .Values.configmap.config.enableIpv4 | ternary "127.0.0.1" "::1" | quote }}
-            path: /healthz
+            path: /ready
             port: {{ .Values.spiderpoolAgent.httpPort }}
             scheme: HTTP
             httpHeaders:
@@ -144,7 +149,7 @@ spec:
           preStop:
             exec:
               command:
-                - spiderpool-agent
+                - {{ .Values.spiderpoolAgent.binName }}
                 - shutdown
         env:
         - name: SPIDERPOOL_LOG_LEVEL
@@ -153,6 +158,8 @@ spec:
           value: {{ .Values.spiderpoolAgent.debug.pprofEnabled | quote }}
         - name: SPIDERPOOL_ENABLED_METRIC
           value: {{ .Values.spiderpoolAgent.prometheus.enabled | quote }}
+        - name: SPIDERPOOL_METRIC_HTTP_PORT
+          value: {{ .Values.spiderpoolAgent.prometheus.port | quote }}
         {{- with .Values.spiderpoolAgent.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

@@ -7,7 +7,7 @@ type: application
 version: 0.1.0
 # This field is informational, and has no impact on chart version calculations .
 # Leaving it unquoted can lead to parsing issues in some cases
-appVersion: "0.1.0"
+appVersion: 0.1.0
 kubeVersion: ">= 1.16.0-0"
 description: ipam for kubernetes cni
 sources:
