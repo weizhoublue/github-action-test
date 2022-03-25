@@ -215,7 +215,11 @@ jobs:
       - name: Prepare Chart
         continue-on-error: false
         run: |
+          pwd 
+          ls 
           cd charts
+          ls 
+          cat Makefile
           make clean
           make
           ls *.tgz &>/dev/null && echo "failed to generate chart" && exit 1
