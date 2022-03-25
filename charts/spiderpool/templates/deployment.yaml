@@ -41,9 +41,14 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .Values.spiderpoolController.name | trunc 63 | trimSuffix "-" }}
-      priorityClassName: {{- default "system-node-critical" .Values.spiderpoolController.priorityClassName -}}
+      priorityClassName: {{ default "system-node-critical" .Values.spiderpoolController.priorityClassName }}
+      {{- if .Values.spiderpoolController.hostnetwork }}
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- else }}
+      hostNetwork: false
       dnsPolicy: ClusterFirst
+      {{- end }}
       restartPolicy: Always
       {{- with .Values.spiderpoolController.tolerations }}
       tolerations:
@@ -69,11 +74,16 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Values.spiderpoolController.name | trunc 63 | trimSuffix "-" }}
-        image: "{{ .Values.spiderpoolController.image.repository }}:{{ .Values.spiderpoolController.image.tag | default .Chart.AppVersion }}"
+        {{- if .Values.spiderpoolController.image.digest }}
+        image: "{{ .Values.spiderpoolController.image.repository }}@{{ .Values.spiderpoolController.image.digest }}"
+        {{- else }}
+        image: "{{ .Values.spiderpoolController.image.repository }}:{{ default .Chart.AppVersion .Values.spiderpoolController.image.tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.spiderpoolController.image.pullPolicy }}
         command:
-        - spiderpool-controller
+        - {{ .Values.spiderpoolController.binName }}
         args:
+        - daemon
         - --config-dir=/tmp/spiderpool/config-map
         {{- with .Values.spiderpoolController.extraArgs }}
         {{- toYaml . | trim | nindent 8 }}
@@ -91,7 +101,7 @@ spec:
         startupProbe:
           httpGet:
             host: {{ .Values.configmap.config.enableIpv4 | ternary "127.0.0.1" "::1" | quote }}
-            path: /healthz
+            path: /ready
             port: {{ .Values.spiderpoolController.httpPort }}
             scheme: HTTP
             httpHeaders:
@@ -137,7 +147,7 @@ spec:
           preStop:
             exec:
               command:
-                - spiderpool-controller
+                - {{ .Values.spiderpoolController.binName }}
                 - shutdown
         env:
         - name: SPIDERPOOL_LOG_LEVEL
@@ -146,6 +156,8 @@ spec:
           value: {{ .Values.spiderpoolController.debug.pprofEnabled | quote }}
         - name: SPIDERPOOL_ENABLED_METRIC
           value: {{ .Values.spiderpoolController.prometheus.enabled | quote }}
+        - name: SPIDERPOOL_METRIC_HTTP_PORT
+          value: {{ .Values.spiderpoolController.prometheus.port | quote }}
         - name: SPIDERPOOL_GC_IPPOOL_ENABLED
           value: {{ .Values.spiderpoolController.gc.enabled | quote }}
         - name: SPIDERPOOL_GC_TERMINATING_POD_IP_ENABLED

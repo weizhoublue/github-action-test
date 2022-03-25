@@ -62,9 +62,13 @@ configmap:
 spiderpoolAgent:
   name: "spiderpool-agent"
 
+  binName: "spiderpool-agent"
+
   image:
     repository: ghcr.io/spidernet-io/spiderpool/spiderpool-agent
     pullPolicy: IfNotPresent
+    # take preference over tag
+    digest: ""
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
     digest: ""
@@ -183,27 +187,27 @@ spiderpoolAgent:
   hostConfDirMountPath: /host/etc/cni/net.d/spiderpool
 
   # -- http Port for health checking
-  httpPort: "4240"
+  httpPort: "5710"
 
   healthChecking:
     startupProbe:
       # -- failure threshold of startup probe.
       # 105 x 2s translates to the old behaviour of the readiness probe (120s delay + 30 x 3s)
-      failureThreshold: 105
+      failureThreshold: 60
       # -- interval between checks of the startup probe
       periodSeconds: 2
 
     livenessProbe:
       # -- failure threshold of liveness probe
-      failureThreshold: 10
+      failureThreshold: 6
       # -- interval between checks of the liveness probe
-      periodSeconds: 30
+      periodSeconds: 10
 
     readinessProbe:
       # -- failure threshold of readiness probe
       failureThreshold: 3
       # -- interval between checks of the readiness probe
-      periodSeconds: 30
+      periodSeconds: 10
 
   # -- Enable prometheus metrics for cilium-operator on the configured port at
   # /metrics
@@ -211,7 +215,7 @@ spiderpoolAgent:
     # -- Enable service monitors.
     # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
     enabled: false
-    port: 6942
+    port: 5711
     serviceMonitor:
       labels: {}
       annotations: {}
@@ -230,11 +234,20 @@ spiderpoolController:
 
   replicas: 2
 
+  binName: "spiderpool-controller"
+
+  # ippool is not installed when installation , so have to be hostnetwork
+  hostnetwork: true
+
   nameOverride: ""
 
   image:
     repository: ghcr.io/spidernet-io/spiderpool/spiderpool-controller
     pullPolicy: IfNotPresent
+    # take preference over tag
+    digest: ""
+    # digest: "sha256:251ff274acf22fd2067b29a31e9fda94253d2961c061577203621583d7e85bd2"
+
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
     digest: ""
@@ -321,7 +334,7 @@ spiderpoolController:
       memory: 128Mi
 
   # -- http Port to listen to for CLI and health checking
-  httpPort: "4245"
+  httpPort: "5720"
 
   # PodDisruptionBudget settings
   podDisruptionBudget:
@@ -338,27 +351,27 @@ spiderpoolController:
     startupProbe:
       # -- failure threshold of startup probe.
       # 105 x 2s translates to the old behaviour of the readiness probe (120s delay + 30 x 3s)
-      failureThreshold: 105
+      failureThreshold: 30
       # -- interval between checks of the startup probe
       periodSeconds: 2
 
     livenessProbe:
       # -- failure threshold of liveness probe
-      failureThreshold: 10
+      failureThreshold: 6
       # -- interval between checks of the liveness probe
-      periodSeconds: 30
+      periodSeconds: 10
 
     readinessProbe:
       # -- failure threshold of readiness probe
       failureThreshold: 3
       # -- interval between checks of the readiness probe
-      periodSeconds: 30
+      periodSeconds: 10
 
   # -- Enable prometheus metrics for cilium-operator on the configured port at
   # /metrics
   prometheus:
     enabled: false
-    port: 6942
+    port: 5721
     serviceMonitor:
       # -- Enable service monitors.
       # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/master/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
