@@ -218,13 +218,18 @@ jobs:
           cd charts
           make clean
           make
-          ls *.tgz &>/dev/null && exit 0
-          echo "failed to generate chart"
-          exit 1
+          if ! ls *.tgz &>/dev/null ; then
+            echo "failed to generate chart"
+            exit 1
+          fi
+          cd ..
+          mkdir -p docs/charts
+          mv charts/*.tgz docs/charts
 
       - name: Prepare Index
         continue-on-error: false
         run: |
+          #rebuild index for docs/charts
           cd docs
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./
