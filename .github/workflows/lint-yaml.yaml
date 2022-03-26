@@ -9,19 +9,21 @@ on:
       - release-*
       - webserver
     paths:
-      - '**.md'
+      - '**.yml'
+      - '**.yaml'
   pull_request:
     branches:
       - main
       - release-*
       - webserver
     paths:
-      - '**.md'
+      - '**.yml'
+      - '**.yaml'
   # checkout all markdown
   workflow_dispatch:
     inputs:
       ref:
-        description: 'check all md for branch, sha, tag'
+        description: 'check all yaml for branch, sha, tag'
         required: true
         default: main
 
