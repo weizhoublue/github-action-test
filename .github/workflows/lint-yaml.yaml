@@ -1,6 +1,6 @@
-# https://github.com/nosborn/github-action-markdown-cli
-# check rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
-name: Lint MarkDown File
+# https://github.com/marketplace/actions/yaml-lint
+# based on yamllint https://github.com/adrienverge/yamllint
+name: Lint Yaml File
 
 on:
   push:
@@ -26,9 +26,9 @@ on:
         default: main
 
 jobs:
-  markdown-link-check:
-    name: Markdown Lint
+  linkyaml:
     runs-on: ubuntu-latest
+    name: Yaml Lint
     steps:
       - name: Checkout
         if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -40,14 +40,9 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: actions/checkout@v3
 
-      # https://github.com/nosborn/github-action-markdown-cli
-      - name: markdownlint-cli
-        uses: nosborn/github-action-markdown-cli@v3.0.1
+      - name: yaml-lint
+        uses: ibiqlik/action-yamllint@v3
         with:
-          files: .
-          config_file: '.github/markdownlint.yaml'
-          ignore_path: '.github/markdownlintignore'
-          #rules: examples/rules/custom.js
-          #ignore_files: 'vendor/'
-
-
+          file_or_dir: '.'
+          # https://github.com/adrienverge/yamllint
+          config_file: '.github/yamllint-conf.yml'
