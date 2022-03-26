@@ -91,4 +91,3 @@ jobs:
         run: |
           go install github.com/praetorian-inc/gokart@latest
           gokart scan --globalsTainted
-
