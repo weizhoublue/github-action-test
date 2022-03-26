@@ -85,7 +85,11 @@ and label them with release-related lables , and merge it
 
 ## auto publish chart
 
-## use "chart" branch as github page and provide chart repo
+## use "webserver" branch as github page and provide webserver repo
+
+the charts located on docs/charts and chart index located on docs
+
+helm repo add mytest  https://weizhoublue.github.io/github-action-test
 
 
 ## ========== makefile ==================
@@ -122,7 +126,7 @@ if push tag with v*.*.* ,
 
 (1) auto trigger building release image
 (2) auto commit changelog PR with label "pr/release/robot_changelog"
-(3) auto commit chart PR with label "pr/release/robot_chart", to /docs/charts/* of "chart" branch , and generate /docs/index.yaml , please set /docs of "chart" branch as github page
+(3) auto commit chart PR with label "pr/release/robot_chart", to /docs/charts/* of "webserver" branch , and generate /docs/index.yaml , please set /docs of "webserver" branch as github page
 (4) auto create the release
 
 pr who labeled with following label, will exist in changelog of release:

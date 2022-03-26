@@ -10,7 +10,7 @@ env:
   HELM_VERSION: v3.8.1
   PR_LABEL: pr/release/robot_chart
   PR_REVIWER: weizhoublue
-  MERGE_BRANCH: chart
+  MERGE_BRANCH: webserver
 
 on:
   workflow_dispatch:

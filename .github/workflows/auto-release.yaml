@@ -11,7 +11,7 @@ env:
   BUILD_PLATFORM: linux/amd64,linux/arm64
   ONLINE_REGISTER_USER: ${{ github.actor }}
   ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  CHART_DEST_BRANCH: chart
+  CHART_DEST_BRANCH: webserver
   CHANGELOG_DIR: changelogs
   MERGE_TO_BRANCH: main
   PR_LABEL: pr/release/robot_changelog
