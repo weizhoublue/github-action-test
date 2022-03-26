@@ -4,7 +4,7 @@
 
 #requirement
 
-secret.PAT 
+secret.PAT
 
 ## ========== workflow ==================
 
@@ -22,11 +22,11 @@ secret.PAT
 
 ## (6) CI build
 
-build CI image for each PR or PUSH to main , to check your code is right , 
+build CI image for each PR or PUSH to main , to check your code is right ,
 
 and then auto gc the image at intarval ( at now only image of orgs is supported , personal image failed)
 
-the go pkg cache could accelerate the build , 
+the go pkg cache could accelerate the build ,
 
 the cache is cleaned auto at interval , or by manual
 
@@ -44,10 +44,10 @@ CODEOWNERS auto assign reviewer ( the one who should be the repo member and not 
 
 auto close stale PR after 60 and auto close stale issue after 14
 
-label check. only when the pr labled with changelog-related label, the pr could be approved. 
+label check. only when the pr labled with changelog-related label, the pr could be approved.
 changelog-related label could be used to auto generating changelog when releasing
 
-## (9) check chart under charts dierctory 
+## (9) check chart under charts dierctory
 
 ## (10) auto generating changelog to /changelogs/***
 
@@ -62,7 +62,7 @@ pr/release/bug, pr/release/feature-new, pr/release/feature-changed,
 pr/release/doc, pr/release/robot_changelog, pr/release/changelog,
 pr/release/none-required
 
-### other label for pr 
+### other label for pr
 
 
 
@@ -78,19 +78,20 @@ pr/release/feature-changed for Changed Features
 
 ## auto add lable 'pr/approved,pr/need-release-label' to reviewed PR
 
-we can get all issiue labeld with "pr/need-release-label" 
+we can get all issiue labeld with "pr/need-release-label"
 and label them with release-related lables , and merge it
 
 ## check license missing in go file
 
 ## auto publish chart
 
-## use "webserver" branch as github page and provide webserver repo
+## use /docs of "webserver" branch as root page of github page and chart repo
 
-the charts located on docs/charts and chart index located on docs
+the charts package located on /docs/charts and index.yaml located on /docs
 
 helm repo add mytest  https://weizhoublue.github.io/github-action-test
 
+and also could visit  https://weizhoublue.github.io/github-action-test for web doc
 
 ## ========== makefile ==================
 
@@ -114,7 +115,7 @@ auto close stale one after 60 and auto close stale one after 14
 
 ### for PR
 
-2 reviewer approve , and auto label with "pr/approved" , 
+2 reviewer approve , and auto label with "pr/approved" ,
 
 PR must be labeled with "pr/release/**" for merge , which used to generate changelog auto
 
@@ -122,7 +123,7 @@ auto close stale PR after 60 and auto close stale issue after 14
 
 ### for Release
 
-if push tag with v*.*.* , 
+if push tag with v*.*.* ,
 
 (1) auto trigger building release image
 (2) auto commit changelog PR with label "pr/release/robot_changelog"
