@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-
-
 rbac:
   # -- Enable creation of Resource-Based Access Control configuration.
   create: true
@@ -29,7 +27,6 @@ commonLabels: {}
 # -- Configure certificate generation
 certgen:
 
-
 ipamPlugin:
   # -- Configure the log file for IPAM
   logFile: /var/run/spidernet/spiderpool.log
@@ -46,7 +43,6 @@ ipamPlugin:
   # -- Configure the path to the binary directory on the host.
   ipamBinPath: /opt/cni/bin
 
-
 configmap:
   ipamCmName: "spiderpool-ipam"
   configCmName: "spiderpool-conf"
@@ -57,7 +53,6 @@ configmap:
     enableIpv6: true
     clusterDefaultIpv4Ippool: []
     clusterDefaultIpv6Ippool: []
-
 
 spiderpoolAgent:
   name: "spiderpool-agent"
@@ -71,7 +66,6 @@ spiderpoolAgent:
     digest: ""
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-    digest: ""
     imagePullSecrets: []
     # - name: "image-pull-secret"
 
@@ -82,7 +76,7 @@ spiderpoolAgent:
 
   serviceAccount:
     create: true
-    annotations: { }
+    annotations: {}
 
   updateStrategy:
     rollingUpdate:
@@ -125,7 +119,6 @@ spiderpoolAgent:
     - key: CriticalAddonsOnly
       operator: Exists
 
-
   priorityClassName: ""
 
   affinity: {}
@@ -134,10 +127,10 @@ spiderpoolAgent:
   extraArgs: []
 
   # -- Additional container environment variables.
-  extraEnv: [ ]
+  extraEnv: []
 
   # -- Additional agent hostPath mounts.
-  extraHostPathMounts: [ ]
+  extraHostPathMounts: []
     # - name: host-mnt-data
     #   mountPath: /host/mnt/data
     #   hostPath: /mnt/data
@@ -146,16 +139,16 @@ spiderpoolAgent:
     #   mountPropagation: HostToContainer
 
   # -- Additional agent volumes.
-  extraVolumes: [ ]
+  extraVolumes: []
 
   # -- Additional agent volumeMounts.
-  extraVolumeMounts: [ ]
+  extraVolumeMounts: []
 
   # -- Annotations to be added to agent pods
-  podAnnotations: { }
+  podAnnotations: {}
 
   # -- Labels to be added to agent pods
-  podLabels: { }
+  podLabels: {}
 
   # -- Configure the path to where to mount the ConfigMap inside the agent pod.
   confFileMountPath: /tmp/cni-configuration
@@ -173,14 +166,8 @@ spiderpoolAgent:
     #   memory: 128Mi
 
   # -- Security context to be added to agent pods
-  securityContext: { }
+  securityContext: {}
   # runAsUser: 0
-
-  # -- Cilium agent update strategy
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 2
 
   # -- Configure the path to where the CNI configuration directory is mounted
   # inside the agent pod.
@@ -227,8 +214,6 @@ spiderpoolAgent:
     logLevel: "INFO"
     pprofEnabled: false
 
-
-
 spiderpoolController:
   name: "spiderpool-controller"
 
@@ -247,10 +232,8 @@ spiderpoolController:
     # take preference over tag
     digest: ""
     # digest: "sha256:251ff274acf22fd2067b29a31e9fda94253d2961c061577203621583d7e85bd2"
-
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-    digest: ""
     imagePullSecrets: []
     # - name: "image-pull-secret"
 
@@ -262,7 +245,7 @@ spiderpoolController:
   serviceAccount:
     create: true
     name: ""
-    annotations: { }
+    annotations: {}
 
   service:
     # Optional annotations to add to the Service
@@ -289,10 +272,10 @@ spiderpoolController:
   extraArgs: []
 
   # -- Additional container environment variables.
-  extraEnv: [ ]
+  extraEnv: []
 
   # -- Additional agent hostPath mounts.
-  extraHostPathMounts: [ ]
+  extraHostPathMounts: []
     # - name: host-mnt-data
     #   mountPath: /host/mnt/data
     #   hostPath: /mnt/data
@@ -302,23 +285,23 @@ spiderpoolController:
 
   # -- Additional agent volumes.
   extraVolumes: []
-    #- name: test-val
-    #  mountPath: /host/tmp
+    # - name: test-val
+    #   mountPath: /host/tmp
 
   # -- Additional agent volumeMounts.
   extraVolumeMounts: []
-    #- name: test-val
-    #  mountPath: /tmp
+    # - name: test-val
+    #   mountPath: /tmp
 
   # -- Annotations to be added to agent pods
   podAnnotations: {}
     # test: 100
 
   # -- Labels to be added to agent pods
-  podLabels: { }
+  podLabels: {}
 
   # -- security context
-  securityContext: { }
+  securityContext: {}
   # runAsUser: 0
 
   resources:
@@ -397,5 +380,3 @@ spiderpoolController:
     gcEvictedPodIpEnabled: true
     # delay to gc pod ip after pod graceful time, second
     gcEvictedPodIpDelay: 0
-
-
