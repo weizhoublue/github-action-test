@@ -24,12 +24,12 @@ controllerimage:
 			--build-arg GIT_COMMIT_TIME=$(GIT_COMMIT_TIME) \
 			--build-arg GIT_COMMIT_VERSION=$(GIT_COMMIT_VERSION) \
 			--platform=$(PLATFORM) \
-			--output $(OUTPUT) -f ./controllerimage/Dockerfile ../
+			--output $(OUTPUT)  -f $(ROOT_DIR)/images/controllerimage/Dockerfile $(ROOT_DIR)/
 
 .PHONY: baseimage
 baseimage:
 	@$(CONTAINER_ENGINE) buildx build -t $(IMAGE_REGISTRIES)/$@:$(VERSION) \
 		--platform=$(PLATFORM) --output $(OUTPUT) \
-		-f ./controllerimage/Dockerfile ./controllerimage
+		-f $(ROOT_DIR)/images/controllerimage/Dockerfile $(ROOT_DIR)/
 
 
