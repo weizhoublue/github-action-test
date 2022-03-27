@@ -70,15 +70,6 @@ jobs:
             echo ::set-output name=tag::${GITHUB_REF##*/}
           fi
 
-      - name: Getting Build Arg
-        id: arg
-        continue-on-error: false
-        run: |
-          GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
-          GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
-          echo ::set-output name=commitver::${GIT_COMMIT_VERSION}
-          echo ::set-output name=committime::${GIT_COMMIT_TIME}
-
       # https://github.com/actions/checkout
       - name: Checkout Source Code
         uses: actions/checkout@v2
@@ -87,6 +78,15 @@ jobs:
           # Whether to configure the token or SSH key with the local git config
           persist-credentials: false
           ref: ${{ steps.tag.outputs.tag }}
+
+      - name: Getting Build Arg
+        id: arg
+        continue-on-error: false
+        run: |
+          GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
+          GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
+          echo ::set-output name=commitver::${GIT_COMMIT_VERSION}
+          echo ::set-output name=committime::${GIT_COMMIT_TIME}
 
       - name: Release Build ${{ matrix.name }}
         uses: docker/build-push-action@v2
