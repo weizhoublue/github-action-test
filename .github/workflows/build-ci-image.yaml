@@ -113,6 +113,15 @@ jobs:
           persist-credentials: false
           ref: ${{ steps.tag.outputs.tag }}
 
+      - name: Getting Build Arg
+        id: arg
+        continue-on-error: false
+        run: |
+          GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
+          GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
+          echo ::set-output name=commitver::${GIT_COMMIT_VERSION}
+          echo ::set-output name=committime::${GIT_COMMIT_TIME}
+
       # Load Golang cache build from GitHub
       # Cache dependencies and build outputs in GitHub Actions
       # the github will keep the cache for 7 days at most
@@ -147,6 +156,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
+          build-args: |
+            GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
+            GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
+            VERSION=${{ steps.tag.outputs.tag }}
 
       #build debug image who turn on race and deadlock detection
       - name: CI race detection Build ${{ matrix.name }}
@@ -166,6 +179,9 @@ jobs:
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |
             RACE=1
+            GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
+            GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
+            VERSION=${{ steps.tag.outputs.tag }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name != 'pull_request_target' }}
@@ -188,6 +204,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
+          build-args: |
+            GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
+            GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
+            VERSION=${{ steps.tag.outputs.tag }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name == 'pull_request_target' }}
@@ -210,6 +230,9 @@ jobs:
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |
             RACE=1
+            GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
+            GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
+            VERSION=${{ steps.tag.outputs.tag }}
 
       - name: CI Image Releases digests
         if: ${{ github.event_name == 'pull_request_target' }}
