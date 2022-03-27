@@ -1,26 +1,28 @@
+# github test
+
 [![Build Image Release](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml)
 
 [![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
 
-#requirement
+## requirement
 
 secret.PAT
 
 ## ========== workflow ==================
 
-# feature
+## feature
 
-## (1) go-lint for source code
+### (1) go-lint for source code
 
-## (2) codeql check
+### (2) codeql check
 
-## (3) codeowners , who reivew PR
+### (3) codeowners , who reivew PR
 
-## (4) auto package base image
+### (4) auto package base image
 
-## (5) auto package release image by tag
+### (5) auto package release image by tag
 
-## (6) CI build
+### (6) CI build
 
 build CI image for each PR or PUSH to main , to check your code is right ,
 
@@ -30,15 +32,15 @@ the go pkg cache could accelerate the build ,
 
 the cache is cleaned auto at interval , or by manual
 
-## (7) build beta image by manual
+### (7) build beta image by manual
 
-## (8) issue manage
+### (8) issue manage
 
 issue template , auto assign label and assignees
 
 auto stale inactive issue after 60 and auto close stale issue after 14
 
-## (8) PR manage
+### (8) PR manage
 
 CODEOWNERS auto assign reviewer ( the one who should be the repo member and not me , then you can see it )
 
@@ -47,26 +49,24 @@ auto close stale PR after 60 and auto close stale issue after 14
 label check. only when the pr labled with changelog-related label, the pr could be approved.
 changelog-related label could be used to auto generating changelog when releasing
 
-## (9) check chart under charts dierctory
+### (9) check chart under charts dierctory
 
-## (10) auto generating changelog to /changelogs/***
+### (10) auto generating changelog to /changelogs/***
 
 when tag or dispatch by manual , auto generate changelog by the related-label history PR between tags,
 then commit the pr to main branch , then auto approve it
 
-## (11) pr label and auto changelog
+### (11) pr label and auto changelog
 
-### all pr should label one of bellowing , so could be merged to changelog
+#### all pr should label one of bellowing , so could be merged to changelog
 
 pr/release/bug, pr/release/feature-new, pr/release/feature-changed,
 pr/release/doc, pr/release/robot_changelog, pr/release/changelog,
 pr/release/none-required
 
-### other label for pr
+#### other label for pr
 
-
-
-### below label of pr will be the changelog
+#### below label of pr will be the changelog
 
 pr/release/bug for Fixes
 
@@ -74,44 +74,40 @@ pr/release/feature-new for New Features
 
 pr/release/feature-changed for Changed Features
 
-## (12) label syncer
+### (12) label syncer
 
-## auto add lable 'pr/approved,pr/need-release-label' to reviewed PR
+### 13 auto add lable 'pr/approved,pr/need-release-label' to reviewed PR
 
 we can get all issiue labeld with "pr/need-release-label"
 and label them with release-related lables , and merge it
 
-## check license missing in go file
+### 14 check license missing in go file
 
-## auto publish chart
+### 15 auto publish chart
 
-## use /docs of "webserver" branch as root page of github page and chart repo
+### 16 use /docs of "webserver" branch as root page of github page and chart repo
 
 the charts package located on /docs/charts and index.yaml located on /docs
 
-helm repo add mytest  https://weizhoublue.github.io/github-action-test
+helm repo add mytest  <https://weizhoublue.github.io/github-action-test>
 
-and also could visit  https://weizhoublue.github.io/github-action-test for web doc
+and also could visit  <https://weizhoublue.github.io/github-action-test> for web doc
 
 ## ========== makefile ==================
 
-#### auto generate license of vendor
+### auto generate license of vendor
 
-#### auto globally modify go version in files
-
-#### 
-
+### auto globally modify go version in files
 
 ## ============================
 
-# manage flow
+## manage flow
 
 ### for issue
 
 check these labeled with "issue/not-assign" , and assign them
 
 auto close stale one after 60 and auto close stale one after 14
-
 
 ### for PR
 
@@ -137,4 +133,3 @@ label "pr/release/feature-new" will generate "New Features" category
 label "pr/release/bug" will generate "Fixes" category
 
 label "pr/release/feature-changed" will generate "Changed Features" category
-
