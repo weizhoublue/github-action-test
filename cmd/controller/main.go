@@ -13,6 +13,7 @@ import (
 	"github.com/weizhoublue/github-action-test/pkg/lock"
 	"github.com/weizhoublue/github-action-test/pkg/print"
 	"google.golang.org/grpc"
+	"os"
 	"time"
 )
 
