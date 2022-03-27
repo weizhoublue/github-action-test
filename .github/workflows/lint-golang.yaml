@@ -92,3 +92,6 @@ jobs:
           go install github.com/praetorian-inc/gokart@latest
           gokart scan --globalsTainted
 
+      - name: Check Other
+        run: |
+          make lint-golang
