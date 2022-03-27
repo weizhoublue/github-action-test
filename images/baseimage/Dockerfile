@@ -1,4 +1,4 @@
-# docker buildx build -t testbase:latest --platform=linux/arm64,linux/amd64 --output type=docker .
+# on the local directory, ,run: docker buildx build -t testbase:latest --platform=linux/arm64,linux/amd64 --output type=docker .
 
 
 ARG GOLANG_IMAGE=docker.io/library/golang:1.18.0@sha256:03baa0921adf5fb547f48df8b16137de82b5ccc34986c22a967055379369f614

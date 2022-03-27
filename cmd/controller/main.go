@@ -13,6 +13,7 @@ import (
 	"github.com/weizhoublue/github-action-test/pkg/lock"
 	"github.com/weizhoublue/github-action-test/pkg/print"
 	"google.golang.org/grpc"
+	"os"
 	"time"
 )
 
@@ -41,6 +42,15 @@ func Testlock() {
 
 func main() {
 	fmt.Println("hello world")
+
+	val := os.Getenv("GIT_COMMIT_VERSION")
+	if len(val) != 0 {
+		fmt.Printf("GIT_COMMIT_VERSION=%v\n", val)
+	}
+	val = os.Getenv("GIT_COMMIT_TIME")
+	if len(val) != 0 {
+		fmt.Printf("GIT_COMMIT_TIME=%v\n", val)
+	}
 
 	_, e := grpc.Dial("localhost:50051")
 	if e != nil {
