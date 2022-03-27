@@ -45,11 +45,11 @@ func main() {
 
 	val := os.Getenv("GIT_COMMIT_VERSION")
 	if len(val) != 0 {
-		fmt.Printf("GIT_COMMIT_VERSION=%v\n", GIT_COMMIT_VERSION)
+		fmt.Printf("GIT_COMMIT_VERSION=%v\n", val)
 	}
 	val = os.Getenv("GIT_COMMIT_TIME")
 	if len(val) != 0 {
-		fmt.Printf("GIT_COMMIT_TIME=%v\n", GIT_COMMIT_TIME)
+		fmt.Printf("GIT_COMMIT_TIME=%v\n", val)
 	}
 
 	_, e := grpc.Dial("localhost:50051")
