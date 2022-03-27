@@ -24,19 +24,16 @@ endif
 GO_MAJOR_AND_MINOR_VERSION := $(shell  grep  -o -E '^[0-9]+\.[0-9]+'  <<< "${GO_VERSION}" )
 GO_IMAGE_VERSION := $(shell awk -F. '{ z=$$3; if (z == "") z=0; print $$1 "." $$2 "." z}' <<< "${GO_VERSION}" )
 
+CONTAINER_ENGINE?=docker
 
 #------------------
 
 VERSION = $(shell cat $(dir $(lastword $(MAKEFILE_LIST)))/VERSION)
-VERSION_MAJOR = $(shell cat $(dir $(lastword $(MAKEFILE_LIST)))/VERSION | cut -d. -f1)
 
-ifneq ($(wildcard $(dir $(lastword $(MAKEFILE_LIST)))/.git),)
-    GIT_VERSION = $(shell git show -s --format='format:%h %aI')
-else
-    GIT_VERSION = $(shell cat $(ROOT_DIR)/GIT_VERSION)
-endif
+GIT_COMMIT_VERSION = $(shell git show -s --format='format:%H')
+GIT_COMMIT_TIME = $(shell git show -s --format='format:%aI')
 
-FULL_BUILD_VERSION = $(VERSION) $(GIT_VERSION)
+FULL_BUILD_VERSION = $(VERSION) $(GIT_COMMIT_VERSION)
 
 #------------------
 

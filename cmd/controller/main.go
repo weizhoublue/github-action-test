@@ -42,6 +42,15 @@ func Testlock() {
 func main() {
 	fmt.Println("hello world")
 
+	val := os.Getenv("GIT_COMMIT_VERSION")
+	if len(val) != 0 {
+		fmt.Printf("GIT_COMMIT_VERSION=%v\n", GIT_COMMIT_VERSION)
+	}
+	val = os.Getenv("GIT_COMMIT_TIME")
+	if len(val) != 0 {
+		fmt.Printf("GIT_COMMIT_TIME=%v\n", GIT_COMMIT_TIME)
+	}
+
 	_, e := grpc.Dial("localhost:50051")
 	if e != nil {
 		fmt.Println("failed to  Dial")
