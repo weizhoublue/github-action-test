@@ -1,7 +1,8 @@
 # from the root of project , run :
+# VERSION=v1.0.0
 # GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
 # GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
-# docker buildx build -t release:latest --build-arg GIT_COMMIT_TIME=${GIT_COMMIT_TIME} --build-arg GIT_COMMIT_VERSION=${GIT_COMMIT_VERSION} --platform=linux/amd64 --output type=docker -f ./images/controllerimage/Dockerfile .
+# docker buildx build -t release:latest --build-arg VERSION=${VERSION} --build-arg GIT_COMMIT_TIME=${GIT_COMMIT_TIME} --build-arg GIT_COMMIT_VERSION=${GIT_COMMIT_VERSION} --platform=linux/amd64,linux/arm64 --output type=docker -f ./images/controllerimage/Dockerfile .
 
 ARG BASE_IMAGE=weizhoulan/baseimage:bdecfc7c5e21b5341e12a35b7dcb846c5eaaeae2
 ARG GOLANG_IMAGE=docker.io/library/golang:1.18.0@sha256:03baa0921adf5fb547f48df8b16137de82b5ccc34986c22a967055379369f614
@@ -53,9 +54,12 @@ ARG GIT_COMMIT_VERSION
 ENV GIT_COMMIT_VERSION=${GIT_COMMIT_VERSION}
 ARG GIT_COMMIT_TIME
 ENV GIT_COMMIT_TIME=${GIT_COMMIT_TIME}
+ARG VERSION
+ENV VERSION=${VERSION}
 
 RUN  echo "GIT_COMMIT_VERSION=$GIT_COMMIT_VERSION" \
-        && echo "GIT_COMMIT_TIME=$GIT_COMMIT_TIME"
+        && echo "GIT_COMMIT_TIME=$GIT_COMMIT_TIME" \
+        && echo "VERSION=$VERSION"
 
 RUN groupadd -f test \
     && echo ". /etc/profile.d/bash_completion.sh" >> /etc/bash.bashrc
