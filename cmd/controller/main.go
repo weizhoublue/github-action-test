@@ -32,7 +32,7 @@ func TestRace() {
 }
 
 func Testlock() {
-	fmt.Println("Testlock 1")
+	fmt.Println("Testlock 1 ")
 	a := &lock.RWMutex{}
 	a.RLock()
 	a.Lock()
