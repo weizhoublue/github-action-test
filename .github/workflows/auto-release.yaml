@@ -33,7 +33,6 @@ on:
         required: true
         default: v1.0.0
 
-
 permissions: write-all
 
 jobs:
@@ -103,7 +102,6 @@ jobs:
             GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
             GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
             VERSION=${{ steps.tag.outputs.tag }}
-            
 
       - name: Image Release Digest
         shell: bash
@@ -249,7 +247,7 @@ jobs:
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./
 
-      #https://github.com/actions/upload-artifact
+      # https://github.com/actions/upload-artifact
       # Where does the upload go?  At the bottom of the workflow summary page
       - name: Upload chart
         uses: actions/upload-artifact@v3.0.0
@@ -346,12 +344,12 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      #- name: Create commits
-      #  run: |
-      #    git config user.name 'robot'
-      #    git config user.email 'robot@users.noreply.github.com'
-      #    git add -A
-      #    git commit -m "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
+      # - name: Create commits
+      #   run: |
+      #     git config user.name 'robot'
+      #     git config user.email 'robot@users.noreply.github.com'
+      #     git add -A
+      #     git commit -m "robot Update Changelog from tag ${{ steps.create_changelog_by_auto_tag.outputs.fromTag }} to tag ${{ steps.create_changelog_by_auto_tag.outputs.toTag }}"
 
       # https://github.com/peter-evans/create-pull-request
       #  all new and modified files will be committed
@@ -452,31 +450,5 @@ jobs:
           artifactErrorsFailBuild: true
           bodyFile: "./changelog-result/changelog.md"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag:  ${{ steps.tag.outputs.tag }}
+          tag: ${{ steps.tag.outputs.tag }}
           name: "Release ${{ steps.tag.outputs.tag }}"
-
-
-      # https://github.com/softprops/action-gh-release
-#      - name: Create Release
-#        id: create_release
-#        continue-on-error: false
-#        uses: softprops/action-gh-release@v0.1.14
-#        # valid inputs are ['body', 'body_path', 'name', 'tag_name', 'draft', 'prerelease', 'files',
-#        # 'fail_on_unmatched_files', 'repository', 'token', 'target_commitish', 'discussion_category_name',
-#        # 'generate_release_notes']
-#        with:
-#          # uploaded asset
-#          files: ${{ steps.download_file.outputs.chart_path }}
-#          body_path: ${{ steps.download_file.outputs.changelog_path }}
-#          name: Release ${{ steps.tag.outputs.tag }}
-#          tag_name: ${{ steps.tag.outputs.tag }}
-#          # Indicator of whether to fail if any of the files globs match nothing
-#          fail_on_unmatched_files: true
-#          token: ${{ github.token }}
-#
-#      - name: Show Result
-#        run: |
-#          echo " release url: ${{ steps.create_release.outputs.url }}"
-#          echo " release id: ${{ steps.create_release.outputs.id }}"
-#          echo " release upload_url: ${{ steps.create_release.outputs.upload_url }}"
-#          echo " release assets: ${{ steps.create_release.outputs.assets }}"

@@ -9,10 +9,10 @@ env:
   ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 on:
-#  push:
-#    tags:
-#      - v[0-9]+.[0-9]+.[0-9]+
-#      - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  # push:
+  #   tags:
+  #     - v[0-9]+.[0-9]+.[0-9]+
+  #     - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
   workflow_dispatch:
     inputs:
       tag:
@@ -58,7 +58,7 @@ jobs:
             # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
             echo ::set-output name=tag::${GITHUB_REF##*/}
           fi
-          
+
       # https://github.com/actions/checkout
       - name: Checkout Source Code
         uses: actions/checkout@v2
@@ -115,11 +115,6 @@ jobs:
           path: image-digest
           retention-days: 1
 
-      # before, run actions/checkout
-      # Can't find 'action.yml', 'action.yaml' or 'Dockerfile' under '/home/runner/work/github-action-test/github-action-test/.github/workflows/robot-update-changelog.yml@main'
-      #- name: Trigger Update Changelog
-      #  uses: ./.github/workflows/robot-update-changelog.yaml@main
-
   image-digests:
     name: Display Digests
     runs-on: ubuntu-latest
@@ -173,4 +168,3 @@ jobs:
           name: Makefile.digests-${{ steps.tag.outputs.tag }}
           path: Makefile.digests
           retention-days: 1
-

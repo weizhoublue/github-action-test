@@ -5,7 +5,6 @@ name: Clean Image CI By PR
 env:
   ONLINE_REGISTER: ghcr.io
 
-
 on:
   pull_request:
     types: [closed]
@@ -39,20 +38,20 @@ jobs:
 #          token: ${{ secrets.GITHUB_TOKEN }}
 #          tag: ${{ steps.tag.outputs.tag }}
 
-      #NOTE: at now only orgs is supported , for personal it fail
+      # NOTE: at now only orgs is supported , for personal it fail
       - name: Delete CI image
         uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           organization: ${{ github.repository_owner }}
           container: ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci
-          dry-run: false # Dry-run first, then change to `false`
+          # Dry-run first, then change to `false`
+          dry-run: false
           # Minimum age in days of a version before it is pruned. Defaults to 0 which matches all versions of a container
-          older-than: 0 # days
+          older-than: 0
           # Count of most recent, matching containers to exclude from pruning
           keep-last: 0
-          #untagged versions should be pruned
+          # untagged versions should be pruned
           untagged: true
           # if no tag-regex , all tag will be pruned
           tag-regex: "${{ steps.tag.outputs.tag }}"
-

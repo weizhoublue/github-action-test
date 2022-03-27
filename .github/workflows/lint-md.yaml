@@ -47,7 +47,5 @@ jobs:
           files: .
           config_file: '.github/markdownlint.yaml'
           ignore_path: '.github/markdownlintignore'
-          #rules: examples/rules/custom.js
-          #ignore_files: 'vendor/'
-
-
+          # rules: examples/rules/custom.js
+          # ignore_files: 'vendor/'

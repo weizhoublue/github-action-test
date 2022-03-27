@@ -5,10 +5,10 @@
 name: Robot Update Changelog For Release
 
 on:
-#  push:
-#    tags:
-#      - v[0-9]+.[0-9]+.[0-9]+
-#      - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+  # push:
+  #   tags:
+  #     - v[0-9]+.[0-9]+.[0-9]+
+  #     - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
   # called by build release image
   workflow_call:
   # call by manual
@@ -137,7 +137,7 @@ jobs:
           if ${{ steps.create_changelog_by_auto_tag.outputs.failed == 'false' }} ; then
               CHANGELOG_FILE_NAME=${{ steps.create_changelog_by_auto_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_auto_tag.outputs.toTag }}.md
           else
-              CHANGELOG_FILE_NAME=${{ steps.create_changelog_by_manul_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_manul_tag.outputs.toTag }}.md          
+              CHANGELOG_FILE_NAME=${{ steps.create_changelog_by_manul_tag.outputs.fromTag }}-to-${{ steps.create_changelog_by_manul_tag.outputs.toTag }}.md
           fi
           echo ::set-output name=changelog_path::${CHANGELOG_FILE_NAME}
           mv  _temp_changelog  ${CHANGELOG_FILE_NAME}
@@ -229,9 +229,9 @@ jobs:
       # auto apporve the pr if requirements have been satisfied
       # https://github.com/peter-evans/enable-pull-request-automerge
       # error: Can't enable auto-merge for this pull request
-      #- name: PR Auto Approve
-      #  uses: peter-evans/enable-pull-request-automerge@v1.2.0
-      #  with:
-      #    token: ${{ secrets.PAT }}
-      #    pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
-      #    merge-method: merge
+      # - name: PR Auto Approve
+      #   uses: peter-evans/enable-pull-request-automerge@v1.2.0
+      #   with:
+      #     token: ${{ secrets.PAT }}
+      #     pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+      #     merge-method: merge
