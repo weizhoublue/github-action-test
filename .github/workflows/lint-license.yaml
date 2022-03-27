@@ -28,4 +28,3 @@ jobs:
         shell: bash
         run: |
           make licenses-check
-          
