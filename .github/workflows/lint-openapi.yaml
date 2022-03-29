@@ -1,5 +1,5 @@
 # https://github.com/marketplace/actions/swagger-editor-validator
-name: Lint MarkDown File
+name: Lint Openapi Yaml
 
 on:
   push:
@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: 'check all md for branch, sha, tag'
+        description: 'check for branch, sha, tag'
         required: true
         default: main
       path:
