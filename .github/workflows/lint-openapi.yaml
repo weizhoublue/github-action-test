@@ -1,5 +1,5 @@
 # https://github.com/marketplace/actions/swagger-editor-validator
-name: Lint MarkDown File
+name: Lint Openapi Yaml
 
 on:
   push:
@@ -7,23 +7,22 @@ on:
       - main
       - release-*
     paths:
-      - 'api/v1/health/openapi.yaml'
+      - 'api/**/openapi.yaml'
   pull_request:
     branches:
       - main
       - release-*
     paths:
-      - 'api/v1/health/openapi.yaml'
+      - 'api/**/openapi.yaml'
   workflow_dispatch:
     inputs:
       ref:
-        description: 'check all md for branch, sha, tag'
+        description: 'check for branch, sha, tag'
         required: true
         default: main
       path:
         description: 'openapi yaml path'
         required: true
-
 
 jobs:
   link-check:
