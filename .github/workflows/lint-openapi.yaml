@@ -7,13 +7,13 @@ on:
       - main
       - release-*
     paths:
-      - 'api/v1/health/openapi.yaml'
+      - 'api/**/openapi.yaml'
   pull_request:
     branches:
       - main
       - release-*
     paths:
-      - 'api/v1/health/openapi.yaml'
+      - 'api/**/openapi.yaml'
   workflow_dispatch:
     inputs:
       ref:
@@ -23,7 +23,6 @@ on:
       path:
         description: 'openapi yaml path'
         required: true
-
 
 jobs:
   link-check:
