@@ -687,7 +687,7 @@ definitions:
       name: "Pet"
   ApiResponse:
     type: "object"
-    properties:
+    propertie:
       code:
         type: "integer"
         format: "int32"
