@@ -35,9 +35,9 @@ jobs:
           ref: ${{ github.event.pull_request_target.head.sha }}
           filters: |
             src:
-              - api/**.go
-              - cmd/**.go
-              - pkg/**.go
+              - 'api/**'
+              - 'cmd/**'
+              - 'pkg/**'
               - 'go.sum'
               - 'go.mod'
 
