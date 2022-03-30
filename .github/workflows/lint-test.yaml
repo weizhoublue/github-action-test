@@ -1,4 +1,4 @@
-name: Golang CI Test
+name: Golang CI Ginkgo
 
 on:
   pull_request_target:
