@@ -49,7 +49,7 @@ jobs:
           ref: ${{ github.event.pull_request_target.head.sha }}
           filters: |
             src:
-              - test/**.go
+              - test/**
               - 'go.sum'
               - 'go.mod'
 
@@ -86,23 +86,3 @@ jobs:
           name: testreport.json
           path: testreport.json
           retention-days: 1
-
-  e2e-test:
-    runs-on: ubuntu-latest
-    needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.e2e == 'true' }}
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.18.0
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
-      - name: Run e2e
-        id: e2d
-        run: |
-          make integration-tests
