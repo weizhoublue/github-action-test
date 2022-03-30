@@ -105,6 +105,13 @@ dev-doctor:
 	$(QUIET) contrib/scripts/check-cli.sh
 
 
+.PHONY: lint-openapi
+lint-openapi:
+	@$(CONTAINER_ENGINE) container run --rm \
+		-v $(ROOT_DIR):/spec redocly/openapi-cli lint api/v1/health/openapi.yaml
+
+
+
 
 #============ tools ====================
 
