@@ -72,6 +72,15 @@ integration-tests:
 	$(QUIET) $(MAKE) -C test
 
 
+.PHONY: unitest-tests
+unitest-tests:
+	@echo "run unitest-tests"
+	$(QUIET) ginkgo run   \
+		--cover --coverprofile=./coverage.out --covermode set  \
+		--json-report ./testreport.json \
+		-vv  ./pkg/... ./cmd/...
+	$(QUIET) go tool cover -html=./coverage.out -o coverage-all.html
+
 
 
 .PHONY: manifests
@@ -103,12 +112,6 @@ dev-doctor:
 	$(QUIET)$(GO) version 2>/dev/null || ( echo "go not found, see https://golang.org/doc/install" ; false )
 	@$(ECHO_CHECK) contrib/scripts/check-cli.sh
 	$(QUIET) contrib/scripts/check-cli.sh
-
-
-.PHONY: lint-openapi
-lint-openapi:
-	@$(CONTAINER_ENGINE) container run --rm \
-		-v $(ROOT_DIR):/spec redocly/openapi-cli lint api/v1/health/openapi.yaml
 
 
 

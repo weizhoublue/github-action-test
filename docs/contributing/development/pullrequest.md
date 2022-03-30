@@ -113,6 +113,10 @@ any update about chart file under '/charts', will trigger this
 
 any update about openapi.yaml, will be checked for the yaml validation
 
+## action: golang test
+
+run ginkgo for any golang code 
+
 ## need review
 
 any PR need 2 review, if meet, will auto label it with "pr/approved" and "pr/need-release-label"
