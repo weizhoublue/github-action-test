@@ -75,7 +75,7 @@ integration-tests:
 .PHONY: unitest-tests
 unitest-tests:
 	@echo "run unitest-tests"
-	$(QUIET) ginkgo run   \
+	$(QUIET) ./ginkgo.sh   \
 		--cover --coverprofile=./coverage.out --covermode set  \
 		--json-report ./testreport.json \
 		-vv  ./pkg/... ./cmd/...
