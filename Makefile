@@ -72,6 +72,18 @@ integration-tests:
 	$(QUIET) $(MAKE) -C test
 
 
+ 
+.PHONY: unitest-tests
+unitest-tests:
+	@echo "run unitest-tests"
+	$(QUIET) ./ginkgo.sh   \
+		--cover --coverprofile=./coverage.out --covermode set  \
+		--json-report ./testreport.json \
+		-vv  ./pkg/... ./cmd/...
+	$(QUIET) go tool cover -html=./coverage.out -o coverage-all.html
+
+
+ 
 .PHONY: manifests
 CRD_OPTIONS ?= "crd:crdVersions=v1"
 manifests: ## Generate K8s manifests e.g. CRD, RBAC etc.
@@ -101,6 +113,7 @@ dev-doctor:
 	$(QUIET)$(GO) version 2>/dev/null || ( echo "go not found, see https://golang.org/doc/install" ; false )
 	@$(ECHO_CHECK) contrib/scripts/check-cli.sh
 	$(QUIET) contrib/scripts/check-cli.sh
+
 
 
 
