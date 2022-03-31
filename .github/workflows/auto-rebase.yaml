@@ -1,0 +1,24 @@
+# https://github.com/marketplace/actions/automatic-rebase
+# comment /rebase to PR, auto help rebase all commit for the PR
+name: Automatic Rebase
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  rebase:
+    name: Rebase
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the latest code
+        uses: actions/checkout@v2
+        with:
+          # otherwise, you will fail to push refs to dest repo
+          fetch-depth: 0
+
+      - name: Automatic Rebase
+        uses: cirrus-actions/rebase@1.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
