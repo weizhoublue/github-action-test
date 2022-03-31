@@ -72,7 +72,6 @@ integration-tests:
 	$(QUIET) $(MAKE) -C test
 
 
-
 .PHONY: manifests
 CRD_OPTIONS ?= "crd:crdVersions=v1"
 manifests: ## Generate K8s manifests e.g. CRD, RBAC etc.
