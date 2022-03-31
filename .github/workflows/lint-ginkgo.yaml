@@ -1,12 +1,12 @@
 name: Golang CI Ginkgo
 
 on:
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
-      - reopened
+  pull_request: {}
 
+
+permissions: read-all
+
+# for each pr, queue all workflows
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
   cancel-in-progress: true
@@ -15,24 +15,24 @@ jobs:
   # filter changes base filt path , so can do less thing
   filter_changes:
     name: Deduce required tests from code changes
-    if: ${{ github.event_name == 'pull_request_target' }}
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
       unitest: ${{ steps.unitest-changes.outputs.src }}
       e2e: ${{ steps.e2e-changes.outputs.src }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          persist-credentials: false
+          fetch-depth: 0
 
       # https://github.com/dorny/paths-filter
       - name: Check Need Unitest
         uses: dorny/paths-filter@v2.10.2
         id: unitest-changes
         with:
-          base: ${{ github.event.pull_request_target.base.sha }}
-          ref: ${{ github.event.pull_request_target.head.sha }}
+          base: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           filters: |
             src:
               - 'api/**'
@@ -45,8 +45,8 @@ jobs:
         uses: dorny/paths-filter@v2.10.2
         id: e2e-changes
         with:
-          base: ${{ github.event.pull_request_target.base.sha }}
-          ref: ${{ github.event.pull_request_target.head.sha }}
+          base: ${{ github.event.pull_request.base.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
           filters: |
             src:
               - test/**
@@ -61,19 +61,22 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18.0
+          go-version: 1.17.8
 
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Run unitest
         id: unitest
+        continue-on-error: true
         run: |
           make unitest-tests
 
       - name: Upload coverage
+        if: ${{ steps.unitest.outcome == 'failure' }}
         uses: actions/upload-artifact@v3.0.0
         with:
           name: coverage.out
@@ -81,8 +84,15 @@ jobs:
           retention-days: 1
 
       - name: Upload testreport
+        if: ${{ steps.unitest.outcome == 'failure' }}
         uses: actions/upload-artifact@v3.0.0
         with:
           name: testreport.json
           path: testreport.json
           retention-days: 1
+
+      - name: Result
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        run: |
+          echo "failed"
+          exit 1
