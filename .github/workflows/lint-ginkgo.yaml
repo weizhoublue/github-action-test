@@ -91,6 +91,15 @@ jobs:
           path: testreport.json
           retention-days: 1
 
+      # upload coverage report to Coveralls
+      # https://github.com/marketplace/actions/actions-goveralls
+      # https://github.com/mattn/goveralls
+      - name: Upload to Coveralls
+        if: ${{ steps.unitest.outcome != 'failure' }}
+        uses: shogo82148/actions-goveralls@v1.6.0
+        with:
+          path-to-profile: coverage.out
+
       - name: Result
         if: ${{ steps.unitest.outcome == 'failure' }}
         run: |
