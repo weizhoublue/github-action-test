@@ -1,0 +1,22 @@
+# this file is optional
+# https://docs.codecov.com/docs/codecov-yaml
+# https://docs.codecov.com/docs/codecovyml-reference
+# https://docs.codecov.com/docs/common-recipe-list
+
+codecov:
+  require_ci_to_pass: yes
+  # set new Default branch
+  branch: main
+
+coverage:
+  status:
+    project:
+      default:
+        # auto compares coverage to the previous base commit
+        # target: auto
+        # adjust accordingly based on how flaky your tests are
+        # this allows a 10% drop from the previous base commit coverage
+        # threshold: 5%
+
+        # Ensure all code is covered
+        target: 100%
