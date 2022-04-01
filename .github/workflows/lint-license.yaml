@@ -48,6 +48,7 @@ jobs:
           ref: ${{ steps.version.outputs.ref }}
 
       # https://github.com/marketplace/actions/license-eye
+      # config file: .licenserc.yaml
       - name: Check License Header
         id: checklicense
         uses: apache/skywalking-eyes@main
