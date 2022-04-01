@@ -2,15 +2,15 @@ header:
   license:
     spdx-id: Apache-2.0
     copyright-owner: weizhoublue
-
+    # optional, regex match license header
+    pattern: |
+      Copyright|Apache-2.0
+    # for fix pr
     content: |
       Copyright 2022 Authors of weizhoublue
       SPDX-License-Identifier: Apache-2.0
 
-    pattern: |
-      Copyright|Apache-2.0
-
-  paths: # <6>
+  paths:
     - '**/*.go'
     - '**/*.sh'
 
