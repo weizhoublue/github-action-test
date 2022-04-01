@@ -117,6 +117,12 @@ any update about openapi.yaml, will be checked for the yaml validation
 
 run ginkgo for any golang code
 
+and coverage report from <https://coveralls.io> , must meet the coverage requirement
+
+## action: golang quality
+
+report from <https://www.codefactor.io>
+
 ## need review
 
 any PR need 2 review, if meet, will auto label it with "pr/approved" and "pr/need-release-label"
