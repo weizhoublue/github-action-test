@@ -28,6 +28,10 @@ type Tester struct {
 	R   int // this line will not show up
 }
 
+func (a *Tester) Method() {
+	fmt.Printf("Buf=%+v \n", a.Buf)
+}
+
 // Show do something ....
 //
 // this is description for Show
