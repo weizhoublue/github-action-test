@@ -1,0 +1,82 @@
+name: Daily Build
+
+on:
+  schedule:
+    # run 1:30 each day
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'sha, tag, branch'
+        required: true
+        default: main
+
+env:
+  DEFAULT_BRANCH: main
+
+jobs:
+  unitest:
+    runs-on: ubuntu-latest
+    needs: filter_changes
+    if: ${{ needs.filter_changes.outputs.unitest == 'true' }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.8
+
+      - name: Checking Ref
+        id: version
+        shell: bash
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            tag_name=${{ github.event.inputs.ref }}
+            echo ::set-output name=ref::${tag_name}
+          else
+            echo ::set-output name=ref::${{ env.DEFAULT_BRANCH }}
+          fi
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: ${{ steps.version.outputs.ref }}
+
+      - name: Run unitest
+        id: unitest
+        continue-on-error: true
+        run: |
+          make unitest-tests
+
+      - name: Upload coverage
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: coverage.out
+          path: coverage.out
+          retention-days: 1
+
+      - name: Upload testreport
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: testreport.json
+          path: testreport.json
+          retention-days: 1
+
+      # upload coverage report to Coveralls
+      # https://github.com/marketplace/actions/actions-goveralls
+      # https://github.com/mattn/goveralls
+      - name: Upload to Coveralls
+        if: ${{ steps.unitest.outcome != 'failure' }}
+        uses: shogo82148/actions-goveralls@v1.6.0
+        with:
+          path-to-profile: coverage.out
+
+      - name: Result
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        run: |
+          echo "failed"
+          exit 1
+
+
