@@ -26,6 +26,8 @@ this is from <https://coveralls.io>
 
 [![Coverage Status](https://coveralls.io/repos/github/weizhoublue/github-action-test/badge.svg?branch=main)](https://coveralls.io/github/weizhoublue/github-action-test?branch=main)
 
+this is from <https://about.codecov.io>
 
+[![codecov](https://codecov.io/gh/weizhoublue/github-action-test/branch/main/graph/badge.svg?token=Y50HD9H1EA)](https://codecov.io/gh/weizhoublue/github-action-test)
 
 
