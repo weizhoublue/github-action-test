@@ -6,6 +6,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'sha, tag, branch'
+        required: true
+        default: main
 
 permissions: read-all
 
@@ -18,11 +24,27 @@ jobs:
   go-mod:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checking Ref
+        id: version
+        shell: bash
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            tag_name=${{ github.event.inputs.ref }}
+            echo ::set-output name=ref::${tag_name}
+          else
+            echo ::set-output name=ref::${GITHUB_REF##*/}
+          fi
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
+          ref: ${{ steps.version.outputs.ref }}
 
+      # https://github.com/marketplace/actions/go-license-checker
+      - uses: yusufpapurcu/go-license-checker@v0.5
+
+      # my way
       - name: Check GO License
         continue-on-error: false
         shell: bash
