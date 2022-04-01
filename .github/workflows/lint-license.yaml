@@ -6,16 +6,12 @@ on:
     paths:
       - '**.go'
       - '**.sh'
-    paths-ignore:
-      - 'vendor/**'
   push:
     branches:
       - main
     paths:
       - '**.go'
       - '**.sh'
-    paths-ignore:
-      - 'vendor/**'
   workflow_dispatch:
     inputs:
       ref:
