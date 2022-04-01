@@ -73,6 +73,25 @@ jobs:
         with:
           path-to-profile: coverage.out
 
+      # upload coverage report to Codecov
+      # https://github.com/marketplace/actions/codecov
+      - name: Upload to Codecov
+        if: ${{ steps.unitest.outcome != 'failure' }}
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          # not required for public repos
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          # Directory to search for coverage reports
+          directory: './'
+          files: 'coverage.out'
+          flags: unittests # optional
+          # optional, Custom defined name for the upload
+          name: my-codecov-umbrella
+          # optional (default = false)
+          fail_ci_if_error: true
+          # optional (default = false)
+          verbose: true
+
       - name: Result
         if: ${{ steps.unitest.outcome == 'failure' }}
         run: |
