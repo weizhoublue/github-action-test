@@ -8,17 +8,19 @@
 [![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
 
 
-## golang simple report
+## golang quality report
 
 this is from <https://goreportcard.com>
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/weizhoublue/github-action-test)](https://goreportcard.com/report/github.com/weizhoublue/github-action-test)
 
-## golang detailed quality
-
 this is from <https://www.codefactor.io>
 
 [![CodeFactor](https://www.codefactor.io/repository/github/weizhoublue/github-action-test/badge)](https://www.codefactor.io/repository/github/weizhoublue/github-action-test)
+
+this is from <https://sonarcloud.io>
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=weizhoublue_github-action-test&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=weizhoublue_github-action-test)
 
 ## test coverage report
 
