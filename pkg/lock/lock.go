@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright Authors of helloword
 package lock
 
 // RWMutex is equivalent to sync.RWMutex but applies deadlock detection if the
