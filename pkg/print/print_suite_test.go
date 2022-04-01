@@ -8,7 +8,6 @@ import (
 )
 
 func TestPrint(t *testing.T) {
-
 	RegisterFailHandler(Fail)
 
 	RunSpecs(t, "Print Suite")
