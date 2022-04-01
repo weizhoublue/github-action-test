@@ -26,7 +26,7 @@ jobs:
             tag_name=${{ github.event.inputs.ref }}
             echo ::set-output name=ref::${tag_name}
           else
-            echo ::set-output name=ref::${GITHUB_REF##*/}
+            echo ::set-output name=ref::${{ github.sha }}
           fi
 
       - name: Checkout Source Code
