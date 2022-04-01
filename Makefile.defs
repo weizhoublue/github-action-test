@@ -35,7 +35,8 @@ GIT_COMMIT_TIME = $(shell git show -s --format='format:%aI')
 
 FULL_BUILD_VERSION = $(VERSION) $(GIT_COMMIT_VERSION)
 
-#------------------
+#------
+# ------------
 
 # define a function replacing spaces with commas in a list
 empty :=
