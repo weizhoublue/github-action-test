@@ -11,14 +11,16 @@ header:
       Copyright|Apache-2.0
 
   paths: # <6>
-    - '**'
+    - '**/*.go'
+    - '**/*.sh'
 
-  paths-ignore: # <7>
+  paths-ignore:
+    - 'vendor'
     - 'dist'
     - 'licenses'
     - '**/*.md'
-    - '**/go.mod'
-    - '**/go.sum'
+    - 'go.mod'
+    - 'go.sum'
     - 'LICENSE'
     - 'NOTICE'
 
