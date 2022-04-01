@@ -17,8 +17,6 @@ env:
 jobs:
   unitest:
     runs-on: ubuntu-latest
-    needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.unitest == 'true' }}
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
