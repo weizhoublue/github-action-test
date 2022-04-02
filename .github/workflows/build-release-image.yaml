@@ -1,170 +1,20 @@
-# build the release image under an clean env , and it is trigger by tag event
-# buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage:v1.0.0
-name: Build Image Release
-
-env:
-  ONLINE_REGISTER: ghcr.io
-  BUILD_PLATFORM: linux/amd64,linux/arm64
-  ONLINE_REGISTER_USER: ${{ github.actor }}
-  ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+# build the Beta image with customized tag ,under an clean env , from  specified Branch
+# buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage:{yourTag}
+name: Build Release Image
 
 on:
-  # push:
-  #   tags:
-  #     - v[0-9]+.[0-9]+.[0-9]+
-  #     - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag'
+      ref:
+        description: 'tag, sha, branch'
         required: true
         default: v1.0.0
-
 
 permissions: write-all
 
 jobs:
-  build-and-push:
-    environment: release
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - name: controllerimage
-            dockerfile: ./images/controllerimage/Dockerfile
-            # root path of this project
-            context: ./
-
-    steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1.6.0
-
-      - name: Login to online register
-        uses: docker/login-action@v1.14.1
-        with:
-          username: ${{ env.ONLINE_REGISTER_USER }}
-          password: ${{ env.ONLINE_REGISTER_PASSWORD }}
-          registry: ${{ env.ONLINE_REGISTER }}
-
-      - name: Getting image tag
-        id: tag
-        continue-on-error: false
-        run: |
-          if ${{ github.event_name == 'workflow_dispatch' }}; then
-            tag_name=${{ github.event.inputs.tag }}
-            echo ::set-output name=tag::${tag_name}
-          else
-            # trigger by tag event
-            # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
-            echo ::set-output name=tag::${GITHUB_REF##*/}
-          fi
-
-      # https://github.com/actions/checkout
-      - name: Checkout Source Code
-        uses: actions/checkout@v2
-        continue-on-error: false
-        with:
-          # Whether to configure the token or SSH key with the local git config
-          persist-credentials: false
-          ref: ${{ steps.tag.outputs.tag }}
-
-      - name: Getting Build Arg
-        id: arg
-        continue-on-error: false
-        run: |
-          GIT_COMMIT_VERSION=$( git show -s --format='format:%H')
-          GIT_COMMIT_TIME=$( git show -s --format='format:%aI')
-          echo ::set-output name=commitver::${GIT_COMMIT_VERSION}
-          echo ::set-output name=committime::${GIT_COMMIT_TIME}
-
-      - name: Release Build ${{ matrix.name }}
-        uses: docker/build-push-action@v2
-        continue-on-error: false
-        id: docker_build_release
-        with:
-          context: ${{ matrix.context }}
-          file: ${{ matrix.dockerfile }}
-          push: true
-          platforms: ${{ env.BUILD_PLATFORM }}
-          tags: |
-            ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
-          build-args: |
-            GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
-            GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
-            VERSION=${{ steps.tag.outputs.tag }}
-
-      - name: Image Release Digest
-        shell: bash
-        run: |
-          mkdir -p image-digest/
-          job_name=${{ matrix.name }}
-          job_name_capital=${job_name^^}
-          job_name_underscored=${job_name_capital//-/_}
-          echo "${job_name_underscored}_DIGEST := \"${{ steps.docker_build_release.outputs.digest }}\"" > image-digest/makefile-digest.txt
-
-          echo "### ${{ matrix.name }}" > image-digest/${{ matrix.name }}.txt
-          echo "" >> image-digest/${{ matrix.name }}.txt
-          echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
-          echo "" >> image-digest/${{ matrix.name }}.txt
-
-      # Upload artifact digests
-      - name: Upload artifact digests
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: image-digest ${{ matrix.name }}
-          path: image-digest
-          retention-days: 1
-
-  image-digests:
-    name: Display Digests
-    runs-on: ubuntu-latest
-    needs: build-and-push
-    steps:
-      - name: Getting image tag
-        id: tag
-        run: |
-          # GITHUB_REF： The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, for tags it is refs/tags/<tag_name>, and for pull requests it is refs/pull/<pr_number>/merge
-          echo ::set-output name=tag::${GITHUB_REF##*/}
-      - name: Downloading Image Digests
-        shell: bash
-        run: |
-          mkdir -p image-digest/
-
-      - name: Download digests of all images built
-        uses: actions/download-artifact@v3.0.0
-        with:
-          path: image-digest/
-
-      - name: Image Digests Output
-        shell: bash
-        run: |
-          cd image-digest/
-          echo "## Docker Manifests" > ../image-digest-output.txt
-          echo "" >> ../image-digest-output.txt
-          find -type f -not -name "makefile-digest.txt" | sort | xargs -d '\n' cat >> ../image-digest-output.txt
-
-      - name: Image Makefile Digests
-        shell: bash
-        run: |
-          cd image-digest/
-          echo "# File generated by .github/workflows/images-legacy-releases.yaml; DO NOT EDIT." > ../Makefile.digests
-          echo "# Copyright "$(date +'%Y')" " >> ../Makefile.digests
-          echo "# SPDX-License-Identifier: Apache-2.0" >> ../Makefile.digests
-          echo "" >> ../Makefile.digests
-          find -type f  -name "makefile-digest.txt" | sort | xargs -d '\n' cat >> ../Makefile.digests
-
-      # Upload artifact digests
-      - name: Upload artifact digests
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: image-digest-output.txt-${{ steps.tag.outputs.tag }}
-          path: image-digest-output.txt
-          retention-days: 1
-
-      # Upload artifact digests
-      - name: Upload artifact digests
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: Makefile.digests-${{ steps.tag.outputs.tag }}
-          path: Makefile.digests
-          retention-days: 1
+  call-workflow:
+    # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
+    uses: ./.github/workflows/call-release-image.yaml
+    with:
+      ref: ${{ github.event.inputs.ref }}
