@@ -69,6 +69,7 @@ jobs:
           fi
           echo ::set-output name=ref::${image_ref}
           [ -n "${suffix}" ] && echo ::set-output name=suffix::-${suffix}
+          exit 0
 
       # https://github.com/actions/checkout
       - name: Checkout Source Code
