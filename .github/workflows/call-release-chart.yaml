@@ -78,6 +78,7 @@ jobs:
           cd charts
           make clean
           make
+          # make -e VERSION=${{ needs.get_ref.outputs.ref }}
           if ! ls *.tgz &>/dev/null ; then
             echo "failed to generate chart"
             exit 1

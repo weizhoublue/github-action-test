@@ -43,3 +43,4 @@ cmd/  @octocat
 /test/ @weizhoublue
 /AUTHORS @weizhoublue
 /ginkgo.sh @weizhoublue
+/.licenserc.yaml @weizhoublue

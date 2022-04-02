@@ -3,10 +3,9 @@
 
 ## github workflow badge
 
-[![Build Image Release](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/build-release-image.yaml)
+[![Auto Release Version](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-release.yaml/badge.svg)](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-release.yaml)
 
 [![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
-
 
 ## golang quality report
 
