@@ -1,4 +1,4 @@
-# must set branch 'github-pages' as github page
+# must set branch 'github_pages' as github page
 # this workflow will create the tgz from "/charts/*" of branch main,
 # and deploy to "/charts" of branch "github_pages"
 # and on branch "github_pages", update '/index.yaml' for '/charts/*.tgz'
@@ -12,12 +12,14 @@ env:
   MERGE_BRANCH: github_pages
 
 on:
+  # for self debug
   workflow_dispatch:
     inputs:
       ref:
         description: 'tag, sha, branch'
         required: true
         default: v1.0.0
+  # call by other
   workflow_call:
     inputs:
       ref:
@@ -25,28 +27,38 @@ on:
         type: string
 
 jobs:
-  # packages tgz from /charts of original branch, deploy to /charts of target branch
-  package_chart:
+  get_ref:
     runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.get_original_ref.outputs.ref }}
     steps:
       - name: Get Original Ref
         id: get_original_ref
         run: |
-          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+          if ${{ inputs.ref != '' }} ; then
+              echo "call by workflow_call"
+              # github.event_name is same with caller when workflow_call 
+              # so use 'inputs' context who only available in a reusable workflow 
+              ver=${{ inputs.ref }}
+              echo ::set-output name=ref::${ver}
+          elif ${{ github.event_name == 'workflow_dispatch' }} ; then
+              echo "call by self workflow_dispatch"
               ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
-          # github.event_name is same with caller when workflow_call
-          #elif ${{ github.event_name == 'workflow_call' }} ; then
-          #    ver=${{ github.event.inputs.ref }}
-          #    echo ::set-output name=ref::${ver}
           else
-              echo ::set-output name=ref::main
+              echo "unexpected event: ${{ github.event_name }}"
+              exit 1
           fi
 
+  # packages tgz from /charts of original branch, deploy to /charts of target branch
+  package_chart:
+    runs-on: ubuntu-latest
+    needs: get_ref
+    steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          ref: ${{ steps.get_original_ref.outputs.ref }}
+          ref: ${{ needs.get_ref.outputs.ref }}
 
       - name: Install Helm
         uses: azure/setup-helm@v2.0
@@ -78,7 +90,7 @@ jobs:
   # update /index.yaml in the target branch
   update_githubpage:
     runs-on: ubuntu-latest
-    needs: package_chart
+    needs: [package_chart, get_ref]
     steps:
       - name: Get Base URL
         id: get_base_url
@@ -87,20 +99,6 @@ jobs:
           proj=${name#*/}
           url=https://${{ github.repository_owner }}.github.io/${proj}
           echo "::set-output name=url::${url}"
-
-      - name: Get Original Ref
-        id: get_original_ref
-        run: |
-          if ${{ github.event_name == 'workflow_dispatch' }} ; then
-              ver=${{ github.event.inputs.ref }}
-              echo ::set-output name=ref::${ver}
-          # github.event_name is same with caller when workflow_call
-          #elif ${{ github.event_name == 'workflow_call' }} ; then
-          #    ver=${{ github.event.inputs.ref }}
-          #    echo ::set-output name=ref::${ver}
-          else
-              echo ::set-output name=ref::main
-          fi
 
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -122,9 +120,9 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v4
         with:
-          title: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          title: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # from branch
-          commit-message: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          commit-message: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
