@@ -1,7 +1,7 @@
 # must set branch 'github-pages' as github page
 # this workflow will create the tgz from "/charts/*" of branch main,
 # and deploy to "/charts" of branch "github_pages"
-# and on branch "github-pages", update '/index.yaml' for '/charts/*.tgz'
+# and on branch "github_pages", update '/index.yaml' for '/charts/*.tgz'
 
 name: Release Charts
 
@@ -15,18 +15,17 @@ on:
   workflow_dispatch:
     inputs:
       base:
-        description: 'Base: tag or sha'
+        description: 'tag, sha, branch'
         required: true
         default: v1.0.0
 
 jobs:
   # packages tgz from /charts of original branch, deploy to /charts of target branch
-  deploy_chart:
+  package_chart:
     runs-on: ubuntu-latest
     steps:
       - name: Get Original Ref
         id: get_original_ref
-        continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
@@ -70,7 +69,7 @@ jobs:
   # update /index.yaml in the target branch
   update_githubpage:
     runs-on: ubuntu-latest
-    needs: deploy_chart
+    needs: package_chart
     steps:
       - name: Get Base URL
         id: get_base_url
