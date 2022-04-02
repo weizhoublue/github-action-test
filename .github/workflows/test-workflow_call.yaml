@@ -9,14 +9,44 @@ on:
         default: v1.0.0
 
 jobs:
-  call-workflow:
+  call-workflow-chart:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
-    uses: ./.github/workflows/release-chart.yaml
+    uses: ./.github/workflows/call-release-chart.yaml
     with:
       ref: ${{ github.event.inputs.ref }}
 
-  result:
+  handler-result-chart:
     runs-on: ubuntu-latest
-    needs: call-workflow
+    needs: call-workflow-chart
     steps:
-      - run: echo ${{ needs.job1.outputs.firstword }}
+      - name: Download Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: ${{ needs.call-workflow-chart.outputs.artifact }}
+          path: ./
+
+      - name: result
+        run: |
+          echo ${{ needs.call-workflow-chart.outputs.artifact }}
+          ls ./
+
+  call-workflow-changelog:
+    uses: ./.github/workflows/call-release-changelog.yaml
+    with:
+      dest_tag: ${{ github.event.inputs.ref }}
+
+  handler-result-chart:
+    runs-on: ubuntu-latest
+    needs: call-workflow-changelog
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: ${{ needs.call-workflow-changelog.outputs.artifact }}
+          path: ./
+
+      - name: result
+        run: |
+          echo ${{ needs.call-workflow-changelog.outputs.artifact }}
+          ls ./
+
