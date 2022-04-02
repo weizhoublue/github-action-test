@@ -68,7 +68,8 @@ jobs:
               exit 1
           fi
           echo ::set-output name=ref::${image_ref}
-          [ -n "${suffix}" ] && echo ::set-output name=suffix::-${suffix}
+          [ -n "${image_suffix}" ] && echo ::set-output name=suffix::-${image_suffix}
+          exit 0
 
       # https://github.com/actions/checkout
       - name: Checkout Source Code
@@ -112,7 +113,6 @@ jobs:
           echo "" >> image-digest/${{ matrix.name }}.txt
           echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}${{ steps.ref.outputs.suffix }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
-          cd ..
           # ====== Image Digests Output =============
           cd image-digest/
           echo "## Docker Manifests" > ../image-digest-output.txt
