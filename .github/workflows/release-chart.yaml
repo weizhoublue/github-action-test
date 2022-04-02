@@ -7,6 +7,8 @@ name: Release Charts
 
 env:
   HELM_VERSION: v3.8.1
+  PR_LABEL: pr/release/robot_chart
+  PR_REVIWER: weizhoublue
   MERGE_BRANCH: github-pages
 
 on:
@@ -23,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Original Ref
-        id: get_origin_ref
+        id: get_original_ref
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
@@ -36,7 +38,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          ref: ${{ steps.get_origin_ref.outputs.ref }}
+          ref: ${{ steps.get_original_ref.outputs.ref }}
 
       - name: Install Helm
         uses: azure/setup-helm@v2.0
@@ -57,27 +59,13 @@ jobs:
           mkdir -p tmp
           mv charts/*.tgz tmp
 
-      - name: Upload Chart Package
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3.0.0
         with:
           name: chart-package
           path: tmp/*
           retention-days: 1
           if-no-files-found: error
-
-      # https://github.com/marketplace/actions/deploy-to-github-pages
-      # 这个action 用来提交PR 挺好，不需要两个分支 的 目录结构相似，可以把 一个目录 提交到某个 仓库的某个 目录下
-      # 不需要 手动 批 PR，自动生效
-      # 如果目的分支不存在，会自动创建它
-      - name: Deploy To GithubPages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
-        with:
-          # The target branch the action should deploy to.
-          branch: ${{ env.MERGE_BRANCH }}
-          # The folder of original branch should deploy.
-          folder: tmp
-          # target directory of target branch
-          target-folder: './charts'
 
   # update /index.yaml in the target branch
   update_yaml:
@@ -92,22 +80,48 @@ jobs:
           url=https://${{ github.repository_owner }}.github.io/${proj}
           echo "::set-output name=url::${url}"
 
+      - name: Get Original Ref
+        id: get_original_ref
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+              ver=${{ github.event.inputs.base }}
+              echo ::set-output name=ref::${ver}
+          else
+              echo ::set-output name=ref::main
+          fi
+
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
           ref: ${{ env.MERGE_BRANCH }}
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: chart-package
+          path: charts/
 
       - name: Update Chart Yaml
         run: |
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./index.yaml
 
-      - name: Deploy To GithubPages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v4
         with:
-          # The target branch the action should deploy to.
-          branch: ${{ env.MERGE_BRANCH }}
-          # The folder of original branch should deploy.
-          folder: '.'
-          # target directory of target branch
-          target-folder: '.'
+          title: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          # from branch
+          commit-message: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          # branch name: ${branch}-${branch-suffix}
+          # an branch suffix could make sure the branch is unique
+          branch-suffix: timestamp
+          branch: robot/update_chart
+          # Delete the branch when closing pull requests, and when undeleted after merging
+          delete-branch: true
+          # merge to
+          base: ${{ env.MERGE_BRANCH }}
+          signoff: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.PR_LABEL }}
+          reviewers: ${{ env.PR_REVIWER }
