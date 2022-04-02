@@ -3,19 +3,26 @@ name: Build Image Base
 
 # final packed image : ${ONLINE_REGISTER}/${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
 # image dockerfile path on the repo: ${IMAGE_ROOT_PATH}/${IMAGE_NAME}/Dockerfile
+# for ghcr.io
 env:
   IMAGE_NAME: baseimage
   IMAGE_REPO: weizhoulan
-  # IMAGE_REPO: ${{ github.repository_owner }}   # spidernet-io
-  # IMAGE_REPO: ${{ github.repository }}   # spidernet-io/spiderpool
-  ONLINE_REGISTER: docker.io
+  IMAGE_REPO: ${{ github.repository }}   # spidernet-io/spiderpool
+  ONLINE_REGISTER: ghcr.io   # for open-source repo
   IMAGE_ROOT_PATH: images
   BUILD_PLATFORM: linux/amd64,linux/arm64
-  ONLINE_REGISTER_USER: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
-  # ONLINE_REGISTER_USER: ${{ github.repository_owner }}  # spidernet-io
-  # ONLINE_REGISTER_USER: ${{ github.actor }}   # weizhoublue
-  ONLINE_REGISTER_PASSWORD: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
-  # ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  ONLINE_REGISTER_USER: ${{ github.actor }}   # weizhoublue
+  ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+# for docker.io
+#  env:
+#    IMAGE_NAME: baseimage
+#    IMAGE_REPO: weizhoulan
+#    ONLINE_REGISTER: docker.io
+#    IMAGE_ROOT_PATH: images
+#    BUILD_PLATFORM: linux/amd64,linux/arm64
+#    ONLINE_REGISTER_USER: ${{ secrets.ONLINE_IMAGE_REGISTER_USERNAME }}
+#    ONLINE_REGISTER_PASSWORD: ${{ secrets.ONLINE_IMAGE_REGISTER_PASSWORD }}
 
 
 # when PR commit the change for baseimage dockerfile, trigger the workflow
