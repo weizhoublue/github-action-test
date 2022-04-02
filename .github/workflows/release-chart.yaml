@@ -69,24 +69,19 @@ jobs:
             exit 1
           fi
           cd ..
-          mkdir -p docs/charts
-          mv charts/*.tgz docs/charts
+          mkdir -p tmp/charts
+          mv charts/*.tgz tmp/charts
           git checkout -- charts
-
-      - name: Prepare Index
-        continue-on-error: false
-        run: |
-          #rebuild index for docs/charts
-          cd docs
+          # rebuild index.yaml
+          cd tmp
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./
-
 
       - name: Upload Chart Package
         uses: actions/upload-artifact@v3.0.0
         with:
           name: chart-package
-          path: ./docs/charts/*
+          path: tmp/charts/*
           retention-days: 1
           if-no-files-found: error
 
@@ -94,26 +89,17 @@ jobs:
         uses: actions/upload-artifact@v3.0.0
         with:
           name: chart-package
-          path: ./docs/index.yaml
+          path: tmp/index.yaml
           retention-days: 1
           if-no-files-found: error
 
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v4
+      # https://github.com/marketplace/actions/deploy-to-github-pages
+      - name: Deploy To GithubPages
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
-          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
-          # from branch
-          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
-          # branch name: ${branch}-${branch-suffix}
-          # an branch suffix could make sure the branch is unique
-          branch-suffix: timestamp
-          branch: update_chart
-          # Delete the branch when closing pull requests, and when undeleted after merging
-          delete-branch: true
-          # merge to
-          base: ${{ env.MERGE_BRANCH }}
-          signoff: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          labels: ${{ env.PR_LABEL }}
-          reviewers: ${{ env.PR_REVIWER }}
+          # The target branch the action should deploy to.
+          branch: github-pages
+          # The folder of original branch should deploy.
+          folder: tmp
+          # target directory of target branch
+          target-folder: '.'
