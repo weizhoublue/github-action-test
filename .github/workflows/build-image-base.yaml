@@ -6,8 +6,7 @@ name: Build Image Base
 # for ghcr.io
 env:
   IMAGE_NAME: baseimage
-  IMAGE_REPO: weizhoulan
-  IMAGE_REPO: ${{ github.repository }}   # spidernet-io/spiderpool
+  IMAGE_REPO: ${{ github.repository }}   # weizhoulan/github-action-test
   ONLINE_REGISTER: ghcr.io   # for open-source repo
   IMAGE_ROOT_PATH: images
   BUILD_PLATFORM: linux/amd64,linux/arm64
