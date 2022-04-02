@@ -68,7 +68,7 @@ jobs:
               exit 1
           fi
           echo ::set-output name=ref::${image_ref}
-          [ -n "${suffix}" ] && echo ::set-output name=suffix::-${suffix}
+          [ -n "${image_suffix}" ] && echo ::set-output name=suffix::-${image_suffix}
           exit 0
 
       # https://github.com/actions/checkout
