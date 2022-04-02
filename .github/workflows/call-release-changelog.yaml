@@ -74,6 +74,7 @@ jobs:
               fi
               echo ::set-output name=dest_tag::${dest_tag}
               [ -n "$begin_tag" ] && echo ::set-output name=begin_tag::${begin_tag}
+              exit 0
           else
               echo "unexpected event: ${{ github.event_name }}"
               exit 1
