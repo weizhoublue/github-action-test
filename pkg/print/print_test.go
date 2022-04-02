@@ -11,6 +11,7 @@ var _ = Describe("Print", Label("unitest"), func() {
 	It("test output", func() {
 		print.MyPrint()
 		print.MyPrint()
+
 		Expect(1).To(Equal(1))
 	})
 })

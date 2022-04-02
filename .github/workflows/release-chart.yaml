@@ -1,8 +1,7 @@
-# must enable github page in your project
-# all charts under "charts/*", this workflow will create the tgz chart and merge to "/docs" of "chart" branch
-# please make the "chart" branch as the github page
-# please create the "chart" branch beforhand, or else the workflow will fail
-# put all charts under /docs/charts/*.tgz, and /docs/index.yaml
+# must set branch 'github-pages' as github page
+# this workflow will create the tgz from "/charts/*" of branch main,
+# and deploy to "/charts" of branch "github_pages"
+# and on branch "github_pages", update '/index.yaml' for '/charts/*.tgz'
 
 name: Release Charts
 
@@ -10,55 +9,42 @@ env:
   HELM_VERSION: v3.8.1
   PR_LABEL: pr/release/robot_chart
   PR_REVIWER: weizhoublue
-  MERGE_BRANCH: webserver
+  MERGE_BRANCH: github_pages
 
 on:
   workflow_dispatch:
     inputs:
       base:
-        description: 'Base: tag or sha'
+        description: 'tag, sha, branch'
         required: true
         default: v1.0.0
 
 jobs:
-  generate_chart:
+  # packages tgz from /charts of original branch, deploy to /charts of target branch
+  package_chart:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - chart_dir: charts/cilium
-
     steps:
-      - name: Get Version
-        id: get_version
-        continue-on-error: false
+      - name: Get Original Ref
+        id: get_original_ref
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
-              echo ::set-output name=version::${ver}
+              echo ::set-output name=ref::${ver}
           else
-              echo ::set-output name=version::main
+              echo ::set-output name=ref::main
           fi
 
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          ref: ${{ steps.get_version.outputs.version }}
-
-      - name: Get Base URL
-        id: get_base_url
-        run: |
-          name=${{ github.repository }}
-          proj=${name#*/}
-          url=https://${{ github.repository_owner }}.github.io/${proj}
-          echo "::set-output name=url::${url}"
+          ref: ${{ steps.get_original_ref.outputs.ref }}
 
       - name: Install Helm
         uses: azure/setup-helm@v2.0
         with:
           version: ${{ env.HELM_VERSION }}
 
-      - name: Prepare Chart
+      - name: Package Chart
         continue-on-error: false
         run: |
           cd charts
@@ -69,46 +55,67 @@ jobs:
             exit 1
           fi
           cd ..
-          mkdir -p docs/charts
-          mv charts/*.tgz docs/charts
-          git checkout -- charts
+          mkdir -p tmp
+          mv charts/*.tgz tmp
 
-      - name: Prepare Index
-        continue-on-error: false
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: chart-package
+          path: tmp/*
+          retention-days: 1
+          if-no-files-found: error
+
+  # update /index.yaml in the target branch
+  update_githubpage:
+    runs-on: ubuntu-latest
+    needs: package_chart
+    steps:
+      - name: Get Base URL
+        id: get_base_url
         run: |
-          #rebuild index for docs/charts
-          cd docs
+          name=${{ github.repository }}
+          proj=${name#*/}
+          url=https://${{ github.repository_owner }}.github.io/${proj}
+          echo "::set-output name=url::${url}"
+
+      - name: Get Original Ref
+        id: get_original_ref
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+              ver=${{ github.event.inputs.base }}
+              echo ::set-output name=ref::${ver}
+          else
+              echo ::set-output name=ref::main
+          fi
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.MERGE_BRANCH }}
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: chart-package
+          path: charts/
+
+      - name: Update Chart Yaml
+        run: |
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
-          mv ./charts/index.yaml ./
-
-
-      - name: Upload Chart Package
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: chart-package
-          path: ./docs/charts/*
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Upload Chart Yaml
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: chart-package
-          path: ./docs/index.yaml
-          retention-days: 1
-          if-no-files-found: error
+          mv ./charts/index.yaml ./index.yaml
 
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v4
         with:
-          title: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
+          title: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # from branch
-          commit-message: "robot Update chart from ${{ steps.get_version.outputs.version }} to branch ${{ env.MERGE_BRANCH }} "
+          commit-message: "robot Update chart from ${{ steps.get_original_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # branch name: ${branch}-${branch-suffix}
           # an branch suffix could make sure the branch is unique
           branch-suffix: timestamp
-          branch: update_chart
+          branch: robot/update_chart
           # Delete the branch when closing pull requests, and when undeleted after merging
           delete-branch: true
           # merge to
