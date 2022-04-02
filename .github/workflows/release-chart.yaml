@@ -68,7 +68,7 @@ jobs:
           if-no-files-found: error
 
   # update /index.yaml in the target branch
-  update_yaml:
+  update_githubpage:
     runs-on: ubuntu-latest
     needs: deploy_chart
     steps:
@@ -91,9 +91,10 @@ jobs:
           fi
 
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ env.MERGE_BRANCH }}
+          fetch-depth: 0
 
       - name: Download Artifact
         uses: actions/download-artifact@v3.0.0
