@@ -113,7 +113,6 @@ jobs:
           echo "" >> image-digest/${{ matrix.name }}.txt
           echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}${{ steps.ref.outputs.suffix }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
-          cd ..
           # ====== Image Digests Output =============
           cd image-digest/
           echo "## Docker Manifests" > ../image-digest-output.txt
