@@ -14,10 +14,15 @@ env:
 on:
   workflow_dispatch:
     inputs:
-      base:
+      ref:
         description: 'tag, sha, branch'
         required: true
         default: v1.0.0
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
 
 jobs:
   # packages tgz from /charts of original branch, deploy to /charts of target branch
@@ -28,7 +33,10 @@ jobs:
         id: get_original_ref
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
-              ver=${{ github.event.inputs.base }}
+              ver=${{ github.event.inputs.ref }}
+              echo ::set-output name=ref::${ver}
+          else if ${{ github.event_name == 'workflow_call' }} ; then
+              ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
           else
               echo ::set-output name=ref::main
@@ -83,7 +91,10 @@ jobs:
         id: get_original_ref
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
-              ver=${{ github.event.inputs.base }}
+              ver=${{ github.event.inputs.ref }}
+              echo ::set-output name=ref::${ver}
+          else if ${{ github.event_name == 'workflow_call' }} ; then
+              ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
           else
               echo ::set-output name=ref::main
