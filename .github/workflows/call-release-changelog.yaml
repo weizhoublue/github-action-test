@@ -61,8 +61,8 @@ jobs:
               exit 0
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "call by workflow_dispatch"
-              dest_tag={{ github.event.inputs.dest_tag }}
-              begin_tag={{ github.event.inputs.begin_tag }}
+              dest_tag=${{ github.event.inputs.dest_tag }}
+              begin_tag=${{ github.event.inputs.begin_tag }}
               [ -z "$dest_tag" ] && echo "empty dest_tag" && exit 1
               if ! git describe --tags --abbrev=0  ${dest_tag} &>/dev/null ; then
                   echo "error, does not exist dest_tag ${dest_tag} "
