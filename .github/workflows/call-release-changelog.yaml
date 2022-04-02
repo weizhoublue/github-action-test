@@ -133,7 +133,7 @@ jobs:
           configuration: ${{ env.CHANGELOG_CONF }}
           outputFile: ${{ env.CHANGELOG_TMP_FILE }}
           fromTag: ${{ needs.get_ref.outputs.begin_tag }}
-          toTag: ${{ needs.get_ref.outputs.begin_tag }}
+          toTag: ${{ needs.get_ref.outputs.to_tag }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -144,6 +144,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
           configuration: ${{ env.CHANGELOG_CONF }}
+          toTag: ${{ needs.get_ref.outputs.begin_tag }}
           outputFile: ${{ env.CHANGELOG_TMP_FILE }}
           failOnError: true
         env:
