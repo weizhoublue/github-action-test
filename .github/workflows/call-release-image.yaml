@@ -99,7 +99,7 @@ jobs:
           build-args: |
             GIT_COMMIT_VERSION=${{ steps.arg.outputs.commitver }}
             GIT_COMMIT_TIME=${{ steps.arg.outputs.committime }}
-            VERSION=${{ steps.tag.outputs.tag }}
+            VERSION=${{ steps.ref.outputs.ref }}
 
       - name: Image Release Digest
         shell: bash
@@ -111,7 +111,7 @@ jobs:
           echo "${job_name_underscored}_DIGEST := \"${{ steps.docker_build_release.outputs.digest }}\"" > image-digest/makefile-digest.txt
           echo "### ${{ matrix.name }}" > image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
-          echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}${{ steps.ref.outputs.suffix }}:${{ steps.tag.outputs.tag }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
+          echo "\`${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}${{ steps.ref.outputs.suffix }}:${{ steps.ref.outputs.ref }}@${{ steps.docker_build_release.outputs.digest }}\`" >> image-digest/${{ matrix.name }}.txt
           echo "" >> image-digest/${{ matrix.name }}.txt
           # ====== Image Digests Output =============
           cd image-digest/
@@ -132,7 +132,7 @@ jobs:
       - name: Upload artifact digests
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: image-digest-artifact
+          name: image-digest-artifact-${{ steps.ref.outputs.ref }}
           path: image-digest-output.txt
           retention-days: 1
 
@@ -140,6 +140,6 @@ jobs:
       - name: Upload artifact digests
         uses: actions/upload-artifact@v3.0.0
         with:
-          name: makefile-digest-artifact
+          name: makefile-digest-artifact-${{ steps.ref.outputs.ref }}
           path: Makefile.digests
           retention-days: 1
