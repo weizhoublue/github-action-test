@@ -7,21 +7,6 @@
 
 name: Auto Release Version
 
-env:
-  ONLINE_REGISTER: ghcr.io
-  BUILD_PLATFORM: linux/amd64,linux/arm64
-  ONLINE_REGISTER_USER: ${{ github.actor }}
-  ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  CHART_DEST_BRANCH: webserver
-  CHANGELOG_DIR: changelogs
-  MERGE_TO_BRANCH: main
-  PR_LABEL: pr/release/robot_changelog
-  PR_REVIWER: weizhoublue
-  CHANGELOG_CONF: .github/changelog_builder_conf.json
-  CHANGELOG_RESULT_DIR: changelogs
-  CHANGELOG_TEMP_FILE: _temp_changelog
-  HELM_VERSION: v3.8.1
-
 on:
   push:
     tags:
