@@ -1,8 +1,7 @@
-# must enable github page in your project
-# all charts under "charts/*", this workflow will create the tgz chart and merge to "/docs" of "chart" branch
-# please make the "chart" branch as the github page
-# please create the "chart" branch beforhand, or else the workflow will fail
-# put all charts under /docs/charts/*.tgz, and /docs/index.yaml
+# must set branch 'github-pages' as github page
+# this workflow will create the tgz from "/charts/*" of branch main,
+# and deploy to "/charts" of branch "github-pages"
+# and on branch "github-pages", update '/index.yaml' for '/charts/*.tgz'
 
 name: Release Charts
 
@@ -67,7 +66,7 @@ jobs:
           if-no-files-found: error
 
       # https://github.com/marketplace/actions/deploy-to-github-pages
-      # 这个挺好，不需要两个分支 的 目录结构相似，可以把 一些 内容 提交到另一个仓库/目录下
+      # 这个action 用来提交PR 挺好，不需要两个分支 的 目录结构相似，可以把 一个目录 提交到某个 仓库的某个 目录下
       # 不需要 手动 批 PR，自动生效
       # 如果目的分支不存在，会自动创建它
       - name: Deploy To GithubPages
@@ -101,6 +100,7 @@ jobs:
       - name: Update Chart Yaml
         run: |
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
+          mv ./charts/index.yaml ./index.yaml
 
       - name: Deploy To GithubPages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
