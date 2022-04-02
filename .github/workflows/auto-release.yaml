@@ -25,7 +25,7 @@ jobs:
   get-tag:
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.get_ref.outputs.tag }}
+      tag: ${{ steps.get_ref.outputs.tag }}
     steps:
       - name: Get Ref
         id: get_ref

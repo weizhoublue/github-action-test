@@ -3,6 +3,8 @@
 # and deploy to "/charts" of branch "github_pages"
 # and on branch "github_pages", update '/index.yaml' for '/charts/*.tgz'
 
+# Reusable workflows can't call other reusable workflows.
+# Any environment variables set in an env context defined at the workflow level in the caller workflow are not propagated to the called workflow.
 name: Call Release Charts
 
 env:
