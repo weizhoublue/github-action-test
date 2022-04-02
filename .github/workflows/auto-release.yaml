@@ -33,7 +33,7 @@ jobs:
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
             echo "call by self workflow_dispatch"
             echo ::set-output name=tag::${{ github.event.inputs.tag }}
-          elif ${{ github.event_name == 'workflow_dispatch' }} ; then
+          elif ${{ github.event_name == 'push' }} ; then
             echo "call by push tag"
             echo ::set-output name=tag::${GITHUB_REF##*/}
           else
