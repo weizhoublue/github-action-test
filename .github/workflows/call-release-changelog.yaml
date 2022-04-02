@@ -76,7 +76,7 @@ jobs:
                   echo "error, does not exist dest_tag ${dest_tag} "
                   exit 1
               fi
-              if [ -n "$begin_tag" ] && ! git describe --tags --abbrev=0  ${dest_tag} &>/dev/null ; then
+              if [ -n "$begin_tag" ] && ! git describe --tags --abbrev=0  ${begin_tag} &>/dev/null ; then
                   echo "error, does not exist begin_tag ${begin_tag} "
                   exit 1
               fi
