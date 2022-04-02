@@ -35,9 +35,10 @@ jobs:
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
-          elif ${{ github.event_name == 'workflow_call' }} ; then
-              ver=${{ github.event.inputs.ref }}
-              echo ::set-output name=ref::${ver}
+          # github.event_name is same with caller when workflow_call
+          #elif ${{ github.event_name == 'workflow_call' }} ; then
+          #    ver=${{ github.event.inputs.ref }}
+          #    echo ::set-output name=ref::${ver}
           else
               echo ::set-output name=ref::main
           fi
@@ -93,9 +94,10 @@ jobs:
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
-          else if ${{ github.event_name == 'workflow_call' }} ; then
-              ver=${{ github.event.inputs.ref }}
-              echo ::set-output name=ref::${ver}
+          # github.event_name is same with caller when workflow_call
+          #elif ${{ github.event_name == 'workflow_call' }} ; then
+          #    ver=${{ github.event.inputs.ref }}
+          #    echo ::set-output name=ref::${ver}
           else
               echo ::set-output name=ref::main
           fi
