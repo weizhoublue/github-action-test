@@ -10,6 +10,7 @@ on:
 
 jobs:
   call-workflow:
+    # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
     uses: ./.github/workflows/release-chart.yaml
     with:
       ref: ${{ github.event.inputs.ref }}
