@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-workflow:
-    uses: .github/workflows/release-chart.yaml@main
+    uses: ./.github/workflows/release-chart.yaml@main
     with:
       ref: ${{ github.event.inputs.ref }}
 
