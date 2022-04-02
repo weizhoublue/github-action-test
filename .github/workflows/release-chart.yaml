@@ -8,9 +8,7 @@ name: Release Charts
 
 env:
   HELM_VERSION: v3.8.1
-  PR_LABEL: pr/release/robot_chart
-  PR_REVIWER: weizhoublue
-  MERGE_BRANCH: webserver
+  MERGE_BRANCH: github-pages
 
 on:
   workflow_dispatch:
@@ -21,44 +19,32 @@ on:
         default: v1.0.0
 
 jobs:
-  generate_chart:
+  # packages tgz from /charts of original branch, deploy to /charts of target branch
+  deploy_chart:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - chart_dir: charts/cilium
-
     steps:
-      - name: Get Version
-        id: get_version
+      - name: Get Original Ref
+        id: get_origin_ref
         continue-on-error: false
         run: |
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.base }}
-              echo ::set-output name=version::${ver}
+              echo ::set-output name=ref::${ver}
           else
-              echo ::set-output name=version::main
+              echo ::set-output name=ref::main
           fi
 
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
-          ref: ${{ steps.get_version.outputs.version }}
-
-      - name: Get Base URL
-        id: get_base_url
-        run: |
-          name=${{ github.repository }}
-          proj=${name#*/}
-          url=https://${{ github.repository_owner }}.github.io/${proj}
-          echo "::set-output name=url::${url}"
+          ref: ${{ steps.get_origin_ref.outputs.ref }}
 
       - name: Install Helm
         uses: azure/setup-helm@v2.0
         with:
           version: ${{ env.HELM_VERSION }}
 
-      - name: Prepare Chart
+      - name: Package Chart
         continue-on-error: false
         run: |
           cd charts
@@ -69,37 +55,59 @@ jobs:
             exit 1
           fi
           cd ..
-          mkdir -p tmp/charts
-          mv charts/*.tgz tmp/charts
-          git checkout -- charts
-          # rebuild index.yaml
-          cd tmp
-          helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
-          mv ./charts/index.yaml ./
+          mkdir -p tmp
+          mv charts/*.tgz tmp
 
       - name: Upload Chart Package
         uses: actions/upload-artifact@v3.0.0
         with:
           name: chart-package
-          path: tmp/charts/*
-          retention-days: 1
-          if-no-files-found: error
-
-      - name: Upload Chart Yaml
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: chart-package
-          path: tmp/index.yaml
+          path: tmp/*
           retention-days: 1
           if-no-files-found: error
 
       # https://github.com/marketplace/actions/deploy-to-github-pages
+      # 这个挺好，不需要两个分支 的 目录结构相似，可以把 一些 内容 提交到另一个仓库/目录下
+      # 不需要 手动 批 PR，自动生效
+      # 如果目的分支不存在，会自动创建它
       - name: Deploy To GithubPages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           # The target branch the action should deploy to.
-          branch: github-pages
+          branch: ${{ env.MERGE_BRANCH }}
           # The folder of original branch should deploy.
           folder: tmp
+          # target directory of target branch
+          target-folder: './charts'
+
+  # update /index.yaml in the target branch
+  update_yaml:
+    runs-on: ubuntu-latest
+    needs: deploy_chart
+    steps:
+      - name: Get Base URL
+        id: get_base_url
+        run: |
+          name=${{ github.repository }}
+          proj=${name#*/}
+          url=https://${{ github.repository_owner }}.github.io/${proj}
+          echo "::set-output name=url::${url}"
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ env.MERGE_BRANCH }}
+
+      - name: Update Chart Yaml
+        run: |
+          helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
+
+      - name: Deploy To GithubPages
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          # The target branch the action should deploy to.
+          branch: ${{ env.MERGE_BRANCH }}
+          # The folder of original branch should deploy.
+          folder: '.'
           # target directory of target branch
           target-folder: '.'
