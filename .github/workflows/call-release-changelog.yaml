@@ -46,6 +46,14 @@ jobs:
       dest_tag: ${{ steps.get_ref.outputs.dest_tag }}
       begin_tag: ${{ steps.get_ref.outputs.begin_tag }}
     steps:
+      # checkout code for checking tag
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
+          # if Set fetch-depth: 0 to fetch all history for all branches and tags
+          fetch-depth: 0
+
       - name: Get Ref
         id: get_ref
         run: |
@@ -61,19 +69,20 @@ jobs:
               exit 0
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "call by workflow_dispatch"
-              dest_tag={{ github.event.inputs.dest_tag }}
-              begin_tag={{ github.event.inputs.begin_tag }}
+              dest_tag=${{ github.event.inputs.dest_tag }}
+              begin_tag=${{ github.event.inputs.begin_tag }}
               [ -z "$dest_tag" ] && echo "empty dest_tag" && exit 1
               if ! git describe --tags --abbrev=0  ${dest_tag} &>/dev/null ; then
                   echo "error, does not exist dest_tag ${dest_tag} "
                   exit 1
               fi
-              if [ -n "$begin_tag" ] && ! git describe --tags --abbrev=0  ${dest_tag} &>/dev/null ; then
+              if [ -n "$begin_tag" ] && ! git describe --tags --abbrev=0  ${begin_tag} &>/dev/null ; then
                   echo "error, does not exist begin_tag ${begin_tag} "
                   exit 1
               fi
               echo ::set-output name=dest_tag::${dest_tag}
               [ -n "$begin_tag" ] && echo ::set-output name=begin_tag::${begin_tag}
+              exit 0
           else
               echo "unexpected event: ${{ github.event_name }}"
               exit 1
@@ -124,7 +133,7 @@ jobs:
           configuration: ${{ env.CHANGELOG_CONF }}
           outputFile: ${{ env.CHANGELOG_TMP_FILE }}
           fromTag: ${{ needs.get_ref.outputs.begin_tag }}
-          toTag: ${{ needs.get_ref.outputs.begin_tag }}
+          toTag: ${{ needs.get_ref.outputs.to_tag }}
           failOnError: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -135,6 +144,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v2.9.0
         with:
           configuration: ${{ env.CHANGELOG_CONF }}
+          toTag: ${{ needs.get_ref.outputs.begin_tag }}
           outputFile: ${{ env.CHANGELOG_TMP_FILE }}
           failOnError: true
         env:
