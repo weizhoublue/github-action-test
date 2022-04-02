@@ -1,6 +1,6 @@
 # build the Beta image with customized tag ,under an clean env , from  specified Branch
 # buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage-{beta}:{yourTag}
-name: Build Beta Image
+name: Build Image Beta
 
 on:
   workflow_dispatch:
