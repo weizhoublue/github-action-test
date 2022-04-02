@@ -46,6 +46,14 @@ jobs:
       dest_tag: ${{ steps.get_ref.outputs.dest_tag }}
       begin_tag: ${{ steps.get_ref.outputs.begin_tag }}
     steps:
+      # checkout code for checking tag
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
+          # if Set fetch-depth: 0 to fetch all history for all branches and tags
+          fetch-depth: 0
+
       - name: Get Ref
         id: get_ref
         run: |
