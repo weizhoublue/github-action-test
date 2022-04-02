@@ -35,7 +35,7 @@ jobs:
           if ${{ github.event_name == 'workflow_dispatch' }} ; then
               ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
-          else if ${{ github.event_name == 'workflow_call' }} ; then
+          elif ${{ github.event_name == 'workflow_call' }} ; then
               ver=${{ github.event.inputs.ref }}
               echo ::set-output name=ref::${ver}
           else
