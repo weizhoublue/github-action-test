@@ -39,6 +39,7 @@ jobs:
 #          tag: ${{ steps.tag.outputs.tag }}
 
       # NOTE: at now only orgs is supported , for personal it fail
+      # https://github.com/vlaurin/action-ghcr-prune
       - name: Delete CI image
         uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
