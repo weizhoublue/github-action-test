@@ -1,0 +1,21 @@
+# for codevcov configuration
+# https://docs.codecov.com/docs/common-recipe-list
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto  # auto compares coverage to the previous base commit
+        if_ci_failed: error
+    patch:
+      default:
+        # basic
+        target: auto
+        if_ci_failed: error
+
+comment:
+  layout: "reach, diff, flags, files"  # Remove items here to change the format
+  behavior: default
+
+codecov:
+  require_ci_to_pass: true

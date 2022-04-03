@@ -235,6 +235,7 @@ jobs:
 
       # upload coverage report to Codecov
       # https://github.com/marketplace/actions/codecov
+      # for codevcov configuration: /codecov.yml https://docs.codecov.com/docs/common-recipe-list
       - name: Upload to Codecov
         if: ${{ steps.unitest.outcome != 'failure' }}
         uses: codecov/codecov-action@v2.1.0
