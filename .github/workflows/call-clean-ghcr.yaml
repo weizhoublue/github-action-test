@@ -69,7 +69,9 @@ jobs:
         if: ${{ steps.args.outputs.tag_regex != '' }}
         uses: vlaurin/action-ghcr-prune@v0.4.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # failed to use secrets.GITHUB_TOKEN
+          # must use personal PAT with with scopes packages:read and packages:delete and write permissions
+          token: ${{ secrets.PAT }}
           organization: ${{ github.repository_owner }}
           # !!! must be format: github-action-test/controllerimage-ci
           # report error when: weizhoublue/github-action-test/controllerimage-ci, ghcr.io/weizhoublue/github-action-test/controllerimage-ci
