@@ -1,6 +1,6 @@
 module github.com/weizhoublue/github-action-test
 
-go 1.18
+go 1.17.8
 
 require (
 	github.com/gogo/protobuf v1.3.2
