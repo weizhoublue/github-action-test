@@ -1,0 +1,60 @@
+name: Test SHA
+
+on:
+  push:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+    inputs:
+      mytag:
+        description: 'branch, sha, tag'
+        required: true
+        default: main
+  workflow_call:
+    inputs:
+      mytag:
+        required: true
+        type: string
+
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    steps:
+      - name: show
+        run: |
+          # who trigger this worfflow , weizhoublue
+          echo "github.actor = ${{ github.actor }}"
+          # weizhoublue
+          echo "github.repository_owner = ${{ github.repository_owner }}"
+          # weizhoublue/github_action_test
+          echo "github.repository = ${{ github.repository }}"
+          # =============== pull_request or pull_request_target
+          # base_ref: avaliable for pull_request or pull_request_target event , The base_ref or target branch of the pull request
+          echo "github.base_ref = ${{ github.base_ref }}"
+          # head_ref: avaliable for pull_request or pull_request_target event, The head_ref or source branch of the pull request
+          echo "github.head_ref = ${{ github.head_ref }}"
+          # ================= for all
+          # The commit SHA that triggered the workflow run.
+          echo "github.sha = ${{ github.sha }}"
+          # The branch or tag ref that triggered the workflow run. For branches this is the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          echo "github.ref = ${{ github.ref }}"
+          # The branch or tag name that triggered the workflow run.
+          echo "github.ref_name = ${{ github.ref_name }}"
+          # The type of ref that triggered the workflow run. Valid values are branch or tag
+          echo "github.ref_type = ${{ github.ref_type }}"
+          # ================
+          echo "github.event = ${{ github.event }}"
+          echo "github.event_name = ${{ github.event_name }}"
+          # ================ for workflow_dispatch
+          echo "github.event.inputs = ${{ github.event.inputs.mytag }} "
+          # ================ for workflow_call, only available in a reusable workflow
+          echo "inputs = ${{ inputs }}"
+          echo "inputs = ${{ inputs.mytag }}"
+          echo "on.workflow_call.inputs = ${{ on.workflow_call.inputs }}"
+          echo "on.workflow_call.inputs.mytag = ${{ on.workflow_call.inputs.mytag }}"
+          
+          
+          

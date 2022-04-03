@@ -7,6 +7,17 @@ on:
     branches:
       - main
       - release-*
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'branch, sha, tag'
+        required: true
+        default: main
+  workflow_call:
+    inputs:
+      sha:
+        required: true
+        type: string
 
 permissions: read-all
 
@@ -19,20 +30,15 @@ jobs:
   # filter changes base filt path , so step analyze can do less thing
   filter_changes:
     name: Deduce required tests from code changes
-    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     outputs:
-      go-changes: ${{ steps.go-changes.outputs.src }}
+      check: ${{ steps.result.outputs.check }}
+      ref: ${{ steps.result.outputs.ref }}
     steps:
-      - name: Checkout code
-        if: ${{ !github.event.pull_request }}
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
-      - name: Check code changes
+      - name: Check Go Code Changes
         uses: dorny/paths-filter@v2.10.2
-        id: go-changes
+        if: ${{ github.event_name == 'pull_request' }}
+        id: filter_pr
         with:
           base: ${{ github.event.pull_request.base.sha }}
           ref: ${{ github.event.pull_request.head.sha }}
@@ -43,10 +49,35 @@ jobs:
               - 'go.mod'
               - 'go.sum'
 
-  go-mod:
-    # run if filters.src was changed
+      - name: Result
+        id: result
+        run: |
+          if ${{ github.event_name == 'push' }} ; then
+              echo "trigger by push"
+              echo "::set-output name=check::true"
+              echo "::set-output name=ref::${{ github.sha }}"
+          elif ${{ github.event_name == 'pull_request' }} ; then
+              echo "trigger by pull_request"
+              flag=${{ steps.filter_pr.outputs.src }}
+              echo "::set-output name=check::${flag}"
+              ref=ref: ${{ github.event.pull_request.head.sha }}
+              echo "::set-output name=ref::${ref}"
+          elif ${{ inputs.sha != '' }} ; then
+              echo "trigger by workflow_call"
+              echo "::set-output name=check::true"
+              echo "::set-output name=ref::${{ inputs.sha }}"
+          elif ${{ github.event_name == 'workflow_dispatch' }} ; then
+              echo "trigger by workflow_dispatch"
+              echo "::set-output name=check::true"
+              echo "::set-output name=ref::${{ github.event.inputs.ref }}"
+          else
+              echo "error, unexpected event "
+              exit 1
+          fi
+
+  lint-golang:
     needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.go-changes == 'true' || github.event_name != 'pull_request' }}
+    if: ${{ needs.filter_changes.outputs.check == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
@@ -55,35 +86,23 @@ jobs:
           go-version: 1.18.0
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
+          ref: ${{ needs.filter_changes.outputs.ref }}
 
       - name: Check module vendoring
         run: |
           go mod tidy
           go mod vendor
-          test -z "$(git status --porcelain)" || (echo "please run 'go mod tidy && go mod vendor', and submit your changes"; exit 1)
+          if ! test -z "$(git status --porcelain)"; then
+              echo "please run 'go mod tidy && go mod vendor', and submit your changes"
+              exit 1
+          fi
 
-  golangci:
-    # run if filters.src was changed
-    needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.go-changes == 'true' || github.event_name != 'pull_request' }}
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.18.0
-
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
+      # ================ lint
       - name: Run golangci-lint
-        id: golangci-lint
+        id: golangci_lint
         continue-on-error: true
         uses: golangci/golangci-lint-action@v3
         with:
@@ -96,20 +115,86 @@ jobs:
           go install github.com/praetorian-inc/gokart@latest
           gokart scan --globalsTainted
 
-      - name: Check Other
+      - name: Check Make lint-golang
         id: other
         continue-on-error: true
         run: |
           make lint-golang
 
       - name: Result
-        continue-on-error: false
         run: |
-          result=${{ steps.golangci-lint.outcome }}
-          [ "${result}"x == "failure"x ] && exit 1
+          result=${{ steps.golangci_lint.outcome }}
+          [ "${result}"x == "failure"x ] && echo "step golangci_lint failed" && exit 1
           result=${{ steps.gokart.outcome }}
-          [ "${result}"x == "failure"x ] && exit 2
+          [ "${result}"x == "failure"x ] && echo "step gokart failed" && exit 2
           result=${{ steps.other.outcome }}
-          [ "${result}"x == "failure"x ] && exit 3
+          [ "${result}"x == "failure"x ] && echo "step gokart failed" && exit 3
           echo "all succeed"
           exit 0
+
+      # ================= quality
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1.1.5
+        with:
+          languages: go
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1.1.5
+
+      # ================= unitest
+      - name: Run unitest
+        id: unitest
+        continue-on-error: true
+        run: |
+          make unitest-tests
+
+      - name: Upload Coverage Artifact
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: coverage.out
+          path: coverage.out
+          retention-days: 1
+
+      - name: Upload Report Artifact
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: testreport.json
+          path: testreport.json
+          retention-days: 1
+
+      # ============= coverage report
+      # upload coverage report to Coveralls
+      # https://github.com/marketplace/actions/actions-goveralls
+      # https://github.com/mattn/goveralls
+      - name: Upload to Coveralls
+        if: ${{ steps.unitest.outcome != 'failure' }}
+        uses: shogo82148/actions-goveralls@v1.6.0
+        with:
+          path-to-profile: coverage.out
+
+      # upload coverage report to Codecov
+      # https://github.com/marketplace/actions/codecov
+      - name: Upload to Codecov
+        if: ${{ steps.unitest.outcome != 'failure' }}
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          # not required for public repos
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          # Directory to search for coverage reports
+          directory: './'
+          files: 'coverage.out'
+          flags: unittests # optional
+          # optional, Custom defined name for the upload
+          name: my-codecov-umbrella
+          # optional (default = false)
+          fail_ci_if_error: true
+          # optional (default = false)
+          verbose: true
+
+      - name: Result
+        if: ${{ steps.unitest.outcome == 'failure' }}
+        run: |
+          echo "unitext failed"
+          exit 1
