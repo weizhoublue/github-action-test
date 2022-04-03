@@ -18,6 +18,7 @@ import (
 )
 
 func TestRace() {
+	t
 	a := 10
 
 	fmt.Println("TestRace ")
