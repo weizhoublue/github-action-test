@@ -1,4 +1,4 @@
-name: Lint Go Vendor And golangci-lint
+name: Lint Golang And Unitest
 
 # Any change in triggers needs to be reflected in the concurrency group.
 on:
@@ -60,7 +60,7 @@ jobs:
               echo "trigger by pull_request"
               flag=${{ steps.filter_pr.outputs.src }}
               echo "::set-output name=check::${flag}"
-              ref=ref: ${{ github.event.pull_request.head.sha }}
+              ref=${{ github.event.pull_request.head.sha }}
               echo "::set-output name=ref::${ref}"
           elif ${{ inputs.sha != '' }} ; then
               echo "trigger by workflow_call"
@@ -164,8 +164,8 @@ jobs:
           path: testreport.json
           retention-days: 1
 
-      # ============= coverage report
-      # upload coverage report to Coveralls
+      # ============= upload coverage report
+      #  Coveralls
       # https://github.com/marketplace/actions/actions-goveralls
       # https://github.com/mattn/goveralls
       - name: Upload to Coveralls

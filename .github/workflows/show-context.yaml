@@ -55,6 +55,3 @@ jobs:
           echo "inputs = ${{ inputs.mytag }}"
           echo "on.workflow_call.inputs = ${{ on.workflow_call.inputs }}"
           echo "on.workflow_call.inputs.mytag = ${{ on.workflow_call.inputs.mytag }}"
-          
-          
-          
