@@ -12,6 +12,9 @@ on:
       tag_regex: # if empty, clean all tag
         required: false
         type: string
+    secrets: # reusable workflow can not see secrets, so have to pass from outside
+      PAT:
+        required: true
   workflow_dispatch:
     inputs:
       image_name:
