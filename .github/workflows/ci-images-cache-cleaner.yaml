@@ -1,4 +1,4 @@
-name: Clean Image CI Cache
+name: Auto Clean CI Cache
 
 # Any change in triggers needs to be reflected in the concurrency group.
 on:

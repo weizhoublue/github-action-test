@@ -1,4 +1,4 @@
-name: Auto Clean ImageCI Intervally
+name: Auto Clean ImageCI
 
 on:
   schedule:

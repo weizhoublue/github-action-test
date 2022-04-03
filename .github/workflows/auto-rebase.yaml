@@ -1,6 +1,6 @@
 # https://github.com/marketplace/actions/automatic-rebase
 # comment /rebase to PR, auto help rebase all commit for the PR
-name: Automatic Rebase
+name: Auto Rebase
 
 on:
   issue_comment:

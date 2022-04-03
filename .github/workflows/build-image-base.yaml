@@ -1,5 +1,5 @@
 # just only need build base image when './images/baseimage/*' changed
-name: Build Image Base
+name: Auto Build Image Base
 
 # final packed image : ${ONLINE_REGISTER}/${IMAGE_REPO}/${IMAGE_NAME}:${commit id of yaml path}
 # image dockerfile path on the repo: ${IMAGE_ROOT_PATH}/${IMAGE_NAME}/Dockerfile
