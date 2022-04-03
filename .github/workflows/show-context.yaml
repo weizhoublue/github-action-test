@@ -1,4 +1,4 @@
-name: Test SHA
+name: Debug Context
 
 on:
   push:
@@ -53,5 +53,4 @@ jobs:
           # ================ for workflow_call, only available in a reusable workflow
           echo "inputs = ${{ inputs }}"
           echo "inputs = ${{ inputs.mytag }}"
-          echo "on.workflow_call.inputs = ${{ on.workflow_call.inputs }}"
           echo "on.workflow_call.inputs.mytag = ${{ on.workflow_call.inputs.mytag }}"

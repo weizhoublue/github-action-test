@@ -1,4 +1,4 @@
-name: test workflow_call
+name: Debug workflow_call
 
 on:
   workflow_dispatch:
