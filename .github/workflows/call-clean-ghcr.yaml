@@ -71,6 +71,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           organization: ${{ github.repository_owner }}
+          # !!! must be format: github-action-test/controllerimage-ci
+          # report error when: weizhoublue/github-action-test/controllerimage-ci, ghcr.io/weizhoublue/github-action-test/controllerimage-ci
           container: ${{ steps.args.outputs.repo_name }}/${{ steps.args.outputs.image_name }}
           # Dry-run first, then change to `false`
           dry-run: ${{ steps.args.outputs.dry_run }}
