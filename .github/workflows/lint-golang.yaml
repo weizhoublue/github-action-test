@@ -19,7 +19,7 @@ on:
         required: true
         type: string
 
-permissions: read-all
+permissions: write-all
 
 # for each pr, queue all workflows
 # if not , pull_request_target and push will trigger 2 at the same time
@@ -128,6 +128,11 @@ jobs:
     needs: filter_changes
     if: ${{ needs.filter_changes.outputs.check == 'true' }}
     runs-on: ubuntu-latest
+    # required by codeQL
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
@@ -139,6 +144,7 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ needs.filter_changes.outputs.ref }}
+          fetch-depth: 0
 
       # ================= quality
       # https://github.com/github/codeql-action
