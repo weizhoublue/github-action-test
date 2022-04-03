@@ -53,4 +53,3 @@ jobs:
           # ================ for workflow_call, only available in a reusable workflow
           echo "inputs = ${{ inputs }}"
           echo "inputs = ${{ inputs.mytag }}"
-          echo "on.workflow_call.inputs.mytag = ${{ on.workflow_call.inputs.mytag }}"
