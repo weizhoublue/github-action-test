@@ -83,7 +83,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18.0
+          go-version: 1.17.8
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -108,13 +108,6 @@ jobs:
         with:
           version: latest
 
-      - name: gokart
-        id: gokart
-        continue-on-error: true
-        run: |
-          go install github.com/praetorian-inc/gokart@latest
-          gokart scan --globalsTainted
-
       - name: Check Make lint-golang
         id: other
         continue-on-error: true
@@ -125,21 +118,60 @@ jobs:
         run: |
           result=${{ steps.golangci_lint.outcome }}
           [ "${result}"x == "failure"x ] && echo "step golangci_lint failed" && exit 1
-          result=${{ steps.gokart.outcome }}
-          [ "${result}"x == "failure"x ] && echo "step gokart failed" && exit 2
           result=${{ steps.other.outcome }}
           [ "${result}"x == "failure"x ] && echo "step gokart failed" && exit 3
           echo "all succeed"
           exit 0
 
+  quality:
+    needs: filter_changes
+    if: ${{ needs.filter_changes.outputs.check == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.8
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: ${{ needs.filter_changes.outputs.ref }}
+
       # ================= quality
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1.1.5
+      # https://github.com/github/codeql-action
+      # GitHub's industry-leading semantic code analysis engine, CodeQL, against a repository's source code to find security vulnerabilities
+      - name: CodeQL Initialize
+        uses: github/codeql-action/init@v2.1.6
         with:
           languages: go
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v2.1.6
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1.1.5
+      # https://github.com/praetorian-inc/gokart
+      # static analysis tool for Go that finds vulnerabilities using the SSA
+      - name: gokart
+        id: gokart
+        run: |
+          go install github.com/praetorian-inc/gokart@latest
+          gokart scan --globalsTainted
+
+  unitest:
+    needs: filter_changes
+    if: ${{ needs.filter_changes.outputs.check == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.8
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: ${{ needs.filter_changes.outputs.ref }}
 
       # ================= unitest
       - name: Run unitest
@@ -196,5 +228,5 @@ jobs:
       - name: Result
         if: ${{ steps.unitest.outcome == 'failure' }}
         run: |
-          echo "unitext failed"
+          echo "unitest failed"
           exit 1
