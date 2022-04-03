@@ -19,7 +19,7 @@ on:
         required: true
         default: "controllerimage-ci"
       older_than:
-        description: "Minimum age in days of a version before it is pruned"
+        description: "Minimum days of a version before pruned"
         required: true
         default: "0"
       keep_last:
