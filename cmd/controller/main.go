@@ -24,6 +24,7 @@ func TestRace() {
 	go func() {
 		a++
 	}()
+
 	go func() {
 		a++
 	}()
