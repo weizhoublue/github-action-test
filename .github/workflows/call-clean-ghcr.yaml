@@ -17,14 +17,11 @@ on:
       image_name:
         description: "image name"
         required: true
-        default: "github-action-test/controllerimage-ci"
+        default: "controllerimage-ci"
       older_than:
         description: "Minimum age in days of a version before it is pruned"
         required: true
         default: "0"
-      tag_regex:
-        description: "specify tag, empty for all tag"
-        required: false
       dry_run:
         description: "dry run (true|false)"
         required: true
@@ -38,16 +35,21 @@ jobs:
       - name: Get Arg
         id: args
         run: |
+          # weizhoublue/github_action_test
+          repo=${{ github.repository }}
+          # github_action_test
+          repo=${repo#*/}
+          echo ::set-output name=repo_name::${repo}
           if ${{ inputs.image_name != '' }} ; then
               echo "call by workflow_call"
               echo ::set-output name=image_name::${{ inputs.image_name }}
-              echo ::set-output name=tag_regex::${{ inputs.tag_regex }}
+              echo ::set-output name=tag_regex::${{ github.event.inputs.tag_regex }}
               echo ::set-output name=older_than::${{ inputs.older_than }}
               echo ::set-output name=dry_run::false
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "call by workflow_dispatch"
               echo ::set-output name=image_name::${{ github.event.inputs.image_name }}
-              echo ::set-output name=tag_regex::${{ github.event.inputs.tag_regex }}
+              echo ::set-output name=tag_regex::
               echo ::set-output name=older_than::${{ github.event.inputs.older_than }}
               echo ::set-output name=dry_run::${{ github.event.inputs.dry_run }}
           else
@@ -63,7 +65,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           organization: ${{ github.repository_owner }}
-          container: ${{ steps.args.outputs.image_name }}
+          container: ${{ steps.args.outputs.repo_name }}/${{ steps.args.outputs.image_name }}
           # Dry-run first, then change to `false`
           dry-run: ${{ steps.args.outputs.dry_run }}
           # Minimum age in days of a version before it is pruned. Defaults to 0 which matches all versions of a container
@@ -81,7 +83,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           organization: ${{ github.repository_owner }}
-          container: ${{ steps.args.outputs.image_name }}
+          container: ${{ steps.args.outputs.repo_name }}/${{ steps.args.outputs.image_name }}
           dry-run: ${{ steps.args.outputs.dry_run }}
           older-than: ${{ steps.args.outputs.older_than }}
           untagged: true
