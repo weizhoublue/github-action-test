@@ -5,7 +5,7 @@
 # docker buildx build -t release:latest --build-arg VERSION=${VERSION} --build-arg GIT_COMMIT_TIME=${GIT_COMMIT_TIME} --build-arg GIT_COMMIT_VERSION=${GIT_COMMIT_VERSION} --platform=linux/amd64,linux/arm64 --output type=docker -f ./images/controllerimage/Dockerfile .
 
 ARG BASE_IMAGE=ghcr.io/weizhoublue/github-action-test/baseimage:8700413ad57ead614f734b1311cf83231941713c@sha256:118ffa12150f4e6572a694250e7d7ce6fd6a555d28231f751c0089e2aa6f9f86
-ARG GOLANG_IMAGE=docker.io/library/golang:1.18.0@sha256:03baa0921adf5fb547f48df8b16137de82b5ccc34986c22a967055379369f614
+ARG GOLANG_IMAGE=docker.io/library/golang:1.17.8@sha256:f675106e44f205a7284e15cd75c41b241329f3c03ac30b0ba07b14a6ea7c99d9
 
 # TARGETARCH is an automatic platform ARG enabled by Docker BuildKit.
 # like amd64 arm64
