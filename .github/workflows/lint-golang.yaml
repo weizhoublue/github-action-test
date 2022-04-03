@@ -22,6 +22,7 @@ on:
 permissions: read-all
 
 # for each pr, queue all workflows
+# if not , pull_request_target and push will trigger 2 at the same time
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.after }}
   cancel-in-progress: true
