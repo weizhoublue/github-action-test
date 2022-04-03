@@ -11,9 +11,9 @@ on:
 jobs:
   call-workflow-context:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
-    uses: ./.github/workflows/show-context.yaml
+    uses: ./.github/workflows/debug-context.yaml
     with:
-      myname: ${{ github.event.inputs.ref }}
+      mytag: ${{ github.event.inputs.ref }}
 
   call-workflow-golang:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
