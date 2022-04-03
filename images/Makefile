@@ -32,4 +32,8 @@ baseimage:
 		--platform=$(PLATFORM) --output $(OUTPUT) \
 		-f $(ROOT_DIR)/images/controllerimage/Dockerfile $(ROOT_DIR)/
 
+.PHONY: update-golang-image
+update-golang-image:
+	GO_VERSION=$(GO_VERSION) scripts/update-golang-image.sh
+
 
