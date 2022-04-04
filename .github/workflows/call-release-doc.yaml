@@ -18,7 +18,7 @@ env:
   MERGE_BRANCH: github_pages
   SRC_DIRECTORY: 'docs'
   DEST_DIRECTORY: 'docs'
-  PR_LABEL: pr/release/robot_doc
+  PR_LABEL: pr/release/robot_update_githubpage
   PR_REVIWER: weizhoublue
 
 jobs:
@@ -89,9 +89,7 @@ jobs:
       - name: Untar Doc
         run: |
           cd ${{ env.DEST_DIRECTORY }}
-          ls
           tar -xzvf _doc.tar.gz
-          ls
           rm -f _doc.tar.gz
 
       # https://github.com/peter-evans/create-pull-request

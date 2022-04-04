@@ -62,6 +62,13 @@ jobs:
     with:
       dest_tag: ${{ needs.get-tag.outputs.tag }}
 
+  release-doc:
+    needs: [build-release-image, get-tag]
+    # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
+    uses: ./.github/workflows/call-release-doc.yaml
+    with:
+      ref: ${{ needs.get-tag.outputs.tag }}
+
   create-release:
     needs: [release-chart, release-changelog, get-tag]
     name: create release
