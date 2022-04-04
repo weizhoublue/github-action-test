@@ -16,7 +16,7 @@ on:
 
 env:
   DEST_BRANCH: github_pages
-  DEST_DIRECTORY: 'docs/'
+  DEST_DIRECTORY: 'docs'
   PR_LABEL: pr/release/robot_doc
   PR_REVIWER: weizhoublue
 
@@ -53,7 +53,7 @@ jobs:
           # dest branch
           branch: ${{ env.DEST_BRANCH }}
           # source dreictory of source branch
-          folder: 'docs/'
+          folder: 'docs'
           # dest directory of dest branch
           target-folder: ${{ env.DEST_DIRECTORY }}
           commit-message: "robot update doc from ${{ steps.get_ref.outputs.ref }} to branch ${{ env.DEST_BRANCH }} "
