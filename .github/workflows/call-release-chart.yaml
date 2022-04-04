@@ -129,6 +129,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           title: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          committer: 'weizhoublue <weizhou.lan@daocloud.io>'
           # from branch
           commit-message: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # branch name: ${branch}-${branch-suffix}

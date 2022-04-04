@@ -7,7 +7,7 @@ on:
     branches:
       - main
       - release-*
-      - webserver
+      - github_pages
     paths:
       - '**.yml'
       - '**.yaml'
@@ -15,7 +15,7 @@ on:
     branches:
       - main
       - release-*
-      - webserver
+      - github_pages
     paths:
       - '**.yml'
       - '**.yaml'
