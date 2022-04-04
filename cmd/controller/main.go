@@ -19,7 +19,6 @@ import (
 
 func TestRace() {
 	a := 10
-
 	fmt.Println("TestRace ")
 	go func() {
 		a++
