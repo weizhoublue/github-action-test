@@ -1,0 +1,59 @@
+name: Call Release Doc
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+  # --- call by manual
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'branch, tag, sha'
+        required: true
+        default: main
+
+env:
+  DEST_BRANCH: github_pages
+  DEST_DIRECTORY: 'docs/'
+  PR_LABEL: pr/release/robot_doc
+  PR_REVIWER: weizhoublue
+
+jobs:
+  prepare_doc:
+    name: prepare doc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Ref
+        id: get_ref
+        run: |
+          if ${{ inputs.ref != '' }}; then
+              echo "call by workflow_call"
+              echo ::set-output name=ref::${{ inputs.ref }}
+          elif ${{ github.event_name == 'workflow_dispatch' }} ; then
+              echo "call by workflow_dispatch"
+              echo ::set-output name=ref::${{ github.event.inputs.ref }}
+          else
+              echo "unexpected event: ${{ github.event_name }}"
+              exit 1
+          fi
+
+      # checkout code for tag and pr
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.get_ref.outputs.ref }}
+
+      # https://github.com/JamesIves/github-pages-deploy-action
+      # 这个action也是提pr，但是能把一个目录 直接 提交到另一个 分支下的不同目录，使用起来比较简单
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          # dest branch
+          branch: ${{ env.DEST_BRANCH }}
+          # source dreictory of source branch
+          folder: 'docs/'
+          # dest directory of dest branch
+          target-folder: ${{ env.DEST_DIRECTORY }}
+          commit-message: "robot update doc from ${{ steps.get_ref.outputs.ref }} to branch ${{ env.DEST_BRANCH }} "

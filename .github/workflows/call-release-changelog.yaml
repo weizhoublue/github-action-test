@@ -37,7 +37,7 @@ on:
 env:
   DEST_BRANCH: github_pages
   DEST_DIRECTORY: 'changelogs/'
-  PR_LABEL: pr/release/robot_changelog
+  PR_LABEL: pr/release/robot_doc
   PR_REVIWER: weizhoublue
   CHANGELOG_CONF: .github/changelog_builder_conf.json
 
@@ -198,6 +198,7 @@ jobs:
           name: changelog_artifact
           path: ${{ env.DEST_DIRECTORY }}
 
+      # https://github.com/peter-evans/create-pull-request
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v4

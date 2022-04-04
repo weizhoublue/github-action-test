@@ -10,7 +10,7 @@
 - name: pr/release/doc
   description: doc pr in a new release
   color: 0fd3d7
-- name: pr/release/robot_changelog
+- name: pr/release/robot_doc
   description: auto robot changelog pr in a new release
   color: afd3d7
 - name: pr/release/changelog

@@ -124,12 +124,12 @@ jobs:
           helm repo index  ./charts  --url ${{ steps.get_base_url.outputs.url }}/charts
           mv ./charts/index.yaml ./index.yaml
 
+      # https://github.com/peter-evans/create-pull-request
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v4
         with:
           title: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
-          committer: 'weizhoublue <weizhou.lan@daocloud.io>'
           # from branch
           commit-message: "robot Update chart from ${{ needs.get_ref.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
           # branch name: ${branch}-${branch-suffix}

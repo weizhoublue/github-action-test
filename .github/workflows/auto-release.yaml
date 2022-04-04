@@ -101,6 +101,8 @@ jobs:
           echo ::set-output name=changelog_path::${changelog_path}
           cp ./changelog-result/${changelog_file} ./changelog-result/changelog.md
 
+      # create a github relase
+      # https://github.com/ncipollo/release-action
       - name: Create Release
         id: create_release
         continue-on-error: false

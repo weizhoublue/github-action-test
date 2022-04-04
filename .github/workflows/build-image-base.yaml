@@ -43,7 +43,6 @@ on:
         required: true
         default: v1.0.0
 
-
 permissions: write-all
 
 concurrency:
