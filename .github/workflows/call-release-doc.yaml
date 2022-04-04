@@ -16,6 +16,7 @@ on:
 
 env:
   DEST_BRANCH: github_pages
+  SRC_DIRECTORY: 'docs'
   DEST_DIRECTORY: 'docs'
   PR_LABEL: pr/release/robot_doc
   PR_REVIWER: weizhoublue
@@ -47,20 +48,46 @@ jobs:
         with:
           ref: ${{ steps.get_ref.outputs.ref }}
 
-      - name: Prepace Doc
+      - name: Get Ref
+        id: get_ref
         run: |
-          pwd
-          ls 
+          cd ${{ env.SRC_DIRECTORY }}
+          tar -czvf _doc.tar.gz *
+          ls
+          tar -tf _doc.tar.gz
 
-      # https://github.com/JamesIves/github-pages-deploy-action
-      # 这个action也是提pr，但是能把一个目录 直接 提交到另一个 分支下的不同目录，使用起来比较简单
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.0.0
         with:
-          # dest branch
-          branch: ${{ env.DEST_BRANCH }}
-          # source dreictory of source branch
-          folder: 'docs'
-          # dest directory of dest branch
-          target-folder: ${{ env.DEST_DIRECTORY }}
-          commit-message: "robot update doc from ${{ steps.get_ref.outputs.ref }} to branch ${{ env.DEST_BRANCH }} "
+          name: doc_artifact
+          path: ${{ env.SRC_DIRECTORY }}/_doc.tar.gz
+          retention-days: 0
+          if-no-files-found: error
+
+  create_pr:
+    name: Create PR
+    needs: prepare_doc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.DEST_BRANCH }}
+
+      - name: Prepare
+        run: |
+          rm -rf ${{ env.DEST_DIRECTORY }}
+          mkdir ${{ env.DEST_DIRECTORY }}
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: doc_artifact
+          path: ${{ env.DEST_DIRECTORY }}
+
+      - name: Untar
+        run: |
+          cd ${{ env.DEST_DIRECTORY }}
+          ls
+          tar -xzvf _doc.tar.gz
+          ls
