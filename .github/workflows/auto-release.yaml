@@ -113,7 +113,7 @@ jobs:
       - name: Create Release
         id: create_release
         continue-on-error: false
-        uses: ncipollo/release-action@v1.9.0
+        uses: ncipollo/release-action@v1.10.0
         with:
           # "release.tar.gz,foo/*.txt,..."
           artifacts: "chart-package/*"
