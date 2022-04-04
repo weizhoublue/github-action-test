@@ -15,7 +15,7 @@ on:
         default: main
 
 env:
-  DEST_BRANCH: github_pages
+  MERGE_BRANCH: github_pages
   SRC_DIRECTORY: 'docs'
   DEST_DIRECTORY: 'docs'
   PR_LABEL: pr/release/robot_doc
@@ -25,6 +25,8 @@ jobs:
   prepare_doc:
     name: prepare doc
     runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.get_ref.outputs.ref }}
     steps:
       - name: Get Ref
         id: get_ref
@@ -71,7 +73,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.DEST_BRANCH }}
+          ref: ${{ env.MERGE_BRANCH }}
 
       - name: Prepare
         run: |
@@ -90,3 +92,25 @@ jobs:
           ls
           tar -xzvf _doc.tar.gz
           ls
+          rm -f _doc.tar.gz
+
+      # https://github.com/peter-evans/create-pull-request
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: "robot Update doc from ${{ needs.prepare_doc.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          # from branch
+          commit-message: "robot Update chart from ${{ needs.prepare_doc.outputs.ref }} to branch ${{ env.MERGE_BRANCH }} "
+          # branch name: ${branch}-${branch-suffix}
+          # an branch suffix could make sure the branch is unique
+          branch-suffix: timestamp
+          branch: robot/update_doc
+          # Delete the branch when closing pull requests, and when undeleted after merging
+          delete-branch: true
+          # merge to
+          base: ${{ env.MERGE_BRANCH }}
+          signoff: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.PR_LABEL }}
+          reviewers: ${{ env.PR_REVIWER }}
