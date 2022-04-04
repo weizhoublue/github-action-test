@@ -1,4 +1,4 @@
-name: Daily Build
+name: Auto Daily Build
 
 on:
   schedule:
@@ -11,89 +11,5 @@ on:
         required: true
         default: main
 
-env:
-  DEFAULT_BRANCH: main
-
 jobs:
-  unitest:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17.8
-
-      - name: Checking Ref
-        id: version
-        shell: bash
-        run: |
-          if ${{ github.event_name == 'workflow_dispatch' }}; then
-            tag_name=${{ github.event.inputs.ref }}
-            echo ::set-output name=ref::${tag_name}
-          else
-            echo ::set-output name=ref::${{ env.DEFAULT_BRANCH }}
-          fi
-
-      - name: Checkout Source Code
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-          ref: ${{ steps.version.outputs.ref }}
-
-      - name: Run unitest
-        id: unitest
-        continue-on-error: true
-        run: |
-          make unitest-tests
-
-      - name: Upload coverage
-        if: ${{ steps.unitest.outcome == 'failure' }}
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: coverage.out
-          path: coverage.out
-          retention-days: 1
-
-      - name: Upload testreport
-        if: ${{ steps.unitest.outcome == 'failure' }}
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: testreport.json
-          path: testreport.json
-          retention-days: 1
-
-      # upload coverage report to Coveralls
-      # https://github.com/marketplace/actions/actions-goveralls
-      # https://github.com/mattn/goveralls
-      - name: Upload to Coveralls
-        if: ${{ steps.unitest.outcome != 'failure' }}
-        uses: shogo82148/actions-goveralls@v1.6.0
-        with:
-          path-to-profile: coverage.out
-
-      # upload coverage report to Codecov
-      # https://github.com/marketplace/actions/codecov
-      - name: Upload to Codecov
-        if: ${{ steps.unitest.outcome != 'failure' }}
-        uses: codecov/codecov-action@v2.1.0
-        with:
-          # not required for public repos
-          # token: ${{ secrets.CODECOV_TOKEN }}
-          # Directory to search for coverage reports
-          directory: './'
-          files: 'coverage.out'
-          flags: unittests # optional
-          # optional, Custom defined name for the upload
-          name: my-codecov-umbrella
-          # optional (default = false)
-          fail_ci_if_error: true
-          # optional (default = false)
-          verbose: true
-
-      - name: Result
-        if: ${{ steps.unitest.outcome == 'failure' }}
-        run: |
-          echo "failed"
-          exit 1
-
 

@@ -1,3 +1,7 @@
+# mod dependency updated, golangci-lint, gofmt updated, go vet, use internal lock pkg
+# code quality check, like codeql and gokart
+# build binary
+# unitest and upload coverage
 name: Lint Golang And Unitest
 
 # Any change in triggers needs to be reflected in the concurrency group.
