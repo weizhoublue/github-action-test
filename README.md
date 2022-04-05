@@ -7,6 +7,8 @@
 
 [![Lint Go-lint checks](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml/badge.svg)](https://github.com/spidernet-io/spiderpool/actions/workflows/lint-golang.yaml)
 
+[![Auto Nightly CI](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-nightly-ci.yaml/badge.svg)](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-nightly-ci.yaml)
+
 ## golang quality report
 
 this is from <https://goreportcard.com>
