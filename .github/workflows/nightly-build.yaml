@@ -15,7 +15,7 @@ jobs:
   get_ref:
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.get_ref.outputs.ref }}
+      ref: ${{ steps.result.outputs.ref }}
     steps:
       - name: Get Ref
         id: get_ref
@@ -24,10 +24,22 @@ jobs:
             echo "call by self workflow_dispatch"
             echo ::set-output name=ref::${{ github.event.inputs.ref }}
           else
-            echo "unexpected event: ${{ github.event_name }}"
+            echo "call by event: ${{ github.event_name }}"
             # use main sha for ci image tag
-            echo ::set-output name=ref::${{ github.sha }}
+            echo ::set-output name=ref::main
           fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: ${{ steps.ref.outputs.ref }}
+
+      - name: Result Ref
+        id: result
+        run: |
+          ref=git show -s --format='format:%H'
+          echo ::set-output name=ref::${ref}
 
   call_unitest:
     needs: get_ref
