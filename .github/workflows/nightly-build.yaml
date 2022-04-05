@@ -42,7 +42,7 @@ jobs:
       - name: Result Ref
         id: result
         run: |
-          ref=git show -s --format='format:%H'
+          ref=$( git show -s --format='format:%H' )
           echo ::set-output name=ref::${ref}
 
   call_unitest:
