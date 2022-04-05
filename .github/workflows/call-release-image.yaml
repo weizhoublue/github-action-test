@@ -12,6 +12,14 @@ env:
   ONLINE_REGISTER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      suffix:
+        required: false
+        type: string
   workflow_dispatch:
     inputs:
       ref:
@@ -22,14 +30,6 @@ on:
         description: 'suffix of image name'
         required: false
         default: beta
-  workflow_call:
-    inputs:
-      ref:
-        required: true
-        type: string
-      suffix:
-        required: false
-        type: string
 
 permissions: write-all
 

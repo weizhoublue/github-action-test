@@ -14,13 +14,6 @@ env:
   MERGE_BRANCH: github_pages
 
 on:
-  # for self debug
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'tag, sha, branch'
-        required: true
-        default: v1.0.0
   # call by other
   workflow_call:
     inputs:
@@ -35,6 +28,13 @@ on:
         description: "name of chart artifact"
         value: chart_package_artifact
         # value: ${{ jobs.example_job.outputs.output1 }}
+  # for self debug
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'tag, sha, branch'
+        required: true
+        default: v1.0.0
 
 jobs:
   get_ref:
