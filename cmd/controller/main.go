@@ -23,6 +23,7 @@ func TestRace() {
 
 	fmt.Println("TestRace ")
 	go func() {
+
 		a++
 	}()
 	go func() {
