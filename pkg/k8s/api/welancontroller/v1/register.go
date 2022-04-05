@@ -4,8 +4,8 @@
 package v1
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	// "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
@@ -35,11 +35,12 @@ func Kind(kind string) schema.GroupKind {
 }
 
 // Adds the list of known types to the given scheme.
-func addKnownTypes(scheme *runtime.Scheme) error {
-	scheme.AddKnownTypes(SchemeGroupVersion,
-		&Foo{},
-		&FooList{},
-	)
-	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
-	return nil
-}
+// --- Error: pkg/k8s/api/welancontroller/v1/register.go:38:6: `addKnownTypes` is unused (deadcode)
+// func addKnownTypes(scheme *runtime.Scheme) error {
+// 	scheme.AddKnownTypes(SchemeGroupVersion,
+// 		&Foo{},
+// 		&FooList{},
+// 	)
+// 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+// 	return nil
+// }
