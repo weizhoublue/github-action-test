@@ -11,11 +11,13 @@ env:
 
 # Any change in triggers needs to be reflected in the concurrency group.
 on:
+  # called by PR and not push image
   pull_request_target:
     types:
       - opened
       - synchronize
       - reopened
+  # called by PR and not push image
   push:
     branches:
       - main
@@ -29,6 +31,13 @@ on:
       - release-*
     types:
       - completed
+  # called by daily build and push image
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+
 
 # if not , pull_request_target and push will trigger 2 at the same time
 concurrency:
@@ -39,7 +48,7 @@ jobs:
   # filter changes base filt path , so can do less thing
   filter_changes:
     name: Deduce required tests from code changes
-    if: ${{ github.event_name == 'pull_request_target' }}
+    if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     outputs:
       go-changes: ${{ steps.go-changes.outputs.src }}
@@ -73,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     # run if filters.src was changed
     needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.go-changes == 'true' || github.event_name != 'pull_request_target' }}
+    if: ${{ needs.filter_changes.outputs.go-changes == 'true' || ( github.event_name != 'pull_request_target' && github.event_name != 'push' ) }}
     strategy:
       matrix:
         include:
@@ -97,10 +106,22 @@ jobs:
       - name: Getting image tag
         id: tag
         run: |
-          if [ ${{ github.event.pull_request.head.sha }} != "" ]; then
-            echo ::set-output name=tag::${{ github.event.pull_request.head.sha }}
+          if ${{ inputs.ref != '' }}; then
+              echo "trigger by workflow_call"
+              echo ::set-output name=tag::${{ inputs.ref }}
+              echo ::set-output name=push::true
+          elif ${{ github.event_name == 'push' }} ; then
+              echo "trigger by push"
+              echo ::set-output name=tag::${{ github.sha }}
+              echo ::set-output name=push::false          
+          elif ${{ github.event_name == 'pull_request_target' }} ; then
+              echo "trigger by pull_request_target"
+              echo ::set-output name=tag::${{ github.event.pull_request.head.sha }}
+              echo ::set-output name=push::false
           else
-            echo ::set-output name=tag::${{ github.sha }}
+              echo "trigger by ${{ github.event_name }}"
+              echo ::set-output name=tag::${{ github.sha }}
+              echo ::set-output name=push::false
           fi
 
       # checkout the changed code
@@ -149,7 +170,7 @@ jobs:
           # Only push when the event name was a GitHub push, this is to avoid
           # re-pushing the image tags when we only want to re-create the Golang
           # docker cache after the workflow "Image CI Cache Cleaner" was terminated.
-          push: ${{ github.event_name == 'push' }}
+          push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
@@ -170,7 +191,7 @@ jobs:
           # Only push when the event name was a GitHub push, this is to avoid
           # re-pushing the image tags when we only want to re-create the Golang
           # docker cache after the workflow "Image CI Cache Cleaner" was terminated.
-          push: ${{ github.event_name == 'push' }}
+          push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
@@ -197,7 +218,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
-          push: true
+          push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
@@ -221,7 +242,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.dockerfile }}
-          push: true
+          push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
