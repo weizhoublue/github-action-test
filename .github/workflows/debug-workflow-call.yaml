@@ -19,7 +19,7 @@ jobs:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
     uses: ./.github/workflows/lint-golang.yaml
     with:
-      sha: ${{ github.event.inputs.ref }}
+      ref: ${{ github.event.inputs.ref }}
 
 #  #===============
 #  call-workflow-chart:
