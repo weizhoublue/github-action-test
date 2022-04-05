@@ -25,7 +25,7 @@ on:
   # auto triggerd by another workflow
   workflow_run:
     workflows:
-      - "Clean Image CI Cache"
+      - "Auto Clean CI Cache"
     branches:
       - main
       - release-*
