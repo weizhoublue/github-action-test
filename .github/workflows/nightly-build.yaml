@@ -67,3 +67,9 @@ jobs:
           echo "ci image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}"
           echo "ci race image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}-race"
           echo "chart package artifact: ${{ needs.call_release_chart.outputs.artifact }}"
+
+      - name: Download Chart Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: ${{ needs.call_release_chart.outputs.artifact }}
+          path: chart-package/
