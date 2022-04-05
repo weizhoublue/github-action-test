@@ -1,0 +1,75 @@
+name: Auto Nightly CI
+
+on:
+  schedule:
+    # run 1:30 each day
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'sha, tag, branch'
+        required: true
+        default: main
+
+jobs:
+  get_ref:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.get_ref.outputs.ref }}
+    steps:
+      - name: Get Ref
+        id: get_ref
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }} ; then
+            echo "call by self workflow_dispatch"
+            echo ::set-output name=ref::${{ github.event.inputs.ref }}
+          else
+            echo "unexpected event: ${{ github.event_name }}"
+            # use main sha for ci image tag
+            echo ::set-output name=ref::${{ github.sha }}
+          fi
+
+  call_unitest:
+    needs: get_ref
+    # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
+    uses: ./.github/workflows/lint-golang.yaml
+    with:
+      ref: ${{ needs.get_ref.outputs.ref }}
+
+  call_build_ci_image:
+    needs: call_unitest
+    # get  image:${{ needs.get_ref.outputs.ref }} and image-ci:${{ needs.get_ref.outputs.ref }}
+    uses: ./.github/workflows/build-image-ci.yaml
+    with:
+      ref: ${{ needs.get_ref.outputs.ref }}
+      push: false
+
+  call_test_chart:
+    needs: get_ref
+    # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
+    uses: ./.github/workflows/call-lint-chart.yaml
+    with:
+      ref: ${{ needs.get_ref.outputs.ref }}
+
+  call_release_chart:
+    needs: call_test_chart
+    uses: ./.github/workflows/call-release-chart.yaml
+    with:
+      ref: ${{ needs.get_ref.outputs.ref }}
+      submit: false
+
+  call_e2e_test:
+    runs-on: ubuntu-latest
+    needs: [call_build_ci_image, call_release_chart]
+    steps:
+      - name: Prepare
+        run: |
+          echo "ci image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}"
+          echo "ci race image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}-race"
+          echo "chart package artifact: ${{ needs.call_release_chart.outputs.artifact }}"
+
+      - name: Download Chart Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: ${{ needs.call_release_chart.outputs.artifact }}
+          path: chart-package/

@@ -37,6 +37,13 @@ on:
       ref:
         required: true
         type: string
+      push:
+        required: true
+        type: string
+    outputs:
+      imageTag:
+        description: "tag of image ci"
+        value: ${{ jobs.build_and_push_prs.outputs.imageTag }}
 
 
 # if not , pull_request_target and push will trigger 2 at the same time
@@ -88,11 +95,13 @@ jobs:
               echo ::set-output name=result::${{ steps.go-changes.outputs.src }}
           fi
 
-  build-and-push-prs:
+  build_and_push_prs:
     runs-on: ubuntu-latest
     # run if filters.src was changed
     needs: filter_changes
     if: ${{ needs.filter_changes.outputs.build == 'true' }}
+    outputs:
+      imageTag: ${{ steps.tag.outputs.tag }}
     strategy:
       matrix:
         include:
