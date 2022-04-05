@@ -330,7 +330,7 @@ jobs:
   image-digests:
     name: Display Digests
     runs-on: ubuntu-latest
-    needs: [build-and-push-prs]
+    needs: build_and_push_prs
     steps:
       - name: Downloading Image Digests
         shell: bash
