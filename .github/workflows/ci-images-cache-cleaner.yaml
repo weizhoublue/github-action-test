@@ -4,8 +4,9 @@ name: Auto Clean CI Cache
 on:
   workflow_dispatch:
   schedule:
-    # Run the GC once for a week
-    - cron: "0 3 * * 1"
+    # run 4:00 am once for a week, in shanghai timezone
+    # cron by UTC, shanghai timezone = UTC + 8
+    - cron: "0 20 * * 0"
 
 permissions: read-all
 
