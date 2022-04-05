@@ -3,9 +3,9 @@ entries:
   spiderpool:
   - apiVersion: v2
     appVersion: v1.1.0
-    created: "2022-04-04T06:51:34.401165099Z"
+    created: "2022-04-05T09:19:00.687290848Z"
     description: ipam for kubernetes cni
-    digest: 2ff3febd0c6a418a369ac08a915a3dc451ae679967eb02706fddb6360a58c2b0
+    digest: 11f1dc45dd03006d5a10ec436df7d07e67e218a989699f5c4121021829abd6c6
     home: https://spidernet-io.github.io/spiderpool
     keywords:
     - spiderpool
@@ -21,4 +21,4 @@ entries:
     urls:
     - https://weizhoublue.github.io/github-action-test/charts/spiderpool-v1.1.0.tgz
     version: v1.1.0
-generated: "2022-04-04T06:51:34.399083189Z"
+generated: "2022-04-05T09:19:00.682076787Z"
