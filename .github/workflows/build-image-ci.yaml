@@ -192,6 +192,7 @@ jobs:
         uses: docker/build-push-action@v2.10.0
         with:
           context: /tmp/.cache/${{ matrix.name }}
+          # github-token: ${{ secrets.WELAN_PAT }}
           file: ./images/cache/Dockerfile
           push: false
           platforms: linux/amd64
@@ -212,6 +213,7 @@ jobs:
           # docker cache after the workflow "Image CI Cache Cleaner" was terminated.
           push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64,linux/arm64
+          # github-token: ${{ secrets.WELAN_PAT }}
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
           build-args: |
@@ -233,6 +235,7 @@ jobs:
           # docker cache after the workflow "Image CI Cache Cleaner" was terminated.
           push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64
+          # github-token: ${{ secrets.WELAN_PAT }}
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |
@@ -260,6 +263,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64,linux/arm64
+          # github-token: ${{ secrets.WELAN_PAT }}
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}
           build-args: |
@@ -277,6 +281,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: ${{ steps.tag.outputs.push }}
           platforms: linux/amd64
+          # github-token: ${{ secrets.WELAN_PAT }}
           tags: |
             ${{ env.ONLINE_REGISTER }}/${{ github.repository }}/${{ matrix.name }}-ci:${{ steps.tag.outputs.tag }}-race
           build-args: |

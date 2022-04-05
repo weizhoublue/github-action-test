@@ -125,6 +125,7 @@ jobs:
         id: docker_build_release
         with:
           context: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}
+          # github-token: ${{ secrets.WELAN_PAT }}
           file: ./${{ env.IMAGE_ROOT_PATH }}/${{ env.IMAGE_NAME }}/Dockerfile
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
