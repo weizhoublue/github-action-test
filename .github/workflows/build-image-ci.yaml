@@ -128,6 +128,10 @@ jobs:
               echo "trigger by pull_request_target"
               echo ::set-output name=tag::${{ github.event.pull_request.head.sha }}
               echo ::set-output name=push::false
+          elif ${{ github.event_name == 'workflow_run' }} ; then
+              echo "trigger by workflow_run"
+              echo ::set-output name=tag::main
+              echo ::set-output name=push::false
           else
               echo "trigger by ${{ github.event_name }}"
               echo ::set-output name=tag::${{ github.sha }}
@@ -150,6 +154,7 @@ jobs:
           echo ::set-output name=commitver::${GIT_COMMIT_VERSION}
           echo ::set-output name=committime::${GIT_COMMIT_TIME}
 
+      # =============  get cache ===========
       # Load Golang cache build from GitHub
       # Cache dependencies and build outputs in GitHub Actions
       # the github will keep the cache for 7 days at most
@@ -166,6 +171,23 @@ jobs:
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ matrix.name }}-
             ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-
             ${{ runner.os }}-go-
+
+      - name: Create ${{ matrix.name }} cache directory
+        if: ${{ steps.cache.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          mkdir -p /tmp/.cache/${{ matrix.name }}
+
+      # Import GitHub's cache build to docker cache
+      - name: Copy ${{ matrix.name }} Golang cache to docker cache
+        uses: docker/build-push-action@v2.10.0
+        with:
+          context: /tmp/.cache/${{ matrix.name }}
+          file: ./images/cache/Dockerfile
+          push: false
+          platforms: linux/amd64
+          target: import-cache
+
 
       # ========== main branch pushes , build 2 images
       # build normal image
@@ -277,6 +299,32 @@ jobs:
           name: image-digest ${{ matrix.name }}
           path: image-digest
           retention-days: 1
+
+      # =============  restore cache ===========
+      # Store docker's golang's cache build locally only on the main branch
+      - name: Store ${{ matrix.name }} Golang cache build locally
+        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
+        uses: docker/build-push-action@v2.10.0
+        with:
+          context: .
+          file: ./images/cache/Dockerfile
+          push: false
+          outputs: type=local,dest=/tmp/docker-cache-${{ matrix.name }}
+          platforms: linux/amd64
+          target: export-cache
+
+      # Store docker's golang's cache build locally only on the main branch
+      - name: Store ${{ matrix.name }} Golang cache in GitHub cache path
+        if: ${{ github.event_name != 'pull_request_target' && steps.cache.outputs.cache-hit != 'true' }}
+        shell: bash
+        run: |
+          mkdir -p /tmp/.cache/${{ matrix.name }}/
+          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz ]; then
+            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-build-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
+          fi
+          if [ -f /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz ]; then
+            cp /tmp/docker-cache-${{ matrix.name }}/tmp/go-pkg-cache.tar.gz /tmp/.cache/${{ matrix.name }}/
+          fi
 
   image-digests:
     name: Display Digests
