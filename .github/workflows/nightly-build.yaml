@@ -11,6 +11,10 @@ on:
         required: true
         default: main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   get_ref:
     runs-on: ubuntu-latest
