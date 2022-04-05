@@ -48,18 +48,19 @@ jobs:
   # filter changes base filt path , so can do less thing
   filter_changes:
     name: Deduce required tests from code changes
-    if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     outputs:
-      go-changes: ${{ steps.go-changes.outputs.src }}
+      build: ${{ steps.result.outputs.result }}
     steps:
       - name: Checkout code
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'push' }}
         uses: actions/checkout@v2
         with:
           persist-credentials: false
 
       # https://github.com/dorny/paths-filter
       - name: Check code changes
+        if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'push' }}
         uses: dorny/paths-filter@v2.10.2
         id: go-changes
         with:
@@ -78,11 +79,20 @@ jobs:
               - 'go.sum'
               - 'go.mod'
 
+      - name: Result
+        id: result
+        run: |
+          if ${{ github.event_name != 'pull_request_target' && github.event_name != 'push' }} ; then
+              echo ::set-output name=result::true
+          else
+              echo ::set-output name=result::${{ steps.go-changes.outputs.src }}
+          fi
+
   build-and-push-prs:
     runs-on: ubuntu-latest
     # run if filters.src was changed
     needs: filter_changes
-    # if: ${{ needs.filter_changes.outputs.go-changes == 'true' || ( github.event_name != 'pull_request_target' && github.event_name != 'push' ) }}
+    if: ${{ needs.filter_changes.outputs.build == 'true' }}
     strategy:
       matrix:
         include:
