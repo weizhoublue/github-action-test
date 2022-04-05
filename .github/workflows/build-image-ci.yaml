@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     # run if filters.src was changed
     needs: filter_changes
-    if: ${{ needs.filter_changes.outputs.go-changes == 'true' || ( github.event_name != 'pull_request_target' && github.event_name != 'push' ) }}
+    # if: ${{ needs.filter_changes.outputs.go-changes == 'true' || ( github.event_name != 'pull_request_target' && github.event_name != 'push' ) }}
     strategy:
       matrix:
         include:
