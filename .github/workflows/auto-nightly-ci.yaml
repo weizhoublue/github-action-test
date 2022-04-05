@@ -72,10 +72,11 @@ jobs:
 
   call_e2e_test:
     runs-on: ubuntu-latest
-    needs: [call_build_ci_image, call_release_chart]
+    needs: [call_build_ci_image, call_release_chart,get_ref]
     steps:
       - name: Prepare
         run: |
+          echo "ref: ${{ needs.get_ref.outputs.ref }}"
           echo "ci image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}"
           echo "ci race image tag: ghcr.io/${{ github.repository }}/controllerimage-ci:${{ needs.call_build_ci_image.outputs.imageTag }}-race"
           echo "chart package artifact: ${{ needs.call_release_chart.outputs.artifact }}"
