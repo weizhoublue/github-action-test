@@ -85,7 +85,7 @@ fix-spell:
   					echo "error, miss tool codespell, install it: pip3 install codespell" ; \
   					exit 1 ;\
   				fi \
-  			fi \
+  			fi; \
   			codespell --config .github/codespell-config  --write-changes
 
 .PHONY: integration-tests
