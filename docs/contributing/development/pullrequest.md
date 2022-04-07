@@ -99,6 +99,8 @@ fix on local machine
 make fix-spell
 ```
 
+for ignored case, please edit .github/codespell-ignorewords and make sure all letters should be lower-case
+
 ## need review
 
 any PR need 2 review, if meet, will auto label it with "pr/approved" and "pr/need-release-label"
