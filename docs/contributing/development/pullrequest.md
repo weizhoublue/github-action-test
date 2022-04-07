@@ -87,6 +87,18 @@ any update about openapi.yaml, will be checked for the yaml validation
 
 check from <https://www.codefactor.io>
 
+## action: check code spell error
+
+check on local machine
+```
+make lint-spell
+```
+
+fix on local machine
+```
+make fix-spell
+```
+
 ## need review
 
 any PR need 2 review, if meet, will auto label it with "pr/approved" and "pr/need-release-label"

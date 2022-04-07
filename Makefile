@@ -66,6 +66,28 @@ lint-yaml:
 
 
 
+.PHONY: lint-spell
+lint-spell:
+	$(QUIET) if ! which codespell1 &> /dev/null ; then \
+  				echo "try to install codespell" ; \
+  				if ! pip3 install codespell ; then \
+  					echo "error, miss tool codespell, install it: pip3 install codespell" ; \
+  					exit 1 ; \
+  				fi \
+  			fi ;\
+  			codespell --config .github/codespell-config
+
+.PHONY: fix-spell
+fix-spell:
+	$(QUIET) if ! which codespell &> /dev/null ; then \
+  				echo "try to install codespell" ; \
+  				if ! pip3 install codespell ; then \
+  					echo "error, miss tool codespell, install it: pip3 install codespell" ; \
+  					exit 1 ;\
+  				fi \
+  			fi \
+  			codespell --config .github/codespell-config  --write-changes
+
 .PHONY: integration-tests
 integration-tests:
 	@echo "run integration-tests"
