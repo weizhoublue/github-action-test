@@ -37,7 +37,7 @@ jobs:
               echo "trigger by workflow_dispatch"
               echo ::set-output name=ref::${{ github.event.inputs.ref }}
           elif ${{ github.event_name == 'push' }} ; then
-              echo "trigger by ${{ github.event_name }}"
+              echo "trigger by push"
               echo ::set-output name=ref::${{ github.event.push.after }}
           else
               echo "trigger by ${{ github.event_name }}"
