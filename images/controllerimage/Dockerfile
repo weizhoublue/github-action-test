@@ -30,7 +30,7 @@ ARG NOOPT
 ARG QUIET_MAKE
 
 COPY . /src
-#go to the controler directory and make
+#go to the controller directory and make
 WORKDIR /src/cmd/controller
 RUN  make GOARCH=${TARGETARCH}   \
         RACE=${RACE} NOSTRIP=${NOSTRIP} NOOPT=${NOOPT} QUIET_MAKE=${QUIET_MAKE} \

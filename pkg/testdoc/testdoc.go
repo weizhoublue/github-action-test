@@ -3,7 +3,7 @@
 //go:build go1.7
 // +build go1.7
 
-// testdoc implements somthing, this line1 will show up
+// testdoc implements something, this line1 will show up
 // this will not be a new line
 //
 // this line will show up, and will be a new line

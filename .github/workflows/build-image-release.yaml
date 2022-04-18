@@ -1,5 +1,5 @@
 # build the Beta image with customized tag ,under an clean env , from  specified Branch
-# buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage:{yourTag}
+# build image like: ghcr.io/weizhoublue/github-action-test/controllerimage:{yourTag}
 name: Build Image Release
 
 on:

@@ -1,6 +1,6 @@
 # build the ci image with cache , which can  improve workflow execution time
 # it is trigger by pr and cache-cleaner workflow
-# buid image like: ghcr.io/weizhoublue/github-action-test/controllerimage-ci:{commitId}
+# build image like: ghcr.io/weizhoublue/github-action-test/controllerimage-ci:{commitId}
 name: Auto Build Image CI
 
 env:
@@ -22,7 +22,7 @@ on:
     branches:
       - main
       - release-*
-  # auto triggerd by another workflow
+  # auto triggered by another workflow
   workflow_run:
     workflows:
       - "Auto Clean CI Cache"

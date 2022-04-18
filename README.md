@@ -1,6 +1,5 @@
 # github test
 
-
 ## github workflow badge
 
 [![Auto Release Version](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-release.yaml/badge.svg)](https://github.com/weizhoublue/github-action-test/actions/workflows/auto-release.yaml)
@@ -25,13 +24,10 @@ this is from <https://sonarcloud.io>
 
 ## test coverage report
 
-this is from <https://coveralls.io> 
+this is from <https://coveralls.io>
 
 [![Coverage Status](https://coveralls.io/repos/github/weizhoublue/github-action-test/badge.svg?branch=main)](https://coveralls.io/github/weizhoublue/github-action-test?branch=main)
 
 this is from <https://about.codecov.io>
 
 [![codecov](https://codecov.io/gh/weizhoublue/github-action-test/branch/main/graph/badge.svg?token=Y50HD9H1EA)](https://codecov.io/gh/weizhoublue/github-action-test)
-
-
-

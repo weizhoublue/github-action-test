@@ -50,8 +50,8 @@ jobs:
           # rules: examples/rules/custom.js
           # ignore_files: 'vendor/'
 
+      - uses: bahmutov/npm-install@v1
       - name: Lint Markdown Spell
         run: |
-          apt-get install npm
           npm install markdown-spellcheck -g
           make lint-markdown-spell

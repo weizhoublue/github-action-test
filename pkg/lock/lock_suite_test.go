@@ -33,7 +33,7 @@ func init() {
 // 在 ginkgo -p  并发运行 测试时，每个ginkgo并发的每一个进程  都会 运行 ，
 
 var _ = BeforeSuite(func() {
-	fmt.Println("BeforeSuite：we can initial enviroment,  for all test before hand here")
+	fmt.Println("BeforeSuite：we can initial environment,  for all test before hand here")
 
 	// 当在BeforeSuite 中 setup 依赖服务时，每个并发进程都运行 一份服务，
 	// 优点是能规避 ginkgo 并发测试 时 的 测试用例之间  数据竞争问题 ，避免相互失败
@@ -45,7 +45,7 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	fmt.Println("AfterSuite：we can close enviroment,  for all test after hand here")
+	fmt.Println("AfterSuite：we can close environment,  for all test after hand here")
 })
 
 // -------------------SynchronizedBeforeSuite 适合用于setup 某个服务 , 使用一个 独立进程来 运行
@@ -77,7 +77,7 @@ var _ = AfterSuite(func() {
 //	//allProcessBody ， 接收服务的一些信息
 //	func(address []byte) {
 //		// 所有集成中，可以创建一个client 接入server
-//		fmt.Printf(" ceate a client connected to %v , the client can be used by all test case", string(address))
+//		fmt.Printf(" create a client connected to %v , the client can be used by all test case", string(address))
 //		DeferCleanup(func() {
 //			fmt.Printf(" close the client ")
 //		})
