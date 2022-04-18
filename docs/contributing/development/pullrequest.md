@@ -60,7 +60,7 @@ make lint-markdown-format
 you could tyr to justify it on local machine with following command
 
 ```
-make fix-markdown
+make fix-markdown-format
 ```
 
 ## action: lint yaml file
