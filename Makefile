@@ -76,8 +76,8 @@ lint-markdown-spell:
   			mdspell  -r --en-us --ignore-numbers --target-relative .github/.spelling --ignore-acronyms  '**/*.md' '!vendor/**/*.md' ; \
   		else \
 			docker run --rm -it \
-			--entrypoint bash -v $(ROOT_DIR):/workdir  $(IMAGE)  \
-			-c "cd /workdir ; mdspell  -r --en-us --ignore-numbers --target-relative .github/.spelling --ignore-acronyms  '**/*.md' '!vendor/**/*.md' " ; \
+				--entrypoint bash -v $(ROOT_DIR):/workdir  $(IMAGE)  \
+				-c "cd /workdir ; mdspell  -r --en-us --ignore-numbers --target-relative .github/.spelling --ignore-acronyms  '**/*.md' '!vendor/**/*.md' " ; \
   		fi
 
 
@@ -87,7 +87,7 @@ lint-markdown-spell:
 lint-code-spell: IMAGE := 'weizhoulan/spellcheck:latest'
 lint-code-spell:
 	$(QUIET) if which codespell &> /dev/null ; then \
-  				codespell --config .github/codespell-config
+  				codespell --config .github/codespell-config ;\
   		else \
 			docker run --rm -it \
 			--entrypoint bash -v $(ROOT_DIR):/workdir  $(IMAGE)  \
