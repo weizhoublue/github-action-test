@@ -4,7 +4,7 @@
 
 With cache acceleration, build two ci image and push to ghcr
 
-(1) ****-ci:${ref} : the normal image
+(1) ****-ci:${ref} : the normal  image
 
 (2) ****-ci:${ref}-rate : image who turns on 'go race' and 'deadlock detect'
 
