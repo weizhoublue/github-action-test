@@ -54,7 +54,7 @@ jobs:
           echo "github.event.push.head_commit = ${{ github.event.push.head_commit }}"
 
           #Pushed commits are all commits that are included in the compare between the before commit and the after commit.
-          echo "github.event.push.head_commit = ${{ github.event.push.commits }}"
+          echo "github.event.push.commits = ${{ github.event.push.commits }}"
           
           # ================= for all
           # The commit SHA that triggered the workflow run.
