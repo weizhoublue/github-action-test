@@ -1,1 +1,1 @@
-# enviroment of spiderpool controller and spiderpool agent
+# environment of spiderpool controller and spiderpool agent

@@ -32,9 +32,9 @@ jobs:
           # weizhoublue/github_action_test
           echo "github.repository = ${{ github.repository }}"
           # =============== pull_request or pull_request_target
-          # base_ref: avaliable for pull_request or pull_request_target event , The base_ref or target branch of the pull request
+          # base_ref: available for pull_request or pull_request_target event , The base_ref or target branch of the pull request
           echo "github.base_ref = ${{ github.base_ref }}"
-          # head_ref: avaliable for pull_request or pull_request_target event, The head_ref or source branch of the pull request
+          # head_ref: available for pull_request or pull_request_target event, The head_ref or source branch of the pull request
           echo "github.head_ref = ${{ github.head_ref }}"
           # ================= for all
           # The commit SHA that triggered the workflow run.

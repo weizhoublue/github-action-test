@@ -232,7 +232,7 @@ var _ = Describe("repeated call func for performance test", func() {
 		// we create a new experiment
 		// Experiments are thread-safe
 		// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1/gmeasure#NewExperiment
-		experiment := gmeasure.NewExperiment("perfomance test sample")
+		experiment := gmeasure.NewExperiment("performance test sample")
 		// 把性能数据 追加到 测试报告中
 		AddReportEntry(experiment.Name, experiment)
 
@@ -257,7 +257,7 @@ var _ = Describe("repeated call func for performance test", func() {
 			// 传入回调格式： func()
 			experiment.MeasureDuration("time-test1", func() {
 				// 在此 书写 被性能测试的代码
-				fmt.Printf("perfomance test1 code here\n")
+				fmt.Printf("performance test1 code here\n")
 				for i := 0; i <= 1; i++ {
 					t := i * i
 					if t < 0 {
@@ -271,10 +271,10 @@ var _ = Describe("repeated call func for performance test", func() {
 			// 可以追加一些 修饰符
 			experiment.MeasureDuration("time-test2", func() {
 				// 在此 书写 被性能测试的代码
-				fmt.Printf("perfomance test2 code here\n")
+				fmt.Printf("performance test2 code here\n")
 				// idx 是 第几次运行，其序号从 0 开始
 				time.Sleep(time.Duration((idx+1)*30) * time.Millisecond)
-			}, gmeasure.Annotation("this is annotaion for time test2"))
+			}, gmeasure.Annotation("this is annotation for time test2"))
 
 			// MeasureValue 测试 返回值
 			// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1/gmeasure#Experiment.MeasureValue
@@ -319,7 +319,7 @@ var _ = Describe("repeated call func for performance test", func() {
 
 	// 方式2：使用 Stopwatch 测量 时间, 书写 方便 , 还能 暂停计时 ， 推荐
 	It("method by Stopwatch ", Serial, Label("measurement"), func() {
-		experiment := gmeasure.NewExperiment("perfomance test sample")
+		experiment := gmeasure.NewExperiment("performance test sample")
 		AddReportEntry(experiment.Name, experiment)
 
 		// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1/gmeasure#SamplingConfig
@@ -332,26 +332,26 @@ var _ = Describe("repeated call func for performance test", func() {
 			// 开始启动一个后端协程 计时
 			stopwatch := experiment.NewStopwatch() // we make a new stopwatch for each sample.  Experiments are threadsafe, but Stopwatches are not.
 
-			fmt.Printf("do round %v : bussiness 1: step1 here\n", idx)
+			fmt.Printf("do round %v : business 1: step1 here\n", idx)
 			time.Sleep(100 * time.Millisecond)
 			// 对已经消耗的时间 生成一个记录
 			stopwatch.Record("bussiness1").Reset()
 
-			fmt.Printf("do round %v : bussiness 2 we not care\n", idx)
+			fmt.Printf("do round %v : business 2 we not care\n", idx)
 			time.Sleep(200 * time.Millisecond)
 
 			// reset to record new one
 			stopwatch.Reset() // Subsequent recorded durations will measure the time elapsed from the moment Reset was called
-			fmt.Printf("do round %v : bussiness 3: step1 here\n", idx)
+			fmt.Printf("do round %v : business 3: step1 here\n", idx)
 			time.Sleep(200 * time.Millisecond)
 
 			// 暂停一些 我们不在乎的步骤
 			stopwatch.Pause()
-			fmt.Printf("do round %v : bussiness 3: step2 we not care\n", idx)
+			fmt.Printf("do round %v : business 3: step2 we not care\n", idx)
 			time.Sleep(50 * time.Millisecond)
 			stopwatch.Resume()
 
-			fmt.Printf("do round %v : bussiness 3: step3 here\n", idx)
+			fmt.Printf("do round %v : business 3: step3 here\n", idx)
 			time.Sleep(100 * time.Millisecond)
 			// 可以追加若干 修饰符
 			stopwatch.Record("bussiness2", gmeasure.Annotation("this is b2 annotation")).Reset()
@@ -372,7 +372,7 @@ var _ = Describe("repeated call func for performance test", func() {
 	It("test other", Serial, Label("measurement"), func() {
 		// we create a new experiment
 		// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1/gmeasure#NewExperiment
-		experiment := gmeasure.NewExperiment("perfomance test other")
+		experiment := gmeasure.NewExperiment("performance test other")
 		// 把性能数据 追加到 测试报告中
 		AddReportEntry(experiment.Name, experiment)
 
@@ -381,7 +381,7 @@ var _ = Describe("repeated call func for performance test", func() {
 		// 我们可以使用其它手段，进行进行测试，然后把 时间测试结果  创建到  experiment 中
 		experiment.RecordDuration("my other performance test1", 3*time.Second)
 		// 可追加修饰符
-		experiment.RecordDuration("my other performance test1", 5*time.Second, gmeasure.Annotation("sample 2rd"))
+		experiment.RecordDuration("my other performance test1", 5*time.Second, gmeasure.Annotation("sample 2nd"))
 
 		// 创建自定义的数值 Sample
 		// 我们可以使用其它手段，进行进行测试，然后把 数值测试结果的样本  创建到  experiment 中
