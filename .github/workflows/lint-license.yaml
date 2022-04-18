@@ -39,7 +39,7 @@ jobs:
             echo ::set-output name=ref::${tag_name}
           elif ${{ github.event_name == 'push' }} ; then
               echo ::set-output name=ref::${{ github.event.push.after }}
-          elif ${{ github.event_name == 'pull_request' }} ; then
+          elif ${{ github.event_name == 'pull_request' }} || ${{ github.event_name == 'pull_request_target' }} ; then
               echo "trigger by pull_request_target"
               echo ::set-output name=tag::${{ github.event.pull_request.head.sha }}
           else
