@@ -10,6 +10,6 @@ type RWMutex struct {
 
 // Mutex is equivalent to sync.Mutex but applies deadlock detection if the
 // built tag "lockdebug" is set
-type Mutex struct  {
+type Mutex struct   {
 	internalMutex
 }
