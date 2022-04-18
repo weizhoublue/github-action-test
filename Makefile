@@ -46,11 +46,12 @@ lint-golang:
 	@$(ECHO_CHECK) golangci-lint
 	$(QUIET) golangci-lint run
 
-.PHONY: lint-markdown
-lint-markdown:
+.PHONY: lint-markdown-format
+lint-markdown-format:
 	@$(CONTAINER_ENGINE) container run --rm \
 		--entrypoint sh -v $(ROOT_DIR):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest \
-		-c '/usr/local/bin/markdownlint -c /workdir/.github/markdownlint.yaml -p /workdir/.github/markdownlintignore  /workdir/'
+		-c '/usr/local/bin/markdownlint -c /workdir/.github/markdownlint.yaml -p /workdir/.github/markdownlintignore  /workdir/' ; \
+		if (($$?==0)) ; then echo "congratulations ,all pass" ; else echo "error, pealse refer <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md> " ; fi
 
 .PHONY: fix-markdown
 fix-markdown:
@@ -62,23 +63,40 @@ fix-markdown:
 lint-yaml:
 	@$(CONTAINER_ENGINE) container run --rm \
 		--entrypoint sh -v $(ROOT_DIR):/data cytopia/yamllint \
-		-c '/usr/bin/yamllint -c /data/.github/yamllint-conf.yml /data'
+		-c '/usr/bin/yamllint -c /data/.github/yamllint-conf.yml /data' ; \
+		if (($$?==0)) ; then echo "congratulations ,all pass" ; else echo "error, pealse refer <https://yamllint.readthedocs.io/en/stable/rules.html> " ; fi
 
 
+# https://github.com/lukeapage/node-markdown-spellcheck
+# npm install markdown-spellcheck -g
+.PHONY: lint-markdown-spell
+lint-markdown-spell: IMAGE := 'weizhoulan/spellcheck:latest'
+lint-markdown-spell:
+	if which mdspell &>/dev/null ; then \
+  			mdspell  -r --en-us --ignore-numbers --target-relative .github/.spelling --ignore-acronyms  '**/*.md' '!vendor/**/*.md' ; \
+  		else \
+			docker run --rm -it \
+			--entrypoint bash -v $(ROOT_DIR):/workdir  $(IMAGE)  \
+			-c "cd /workdir ; mdspell  -r --en-us --ignore-numbers --target-relative .github/.spelling --ignore-acronyms  '**/*.md' '!vendor/**/*.md' " ; \
+  		fi
 
-.PHONY: lint-spell
-lint-spell:
-	$(QUIET) if ! which codespell &> /dev/null ; then \
-  				echo "try to install codespell" ; \
-  				if ! pip3 install codespell ; then \
-  					echo "error, miss tool codespell, install it: pip3 install codespell" ; \
-  					exit 1 ; \
-  				fi \
-  			fi ;\
-  			codespell --config .github/codespell-config
 
-.PHONY: fix-spell
-fix-spell:
+# https://github.com/codespell-project/codespell
+# pip3 install codespell
+.PHONY: lint-code-spell
+lint-code-spell: IMAGE := 'weizhoulan/spellcheck:latest'
+lint-code-spell:
+	$(QUIET) if which codespell &> /dev/null ; then \
+  				codespell --config .github/codespell-config
+  		else \
+			docker run --rm -it \
+			--entrypoint bash -v $(ROOT_DIR):/workdir  $(IMAGE)  \
+			-c "cd /workdir ; codespell --config .github/codespell-config " ; \
+  		fi
+
+
+.PHONY: fix-code-spell
+fix-code-spell:
 	$(QUIET) if ! which codespell &> /dev/null ; then \
   				echo "try to install codespell" ; \
   				if ! pip3 install codespell ; then \

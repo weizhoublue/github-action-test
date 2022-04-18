@@ -49,3 +49,9 @@ jobs:
           ignore_path: '.github/markdownlintignore'
           # rules: examples/rules/custom.js
           # ignore_files: 'vendor/'
+
+      - name: Lint Markdown Spell
+        run: |
+          apt-get install npm
+          npm install markdown-spellcheck -g
+          make lint-markdown-spell
