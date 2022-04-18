@@ -54,13 +54,13 @@ if it fails, the reason could refer to <https://github.com/DavidAnson/markdownli
 you could test it on local machine with following command
 
 ```
-make lint-markdown
+make lint-markdown-format
 ```
 
 you could tyr to justify it on local machine with following command
 
 ```
-make fix-markdown
+make fix-markdown-format
 ```
 
 ## action: lint yaml file
@@ -91,12 +91,12 @@ check from <https://www.codefactor.io>
 
 check on local machine
 ```
-make lint-spell
+make lint-code-spell
 ```
 
 fix on local machine
 ```
-make fix-spell
+make fix-code-spell
 ```
 
 for ignored case, please edit .github/codespell-ignorewords and make sure all letters should be lower-case
