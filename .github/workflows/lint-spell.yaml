@@ -36,9 +36,12 @@ jobs:
           elif ${{ github.event_name == 'workflow_dispatch' }} ; then
               echo "trigger by workflow_dispatch"
               echo ::set-output name=ref::${{ github.event.inputs.ref }}
+          else ${{ github.event_name == 'push' }} ; then
+              echo "trigger by ${{ github.event_name }}"
+              echo ::set-output name=ref::${{ github.event.push.after }}
           else
               echo "trigger by ${{ github.event_name }}"
-              echo ::set-output name=ref::${{ github.sha }}
+              echo ::set-output name=ref::${{  github.event.pull_request.head.sha }}
           fi
 
       # https://github.com/actions/checkout
