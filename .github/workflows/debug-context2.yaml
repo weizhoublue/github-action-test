@@ -1,12 +1,10 @@
-name: Debug pull_request_target Context
+name: Debug pull_request Context
 
 on:
   push:
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
-      - reopened
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       mytag:
