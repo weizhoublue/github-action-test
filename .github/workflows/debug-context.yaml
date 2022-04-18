@@ -39,10 +39,12 @@ jobs:
           # "github.head_ref = pr/welan/md-spell"
           echo "github.head_ref = ${{ github.head_ref }}"
 
-          # avalibale for pull_request or pull_request_target
           echo "github.event.pull_request.base.sha = ${{ github.event.pull_request.base.sha }}"
-          # avalibale for pull_request or pull_request_target          
           echo "github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+          
+          echo "github.event.pull_request_target.base.sha = ${{ github.event.pull_request_target.base.sha }}"
+          echo "github.event.pull_request_target.head.sha = ${{ github.event.pull_request_target.head.sha }}"
+          
           
           # =============== push
           echo "github.event.push.ref = ${{ github.event.push.ref }}"
