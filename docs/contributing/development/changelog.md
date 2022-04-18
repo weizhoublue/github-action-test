@@ -8,7 +8,7 @@
 
 the changelog content include:
 
-(1) New Features: it include all PR labelled with "pr/release/feature-new"
+(1) New Features:  it include all PR labelled with "pr/release/feature-new"
 
 (2) Changed Features: it include all PR labelled with "pr/release/feature-changed"
 
