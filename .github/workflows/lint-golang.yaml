@@ -242,7 +242,7 @@ jobs:
       # for codevcov configuration: /codecov.yml https://docs.codecov.com/docs/common-recipe-list
       - name: Upload to Codecov
         if: ${{ steps.unitest.outcome != 'failure' }}
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.0
         with:
           # 虽然官方说 not required for public repos， 但是发现 有时 action 经常 会报错 要求token
           token: ${{ secrets.CODECOV_TOKEN }}
