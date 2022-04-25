@@ -8,7 +8,7 @@ require (
 	github.com/onsi/gomega v1.18.1
 	github.com/sasha-s/go-deadlock v0.3.1
 	golang.org/x/tools v0.1.6-0.20210820212750-d4cc65f0b2ff
-	google.golang.org/grpc v1.45.0
+	google.golang.org/grpc v1.46.0
 	k8s.io/apimachinery v0.23.4
 	k8s.io/code-generator v0.23.4
 	sigs.k8s.io/controller-runtime v0.11.1
