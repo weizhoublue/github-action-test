@@ -9,6 +9,7 @@ CURRENT_DIR_PATH=$(cd `dirname $0`; pwd)
 export PROJECT_ROOT_PATH="${CURRENT_DIR_PATH}/.."
 export GINKGO_PKG_PATH=${GINKGO_PKG_PATH:-${PROJECT_ROOT_PATH}/vendor/github.com/onsi/ginkgo/v2/ginkgo/main.go}
 
+
 if [ -f "$GINKGO_PKG_PATH" ] ; then
   go run $GINKGO_PKG_PATH -vv -r ${CURRENT_DIR_PATH} $@
 else
