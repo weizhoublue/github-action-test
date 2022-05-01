@@ -32,8 +32,8 @@ jobs:
         shell: bash
         run: |
           TOOL_PATH=${{ env.SCEIPT }} 
-          CODE_LINES=$(  ${TOOL_PATH} --loc )
-          COMMENT_PERCENTAGE=$(  ${TOOL_PATH} --percentage )
+          CODE_LINES=$(  ${TOOL_PATH} --code-lines )
+          COMMENT_PERCENTAGE=$(  ${TOOL_PATH} --comment-percent )
           echo "CODE_LINES=${CODE_LINES}" >> $GITHUB_ENV
           echo "COMMENT_PERCENTAGE=${COMMENT_PERCENTAGE}" >> $GITHUB_ENV
 

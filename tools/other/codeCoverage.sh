@@ -27,10 +27,8 @@ VEDNOR_DIR="vendor"
 # for the specified languages. You will need to change this accordingly.
 # For C++, you could use "C++,C/C++ Header" for example.
 # We are only interested in the summary, therefore the tail -1
-SUMMARY="$(cloc "${PROJECT_DIR}"  --exclude-dir="${VEDNOR_DIR}" --include-lang="go,bash,sh,yaml,yml" --md | tail -1)"
+SUMMARY="$(cloc "${PROJECT_DIR}"  --exclude-dir="${VEDNOR_DIR}" --md | tail -1)"
 
-# debug
-echo "${SUMMARY}" >&2
 
 # The $SUMMARY is one line of a markdown table and looks like this:
 # SUM:|101|3123|2238|10783
@@ -59,27 +57,24 @@ if [[ $# -eq 0 ]] ; then
   awk -v a=$COMMENT_LINES \
       'BEGIN {printf "Lines of comments:    %6.1fk\n", a/1000}'
   awk -v a=$COMMENT_LINES -v b=$LINES_OF_CODE \
-      'BEGIN {printf "Comment Percentage:   %6.1f%\n", 100*a/(a+b)}'
+      'BEGIN {printf "Comment Percentage:   %6.1f\n", 100*a/(a+b)}'
   exit 0
 fi
 
 # Show lines of code if --loc is given.
-if [[ $* == *--loc* ]]
-then
+if [[ $* == *--code-lines* ]] ; then
   awk -v a=$LINES_OF_CODE \
       'BEGIN {printf "%.1fk\n", a/1000}'
 fi
 
 # Show lines of comments if --comments is given.
-if [[ $* == *--comments* ]]
-then
+if [[ $* == *--comment-lines* ]] ; then
   awk -v a=$COMMENT_LINES \
       'BEGIN {printf "%.1fk\n", a/1000}'
 fi
 
 # Show precentage of comments if --percentage is given.
-if [[ $* == *--percentage* ]]
-then
+if [[ $* == *--comment-percent* ]] ; then
   awk -v a=$COMMENT_LINES -v b=$LINES_OF_CODE \
       'BEGIN {printf "%.1f\n", 100*a/(a+b)}'
 fi
