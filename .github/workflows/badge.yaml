@@ -3,6 +3,9 @@
 
 # 1 在 github 的 gist 中， 创建 XXX.json 文件 https://gist.github.com , 这些文件可用于 展示为 badge 的内容
 # 2 用本action，可用来更新 在线的  XXX.json 文件 。 其中，请创建 个人github PAT（拥有 gist 权限） 到 secrets.PAT
+# 3 在项目 readme 中 嵌入 badge： ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/<user>/<gist-ID>/raw/test.json)
+#   例如，本例子中 welancodeline.json， id是 970fee47fa24f8db389e446a3317c332 ，
+#              badge就是 ![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/weizhoublue/970fee47fa24f8db389e446a3317c332/raw/welancodeline.json)
 
 name: Badges
 
@@ -56,6 +59,7 @@ jobs:
           filename: welancomment.json
           label: Comments
           message: ${{ env.COMMENT_PERCENTAGE }}%
+          # valColorRange 要在 maxColorRange 和 minColorRange 之间
           valColorRange: ${{ env.COMMENT_PERCENTAGE }}
-          maxColorRange: 50
+          maxColorRange: 100
           minColorRange: 0

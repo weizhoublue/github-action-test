@@ -31,3 +31,10 @@ this is from <https://coveralls.io>
 this is from <https://about.codecov.io>
 
 [![codecov](https://codecov.io/gh/weizhoublue/github-action-test/branch/main/graph/badge.svg?token=Y50HD9H1EA)](https://codecov.io/gh/weizhoublue/github-action-test)
+
+# gist badge
+
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/weizhoublue/970fee47fa24f8db389e446a3317c332/raw/welancodeline.json)
+
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/weizhoublue/0c02c46da21b99cd06ba05b59bbb407e/raw/welancomment.json)
+

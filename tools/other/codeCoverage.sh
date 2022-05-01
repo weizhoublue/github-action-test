@@ -20,7 +20,8 @@
 # Get the location of this script.
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 PROJECT_DIR="${SCRIPT_DIR}/../.."
-VEDNOR_DIR="${PROJECT_DIR}/vendor"
+#VEDNOR_DIR="${PROJECT_DIR}/vendor"
+VEDNOR_DIR="vendor"
 
 # Run cloc - this counts code lines, blank lines and comment lines
 # for the specified languages. You will need to change this accordingly.
