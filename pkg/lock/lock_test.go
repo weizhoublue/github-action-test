@@ -93,6 +93,13 @@ var _ = Describe("Lock", func() {
 
 		})
 
+
+		It("test skip", func() {
+			if 1 ==1 {
+				Skip("Special condition wasn't met.")
+			}
+		})
+
 		// https://onsi.github.io/ginkgo/#mental-model-how-ginkgo-handles-failure
 		It("test fail", func() {
 			if false {

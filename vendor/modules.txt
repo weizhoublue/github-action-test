@@ -155,6 +155,10 @@ github.com/spf13/cobra
 github.com/spf13/pflag
 # github.com/stretchr/testify v1.7.1
 ## explicit; go 1.13
+# go.uber.org/goleak v1.1.12
+## explicit; go 1.13
+go.uber.org/goleak
+go.uber.org/goleak/internal/stack
 # golang.org/x/mod v0.4.2
 ## explicit; go 1.12
 golang.org/x/mod/module

@@ -1,0 +1,61 @@
+# 参考 https://schneegans.github.io/tutorials/2022/04/18/badges
+# https://github.com/marketplace/actions/dynamic-badges
+
+# 1 在 github 的 gist 中， 创建 XXX.json 文件 https://gist.github.com , 这些文件可用于 展示为 badge 的内容
+# 2 用本action，可用来更新 在线的  XXX.json 文件 。 其中，请创建 个人github PAT（拥有 gist 权限） 到 secrets.PAT
+
+name: Badges
+
+env:
+  SCEIPT: "./tools/other/codeCoverage.sh"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-badges:
+    name: Update Badges
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download cloc
+        run: sudo apt-get update -y && sudo apt-get install -y cloc
+
+      - name: Get the Numbers
+        shell: bash
+        run: |
+          TOOL_PATH=${{ env.SCEIPT }} 
+          CODE_LINES=$(  ${TOOL_PATH} --loc )
+          COMMENT_PERCENTAGE=$(  ${TOOL_PATH} --percentage )
+          echo "CODE_LINES=${CODE_LINES}" >> $GITHUB_ENV
+          echo "COMMENT_PERCENTAGE=${COMMENT_PERCENTAGE}" >> $GITHUB_ENV
+
+      - name: Create Lines-of-Code-Badge
+        uses: schneegans/dynamic-badges-action@v1.3.0
+        with:
+          # need to create a token
+          auth: ${{ secrets.PAT }}
+          # welancodeline.json 文件对应的 ID 号
+          gistID: 970fee47fa24f8db389e446a3317c332
+          # 和在 gist 网站上的 同名json
+          filename: welancodeline.json
+          label: Code Lines
+          message: ${{ env.CODE_LINES }}
+          color: lightgrey
+
+      - name: Create Comments-Badge
+        uses: schneegans/dynamic-badges-action@v1.3.0
+        with:
+          auth: ${{ secrets.PAT }}
+          # welancomment.json 文件对应的 ID 号
+          gistID: 0c02c46da21b99cd06ba05b59bbb407e
+          filename: welancomment.json
+          label: Comments
+          message: ${{ env.COMMENT_PERCENTAGE }}%
+          valColorRange: ${{ env.COMMENT_PERCENTAGE }}
+          maxColorRange: 50
+          minColorRange: 0

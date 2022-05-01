@@ -7,6 +7,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.1.3
 	github.com/onsi/gomega v1.18.1
 	github.com/sasha-s/go-deadlock v0.3.1
+	go.uber.org/goleak v1.1.12
 	golang.org/x/tools v0.1.6-0.20210820212750-d4cc65f0b2ff
 	google.golang.org/grpc v1.45.0
 	k8s.io/apimachinery v0.23.4
