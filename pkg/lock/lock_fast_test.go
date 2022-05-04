@@ -35,6 +35,9 @@ var _ = Describe("gomega_assert", func() {
 		// wiith reflect.DeepEqual , BeEquivalentTo 在使用 reflect.DeepEqual 比较前，会尝试 先进行双方的类型转化
 		Expect("123").To(BeEquivalentTo("123"))
 
+		// 我们能够添加 错误消息
+		Expect(1).To(Equal(1), "thi is message when error happend , %s", "bye")
+
 		// 数字比较  请使用 BeNumerically()
 		// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1#BeNumerically
 		// BeNumerically 会尝试转化类型后，进行数值比较
@@ -50,6 +53,7 @@ var _ = Describe("gomega_assert", func() {
 		// 字符串的比较
 		Expect("i am substring").To(Equal("i am substring"))
 		Expect("i am substring").To(ContainSubstring("am"))
+		Expect("i am substring").NotTo(BeEmpty())
 
 		// bool 比较
 		Expect(true).To(BeTrue())
@@ -137,7 +141,7 @@ var _ = Describe("gomega_assert", func() {
 	})
 
 	// https://pkg.go.dev/github.com/onsi/gomega#Eventually
-	
+
 	// https://pkg.go.dev/github.com/onsi/gomega@v1.18.1/gexec
 	Context("test_call_bin", func() {
 
@@ -179,7 +183,7 @@ var _ = Describe("gomega_assert", func() {
 
 		// 函数要在指定 超时时间内完成 , 且 校验了 各个返回值
 		// https://onsi.github.io/gomega/#category-3-making-assertions-eminem-the-function-passed-into-codeeventuallycode
-		It("method2", Label("shanghai") , func() {
+		It("method2", Label("shanghai"), func() {
 			var resultInt int
 
 			// 指定时间内，希望完成 函数调用，且结果符合预期
@@ -201,7 +205,7 @@ var _ = Describe("gomega_assert", func() {
 			// 获取 被调用函数的 返回数据，供后续使用
 			fmt.Printf("method2 get result of caller func: %v \n", resultInt)
 
-			//或者简写为
+			// 或者简写为
 			// 在 指定时间(10s)内 ，会尝试一直 间隔1s  不断 反复 调用 函数， 只要有一次 满足期待(包括满足函数内的各种断言语句)，就提前结束成功 ！！！！！！！！！！！！！！！！！
 			Eventually(func(g Gomega) bool {
 				defer GinkgoRecover()
@@ -210,21 +214,20 @@ var _ = Describe("gomega_assert", func() {
 				time.Sleep(time.Second)
 				// do something , or call another funciton
 
-				//函数内的所有断言也需要满足成功，才能说本次成功
+				// 函数内的所有断言也需要满足成功，才能说本次成功
 				// 函数内请使用 传入的 g 的断言，而不是 Expect(err).To(Succeed())
 				g.Expect(err).NotTo(HaveOccurred())
 				return true
-			},"10s", "1s").Should(BeTrue())
+			}, "10s", "1s").Should(BeTrue())
 			GinkgoWriter.Println("finish Eventually ")
-
 
 			// 另一种 超时写法
 			Eventually(func(g Gomega) bool {
 				defer GinkgoRecover()
 				// ...
 				return true
-			}).WithTimeout(10*time.Second).WithPolling(1 * time.Second).Should(BeTrue())
-			
+			}).WithTimeout(10 * time.Second).WithPolling(1 * time.Second).Should(BeTrue())
+
 			// 在指定时间内，会尝试一直 不断 反复 调用 函数， 每次都 希望 是 符合预期的结果(包括满足函数内的各种断言语句)，期间 只要有一次不对，就失败 ！！！！！！！！！！！！！！！！！
 			Consistently(func(g Gomega) bool {
 				defer GinkgoRecover()
@@ -233,11 +236,11 @@ var _ = Describe("gomega_assert", func() {
 				time.Sleep(time.Second)
 				// do something , or call another funciton
 
-				//函数内的所有断言也需要满足成功，才能说本次成功
+				// 函数内的所有断言也需要满足成功，才能说本次成功
 				// 函数内请使用 传入的 g 的断言，而不是 Expect(err).To(Succeed())
 				g.Expect(err).To(Succeed())
 				return true
-			}, "10s", "1s" ).Should(BeTrue())
+			}, "10s", "1s").Should(BeTrue())
 			GinkgoWriter.Println("finish Consistently ")
 
 		})
