@@ -224,16 +224,16 @@ preview_doc:
 
 .PHONY: build_doc
 build_doc: PROJECT_DOC_DIR := ${ROOT_DIR}/docs
-build_doc: OUTPUT_DIR_NAME := site
+build_doc: OUTPUT_TAR := site.tar.gz
 build_doc:
 	-docker stop doc_builder &>/dev/null
 	-docker rm doc_builder &>/dev/null
 	[ -f "docs/mkdocs.yml" ] || { echo "error, miss docs/mkdocs.yml "; exit 1 ; }
-	-@ rm -rf ./docs/$(OUTPUT_DIR_NAME)
+	-@ rm -f ./docs/$(OUTPUT_TAR)
 	@echo "build doc html " ; \
 		docker run --rm --name doc_builder  \
 		-v ${PROJECT_DOC_DIR}:/host/docs \
         --entrypoint sh \
-        squidfunk/mkdocs-material -c "cd /host ; cp ./docs/mkdocs.yml ./ ; mkdocs build ; mv $(OUTPUT_DIR_NAME) docs/$(OUTPUT_DIR_NAME)"
-	@[ -d "$(PROJECT_DOC_DIR)/$(OUTPUT_DIR_NAME)" ] && echo "succeeded to build site to $(PROJECT_DOC_DIR)/$(OUTPUT_DIR_NAME) "
-
+        squidfunk/mkdocs-material -c "cd /host ; cp ./docs/mkdocs.yml ./ ; mkdocs build ; cd site ; tar -czvf site.tar.gz * ; mv ${OUTPUT_TAR} ../docs/"
+	@ [ -f "$(PROJECT_DOC_DIR)/$(OUTPUT_TAR)" ] || { echo "failed to build site to $(PROJECT_DOC_DIR)/$(OUTPUT_TAR) " ; exit 1 ; }
+	@ echo "succeeded to build site to $(PROJECT_DOC_DIR)/$(OUTPUT_TAR) "

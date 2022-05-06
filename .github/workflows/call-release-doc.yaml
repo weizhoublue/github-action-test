@@ -52,17 +52,13 @@ jobs:
 
       - name: Build Site
         run: |
-          make build_doc          
-          cd docs/site
-          tar -czvf site.tar.gz *
-          ls
-          tar -tf site.tar.gz
+          make build_doc
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3.0.0
         with:
           name: site_artifact
-          path: docs/site/site.tar.gz
+          path: docs/site.tar.gz
           retention-days: 0
           if-no-files-found: error
 
