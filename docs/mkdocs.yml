@@ -4,7 +4,7 @@ site_dir: site
 repo_name: weizhoblue/github-action-test
 repo_url: https://github.com/weizhoublue/github-action-test
 # remote branch for mkdocs gh-deploy
-remote_branch: gh-pages
+remote_branch: github_pages
 theme:
   name: material
   # The maximum depth of the navigation tree in the sidebar
