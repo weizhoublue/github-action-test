@@ -79,3 +79,4 @@ images/*/Dockerfile.dockerignore
 # Local Emacs files
 .dir-locals.el
 
+docs/site/

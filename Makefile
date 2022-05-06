@@ -206,4 +206,34 @@ endif
 	@echo "Updated go version in image Dockerfiles to $(GO_IMAGE_VERSION)"
 
 
+.PHONY: preview_doc
+preview_doc: PROJECT_DOC_DIR := ${ROOT_DIR}/docs
+preview_doc:
+	-docker stop doc_previewer &>/dev/null
+	-docker rm doc_previewer &>/dev/null
+	@echo "set up preview http server  "
+	@echo "you can visit the website on browser with url 'http://127.0.0.1:8000' "
+	[ -f "docs/mkdocs.yml" ] || { echo "error, miss docs/mkdocs.yml "; exit 1 ; }
+	docker run --rm  -p 8000:8000 --name doc_previewer -v $(PROJECT_DOC_DIR):/host/docs \
+        --entrypoint sh \
+        --stop-timeout 3 \
+        --stop-signal "SIGKILL" \
+        squidfunk/mkdocs-material  -c "cd /host ; cp docs/mkdocs.yml ./ ;  mkdocs serve -a 0.0.0.0:8000"
+	#sleep 10 ; if curl 127.0.0.1:8000 &>/dev/null  ; then echo "succeeded to set up preview server" ; else echo "error, failed to set up preview server" ; docker stop doc_previewer ; exit 1 ; fi
+
+
+.PHONY: build_doc
+build_doc: PROJECT_DOC_DIR := ${ROOT_DIR}/docs
+build_doc: OUTPUT_DIR_NAME := site
+build_doc:
+	-docker stop doc_builder &>/dev/null
+	-docker rm doc_builder &>/dev/null
+	[ -f "docs/mkdocs.yml" ] || { echo "error, miss docs/mkdocs.yml "; exit 1 ; }
+	-@ rm -rf ./docs/$(OUTPUT_DIR_NAME)
+	@echo "build doc html " ; \
+		docker run --rm --name doc_builder  \
+		-v ${PROJECT_DOC_DIR}:/host/docs \
+        --entrypoint sh \
+        squidfunk/mkdocs-material -c "cd /host ; cp ./docs/mkdocs.yml ./ ; mkdocs build ; mv $(OUTPUT_DIR_NAME) docs/$(OUTPUT_DIR_NAME)"
+	@[ -d "$(PROJECT_DOC_DIR)/$(OUTPUT_DIR_NAME)" ] && echo "succeeded to build site to $(PROJECT_DOC_DIR)/$(OUTPUT_DIR_NAME) "
 
