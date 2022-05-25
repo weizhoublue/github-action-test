@@ -22,7 +22,7 @@ import (
 
 var _ = Describe("gomega_assert", func() {
 
-	It("t1", func() {
+	It("t1", Label("type"), func() {
 
 		_, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		defer cancel()
@@ -45,6 +45,8 @@ var _ = Describe("gomega_assert", func() {
 		Expect(0.1).To(BeNumerically("==", 0.1))
 		// 如下 比较符号 ，判断 Actual 是否 在 expected 的 指定 偏差范围内
 		Expect(1).To(BeNumerically("~", 0.9, 0.1))
+		Expect(1).To(And(BeNumerically("<=", 2), BeNumerically(">", 0)))
+		Expect(1).To(Or(BeNumerically("<=", 2), BeNumerically(">", 0)))
 
 		// 时间比较
 		// actual 是否 在 预期时间的 浮动范围 内
@@ -85,16 +87,34 @@ var _ = Describe("gomega_assert", func() {
 		Expect([]string{"Foo", "FooBar"}).Should(ConsistOf("FooBar", "Foo"))
 		// 如下 是失败
 		// Expect([]string{"Foo", "FooBar"}).Should(ConsistOf("FooBar"))
-		// 字符串子集
+
+		// 切片，务必所有的 成员都涵盖到了
 		Expect([]string{"Foo", "FooBarTest"}).Should(ConsistOf(ContainSubstring("Bar"), "Foo"))
-		//  对于 map的比较， 比的是 values， 而忽略 mao 的 key
+		Expect([]string{"1", "2", "3"}).To(ConsistOf([]string{"1", "2", "3"}))
+
+		// 是否包含某一个成员
+		Expect([]string{"1", "2", "3"}).To(ContainElement("1"))
+		// 是否包含某多个成员
+		Expect([]string{"1", "2", "3"}).To(ContainElements("1", "2"))
+		// 换一种写法
+		Expect([]string{"1", "2", "3"}).To(ContainElements([]string{"1", "2"}))
+
+		//  对于 map的比较， 比的是 values， 而忽略 map 的 key
 		Expect(map[string]string{"1": "Foo", "2": "FooBarTest"}).Should(ConsistOf(ContainSubstring("Bar"), "Foo"))
 
 		// 对 array, slice or map 的比较 , ContainElements中的成员 出现 即可， 即子集即可
 		// ContainElements() uses Equal() to match the elements
 		// 注意，ContainElements 中的值的 顺序 不重要
-		//  对于 map的比较， 比的是 values， 而忽略 mao 的 key
+		//  对于 map的比较， 比的是 values， 而忽略 map 的 key
 		Expect([]string{"Foo1", "Foo2Bar", "cat"}).Should(ContainElements("Foo1", ContainSubstring("Bar")))
+
+		book := struct {
+			A string
+			B int
+		}{A: "I am tom", B: 100}
+		Expect(book).To(HaveField("A", "I am tom"))
+		Expect(book).To(HaveField("A", ContainSubstring("I am")))
+		Expect(book).To(HaveField("B", And(BeNumerically("<=", 110), BeNumerically(">", 90))))
 
 		// 测试文件存在
 		Expect("les-miserables.epub").NotTo(BeAnExistingFile())
