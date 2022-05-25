@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: show
         run: |
-          echo "github.workflow = ${{ github.workflow }}"
+          # echo "github.workflow = ${{ github.workflow }}"
           # who trigger this worfflow , weizhoublue
           echo "github.actor = ${{ github.actor }}"
           # weizhoublue
