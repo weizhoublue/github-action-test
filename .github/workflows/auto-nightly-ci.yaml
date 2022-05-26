@@ -30,11 +30,12 @@ jobs:
             echo ::set-output name=ref::main
           fi
 
+      # some event, the tag is not sha, so checkout it and get sha
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           persist-credentials: false
-          ref: ${{ steps.ref.outputs.ref }}
+          ref: ${{ steps.get_ref.outputs.ref }}
 
       - name: Result Ref
         id: result
