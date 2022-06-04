@@ -18,3 +18,5 @@ jobs:
     uses: ./.github/workflows/call-release-image.yaml
     with:
       ref: ${{ github.event.inputs.ref }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit

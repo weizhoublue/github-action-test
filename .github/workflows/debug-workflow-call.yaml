@@ -14,12 +14,16 @@ jobs:
     uses: ./.github/workflows/debug-context.yaml
     with:
       mytag: ${{ github.event.inputs.ref }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   call-workflow-golang:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
     uses: ./.github/workflows/lint-golang.yaml
     with:
       ref: ${{ github.event.inputs.ref }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
 #  #===============
 #  call-workflow-chart:

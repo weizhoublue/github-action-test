@@ -19,3 +19,5 @@ jobs:
     with:
       ref: ${{ github.event.inputs.ref }}
       suffix: 'beta'
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit

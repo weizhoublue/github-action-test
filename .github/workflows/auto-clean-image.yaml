@@ -14,8 +14,8 @@ jobs:
     with:
       image_name: controllerimage-ci
       older_than: "2"
-    secrets: # reusable workflow can not see secrets, so have to pass from outside
-      PAT: ${{ secrets.PAT }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   prune-image-beta:
     # forbid to specify version for local workflow, GITHUB_REF Same as the caller workflow
@@ -23,5 +23,5 @@ jobs:
     with:
       image_name: controllerimage-beta
       older_than: "2"
-    secrets: # reusable workflow can not see secrets, so have to pass from outside
-      PAT: ${{ secrets.PAT }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit

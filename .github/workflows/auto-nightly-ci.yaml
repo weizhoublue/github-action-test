@@ -49,6 +49,8 @@ jobs:
     uses: ./.github/workflows/lint-golang.yaml
     with:
       ref: ${{ needs.get_ref.outputs.ref }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   call_build_ci_image:
     needs: [call_unitest, get_ref]
@@ -57,6 +59,8 @@ jobs:
     with:
       ref: ${{ needs.get_ref.outputs.ref }}
       push: false
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   call_test_chart:
     needs: get_ref
@@ -64,6 +68,8 @@ jobs:
     uses: ./.github/workflows/call-lint-chart.yaml
     with:
       ref: ${{ needs.get_ref.outputs.ref }}
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   call_release_chart:
     needs: [call_test_chart, get_ref]
@@ -71,6 +77,8 @@ jobs:
     with:
       ref: ${{ needs.get_ref.outputs.ref }}
       submit: false
+    # reusable workflow can not see secrets, so have to pass from outside
+    secrets: inherit
 
   call_e2e_test:
     runs-on: ubuntu-latest
