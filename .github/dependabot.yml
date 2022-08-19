@@ -3,6 +3,7 @@
 
 version: 2
 updates:
+  # 更新 go mod
   - package-ecosystem: gomod
     directory: /
     schedule:
@@ -21,6 +22,7 @@ updates:
       - pr/release/none-required
       - pr/dependabot/gomod
 
+  # 更新 github action
   - package-ecosystem: github-actions
     directory: /
     schedule:
