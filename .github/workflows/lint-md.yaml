@@ -42,7 +42,7 @@ jobs:
 
       # https://github.com/nosborn/github-action-markdown-cli
       - name: markdownlint-cli
-        uses: nosborn/github-action-markdown-cli@v3.0.1
+        uses: nosborn/github-action-markdown-cli@v3.2.0
         with:
           files: .
           config_file: '.github/markdownlint.yaml'
