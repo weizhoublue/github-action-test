@@ -101,6 +101,10 @@ var _ = Describe("gomega_assert", func() {
 
 		//  对于 map的比较， 比的是 values， 而忽略 map 的 key
 		Expect(map[string]string{"1": "Foo", "2": "FooBarTest"}).Should(ConsistOf(ContainSubstring("Bar"), "Foo"))
+		// map 断言 有 key
+		Expect(map[string]string{"Foo": "Bar", "BazFoo": "Duck"}).Should(HaveKey(MatchRegexp(`.+Foo$`)))
+		// map 断言 有 key value 对
+		Expect(map[string]string{"Foo": "Bar", "BazFoo": "Duck"}).Should(HaveKeyWithValue("Foo", "Bar"))
 
 		// 对 array, slice or map 的比较 , ContainElements中的成员 出现 即可， 即子集即可
 		// ContainElements() uses Equal() to match the elements
