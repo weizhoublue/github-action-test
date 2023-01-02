@@ -20,7 +20,7 @@ jobs:
     steps:
       # https://github.com/marketplace/actions/close-stale-issues
       - name: Close stale issues
-        uses: actions/stale@v5.0.0
+        uses: actions/stale@v7.0.0
         with:
           # ===== for issue
           stale-issue-label: ${{ env.STALE_ISSUE_LABEL }}
