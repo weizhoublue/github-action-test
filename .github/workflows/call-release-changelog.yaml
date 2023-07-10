@@ -201,7 +201,7 @@ jobs:
       # https://github.com/peter-evans/create-pull-request
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           title: "robot update changelog with tag ${{ needs.generate_changelog.outputs.dest_tag }} to branch ${{ env.DEST_BRANCH }} "
           # from branch
