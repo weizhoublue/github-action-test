@@ -21,11 +21,11 @@ import (
 //
 // That is, with ReportFilenameWithPath==false:
 //
-//      foo/bar.go:123
+//	foo/bar.go:123
 //
 // Or with ReportFilenameWithPath==true:
 //
-//      /home/goworld/coolprojects/mymodule/foo/bar.go:123
+//	/home/goworld/coolprojects/mymodule/foo/bar.go:123
 var ReportFilenameWithPath = false
 
 // standardFilters specifies the always automatically included no-leak goroutine
@@ -48,6 +48,9 @@ var standardFilters = []types.GomegaMatcher{
 	gomega.And(IgnoringTopFunction("runtime.goexit1"), IgnoringCreator("github.com/onsi/ginkgo/v2/internal.(*Suite).runNode")),
 	IgnoringTopFunction("github.com/onsi/ginkgo/v2/internal/interrupt_handler.(*InterruptHandler).registerForInterrupts..."),
 	IgnoringTopFunction("github.com/onsi/ginkgo/internal/specrunner.(*SpecRunner).registerForInterrupts"),
+	IgnoringCreator("github.com/onsi/ginkgo/v2/internal.(*genericOutputInterceptor).ResumeIntercepting"),
+	IgnoringCreator("github.com/onsi/ginkgo/v2/internal.(*genericOutputInterceptor).ResumeIntercepting..."),
+	IgnoringCreator("github.com/onsi/ginkgo/v2/internal.RegisterForProgressSignal"),
 
 	// goroutines of Go's own testing package for its own workings...
 	IgnoringTopFunction("testing.RunTests [chan receive]"),
@@ -83,32 +86,32 @@ var standardFilters = []types.GomegaMatcher{
 // Eventually's default timeout and polling interval settings, but these can be
 // overridden as usual:
 //
-//   // Remember to use "Goroutines" and not "Goroutines()" with Eventually()!
-//   Eventually(Goroutines).ShouldNot(HaveLeaked())
-//   Eventually(Goroutines).WithTimeout(5 * time.Second).ShouldNot(HaveLeaked())
+//	// Remember to use "Goroutines" and not "Goroutines()" with Eventually()!
+//	Eventually(Goroutines).ShouldNot(HaveLeaked())
+//	Eventually(Goroutines).WithTimeout(5 * time.Second).ShouldNot(HaveLeaked())
 //
 // In its simplest form, an expected non-leaky goroutine can be identified by
 // passing the (fully qualified) name (in form of a string) of the topmost
 // function in the backtrace. For instance:
 //
-//   Eventually(Goroutines).ShouldNot(HaveLeaked("foo.bar"))
+//	Eventually(Goroutines).ShouldNot(HaveLeaked("foo.bar"))
 //
 // This is the shorthand equivalent to this explicit form:
 //
-//   Eventually(Goroutines).ShouldNot(HaveLeaked(IgnoringTopFunction("foo.bar")))
+//	Eventually(Goroutines).ShouldNot(HaveLeaked(IgnoringTopFunction("foo.bar")))
 //
 // HaveLeak also accepts passing a slice of Goroutine objects to be considered
 // non-leaky goroutines.
 //
-//   snapshot := Goroutines()
-//   DoSomething()
-//   Eventually(Goroutines).ShouldNot(HaveLeaked(snapshot))
+//	snapshot := Goroutines()
+//	DoSomething()
+//	Eventually(Goroutines).ShouldNot(HaveLeaked(snapshot))
 //
 // Again, this is shorthand for the following explicit form:
 //
-//   snapshot := Goroutines()
-//   DoSomething()
-//   Eventually(Goroutines).ShouldNot(HaveLeaked(IgnoringGoroutines(snapshot)))
+//	snapshot := Goroutines()
+//	DoSomething()
+//	Eventually(Goroutines).ShouldNot(HaveLeaked(IgnoringGoroutines(snapshot)))
 //
 // Finally, HaveLeaked accepts any GomegaMatcher and will repeatedly pass it a
 // Goroutine object: if the matcher succeeds, the Goroutine object in question
@@ -116,18 +119,18 @@ var standardFilters = []types.GomegaMatcher{
 // built-in Goroutine filter matchers should hopefully cover most situations,
 // any suitable GomegaMatcher can be used for tricky leaky Goroutine filtering.
 //
-//   IgnoringTopFunction("foo.bar")
-//   IgnoringTopFunction("foo.bar...")
-//   IgnoringTopFunction("foo.bar [chan receive]")
-//   IgnoringGoroutines(expectedGoroutines)
-//   IgnoringInBacktrace("foo.bar.baz")
+//	IgnoringTopFunction("foo.bar")
+//	IgnoringTopFunction("foo.bar...")
+//	IgnoringTopFunction("foo.bar [chan receive]")
+//	IgnoringGoroutines(expectedGoroutines)
+//	IgnoringInBacktrace("foo.bar.baz")
 func HaveLeaked(ignoring ...interface{}) types.GomegaMatcher {
 	m := &HaveLeakedMatcher{filters: standardFilters}
 	for _, ign := range ignoring {
 		switch ign := ign.(type) {
 		case string:
 			m.filters = append(m.filters, IgnoringTopFunction(ign))
-		case []goroutine.Goroutine:
+		case []Goroutine:
 			m.filters = append(m.filters, IgnoringGoroutines(ign))
 		case types.GomegaMatcher:
 			m.filters = append(m.filters, ign)
@@ -143,12 +146,12 @@ func HaveLeaked(ignoring ...interface{}) types.GomegaMatcher {
 // goroutines.
 type HaveLeakedMatcher struct {
 	filters []types.GomegaMatcher // expected goroutines that aren't leaks.
-	leaked  []goroutine.Goroutine // surplus goroutines which we consider to be leaks.
+	leaked  []Goroutine           // surplus goroutines which we consider to be leaks.
 }
 
-var gsT = reflect.TypeOf([]goroutine.Goroutine{})
+var gsT = reflect.TypeOf([]Goroutine{})
 
-// Match succeeds if actual is an array or slice of goroutine.Goroutine
+// Match succeeds if actual is an array or slice of Goroutine
 // information and still contains goroutines after filtering out all expected
 // goroutines that were specified when creating the matcher.
 func (matcher *HaveLeakedMatcher) Match(actual interface{}) (success bool, err error) {
@@ -165,7 +168,7 @@ func (matcher *HaveLeakedMatcher) Match(actual interface{}) (success bool, err e
 			"HaveLeaked matcher expects an array or slice of goroutines.  Got:\n%s",
 			format.Object(actual, 1))
 	}
-	goroutines := val.Convert(gsT).Interface().([]goroutine.Goroutine)
+	goroutines := val.Convert(gsT).Interface().([]Goroutine)
 	matcher.leaked, err = matcher.filter(goroutines, matcher.filters)
 	if err != nil {
 		return false, err
@@ -189,7 +192,7 @@ func (matcher *HaveLeakedMatcher) NegatedFailureMessage(actual interface{}) (mes
 // listGoroutines returns a somewhat compact textual representation of the
 // specified goroutines, by ignoring the often quite lengthy backtrace
 // information.
-func (matcher *HaveLeakedMatcher) listGoroutines(gs []goroutine.Goroutine, indentation uint) string {
+func (matcher *HaveLeakedMatcher) listGoroutines(gs []Goroutine, indentation uint) string {
 	var buff strings.Builder
 	indent := strings.Repeat(format.Indent, int(indentation))
 	backtraceIdent := strings.Repeat(format.Indent, int(indentation+1))
@@ -261,9 +264,9 @@ func (matcher *HaveLeakedMatcher) listGoroutines(gs []goroutine.Goroutine, inden
 // all checkers do not signal that they expect a certain goroutine then this
 // goroutine is considered to be a leak.
 func (matcher *HaveLeakedMatcher) filter(
-	goroutines []goroutine.Goroutine, filters []types.GomegaMatcher,
-) ([]goroutine.Goroutine, error) {
-	gs := make([]goroutine.Goroutine, 0, len(goroutines))
+	goroutines []Goroutine, filters []types.GomegaMatcher,
+) ([]Goroutine, error) {
+	gs := make([]Goroutine, 0, len(goroutines))
 	myID := goroutine.Current().ID
 nextgoroutine:
 	for _, g := range goroutines {
