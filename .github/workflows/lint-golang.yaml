@@ -91,7 +91,7 @@ jobs:
           go-version: 1.17.8
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ needs.filter_changes.outputs.ref }}
@@ -144,7 +144,7 @@ jobs:
           go-version: 1.17.8
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ needs.filter_changes.outputs.ref }}
@@ -179,7 +179,7 @@ jobs:
           go-version: 1.17.8
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ needs.filter_changes.outputs.ref }}
@@ -199,7 +199,7 @@ jobs:
           go-version: 1.17.8
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ needs.filter_changes.outputs.ref }}

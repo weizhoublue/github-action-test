@@ -61,7 +61,7 @@ jobs:
     steps:
       - name: Checkout code
         if: ${{ github.event_name == 'pull_request_target' || github.event_name == 'push' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -149,7 +149,7 @@ jobs:
 
       # checkout the changed code
       - name: Checkout Source Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ steps.tag.outputs.tag }}
