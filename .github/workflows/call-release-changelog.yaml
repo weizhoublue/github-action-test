@@ -50,7 +50,7 @@ jobs:
     steps:
       # checkout code for checking tag
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
@@ -118,7 +118,7 @@ jobs:
     steps:
       # checkout code for tag and pr
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Only a single commit is fetched by default, for the ref/SHA that triggered the workflow
           # if Set fetch-depth: 0 to fetch all history for all branches and tags
@@ -188,7 +188,7 @@ jobs:
     needs: [generate_changelog]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.DEST_BRANCH }}
 
